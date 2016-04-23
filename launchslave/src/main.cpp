@@ -1,11 +1,7 @@
 #include <stdio.h>
 
-#include <stfy/sys/File.hpp>
-#include <stfy/data/String.hpp>
-#include <stfy/sys/Timer.hpp>
-#include <stfy/sys/Signal.hpp>
-
-
+#include <stfy/Sys.hpp>
+#include <stfy/Var.hpp>
 
 
 int main(int argc, char * argv[]){
