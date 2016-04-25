@@ -11,9 +11,9 @@
 #define LISTIO_TEST 0
 #define DIRENT_TEST 0
 #define MQ_TEST 0
-#define NUM_TEST 0
+#define NUM_TEST 1
 #define SCHED_TEST 0
-#define PTHREAD_TEST 1
+#define PTHREAD_TEST 0
 #define STDIO_TEST 0
 #define DIRECTORY_TEST 0
 #define FILE_TEST 0
