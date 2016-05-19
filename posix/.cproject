@@ -11,21 +11,22 @@
 					<stringMacro name="RAM_SIZE" type="VALUE_TEXT" value="4096"/>
 					<stringMacro name="RM_win32" type="VALUE_TEXT" value="../script/clean.bat"/>
 					<stringMacro name="BUILD_NAME" type="VALUE_TEXT" value="Unused"/>
+					<stringMacro name="SL" type="VALUE_TEXT" value="${DirectoryDelimiter}"/>
 					<stringMacro name="TOOLSPATH" type="VALUE_TEXT" value="${TOOLSPATH_${OsType}}"/>
 					<stringMacro name="BUILD_TYPE" type="VALUE_TEXT" value=""/>
-					<stringMacro name="BUILD_FLOAT" type="VALUE_TEXT" value="soft-float"/>
+					<stringMacro name="BUILD_FLOAT" type="VALUE_TEXT" value="."/>
 					<stringMacro name="RM" type="VALUE_TEXT" value="${RM_${OsType}}"/>
 					<stringMacro name="RM_win64" type="VALUE_TEXT" value="${RM_win32}"/>
-					<stringMacro name="HOST" type="VALUE_TEXT" value="arm-stratify-eabi"/>
 					<stringMacro name="TOOLSPATH_win64" type="VALUE_TEXT" value="${TOOLSPATH_win32}"/>
+					<stringMacro name="HOST" type="VALUE_TEXT" value="arm-none-eabi"/>
 					<stringMacro name="TOOLSPATH_win32" type="VALUE_TEXT" value="C:\StratifyLabs-SDK\StratifyLabs"/>
 					<stringMacro name="C_FLAGS" type="VALUE_TEXT" value="-mlong-calls -ffunction-sections -march=${BUILD_ARCH} -mthumb"/>
 					<stringMacro name="POSTPROCESS" type="VALUE_TEXT" value="${POSTPROCESS_${OsType}}"/>
 					<stringMacro name="POSTPROCESS_win32" type="VALUE_TEXT" value="../script/post-process.bat"/>
 					<stringMacro name="C_FLAGS_ARMV7EM_FPU" type="VALUE_TEXT" value="-mfloat-abi=hard -mfpu=fpv4-sp-d16 -U__SOFTFP__ -D__FPU_USED=1"/>
 					<stringMacro name="RM_macosx" type="VALUE_TEXT" value="rm -rf"/>
+					<stringMacro name="TOOLSPATH_macosx" type="VALUE_TEXT" value="/Applications/StratifyLabs-SDK/Tools/gcc"/>
 					<stringMacro name="BUILD_ARCH" type="VALUE_TEXT" value="armv7-m"/>
-					<stringMacro name="TOOLSPATH_macosx" type="VALUE_TEXT" value="/usr/local/StratifyLabs"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -104,21 +105,22 @@
 					<stringMacro name="RAM_SIZE" type="VALUE_TEXT" value="4096"/>
 					<stringMacro name="BUILD_NAME" type="VALUE_TEXT" value="Unused"/>
 					<stringMacro name="RM_win32" type="VALUE_TEXT" value="../script/clean.bat"/>
+					<stringMacro name="SL" type="VALUE_TEXT" value="${DirectoryDelimiter}"/>
 					<stringMacro name="BUILD_TYPE" type="VALUE_TEXT" value=""/>
 					<stringMacro name="TOOLSPATH" type="VALUE_TEXT" value="${TOOLSPATH_${OsType}}"/>
-					<stringMacro name="BUILD_FLOAT" type="VALUE_TEXT" value="hard-float/fpv4-sp-d16"/>
+					<stringMacro name="BUILD_FLOAT" type="VALUE_TEXT" value="fpu${SL}fpv5-sp-d16"/>
 					<stringMacro name="RM" type="VALUE_TEXT" value="${RM_${OsType}}"/>
 					<stringMacro name="RM_win64" type="VALUE_TEXT" value="${RM_win32}"/>
+					<stringMacro name="HOST" type="VALUE_TEXT" value="arm-none-eabi"/>
 					<stringMacro name="TOOLSPATH_win64" type="VALUE_TEXT" value="${TOOLSPATH_win32}"/>
-					<stringMacro name="HOST" type="VALUE_TEXT" value="arm-stratify-eabi"/>
 					<stringMacro name="TOOLSPATH_win32" type="VALUE_TEXT" value="C:\StratifyLabs-SDK\StratifyLabs"/>
 					<stringMacro name="C_FLAGS" type="VALUE_TEXT" value="-mlong-calls -ffunction-sections -march=${BUILD_ARCH} -mthumb ${C_FLAGS_ARMV7EM_FPU}"/>
 					<stringMacro name="POSTPROCESS" type="VALUE_TEXT" value="${POSTPROCESS_${OsType}}"/>
 					<stringMacro name="POSTPROCESS_win32" type="VALUE_TEXT" value="../script/post-process.bat"/>
 					<stringMacro name="C_FLAGS_ARMV7EM_FPU" type="VALUE_TEXT" value="-mfloat-abi=hard -mfpu=fpv4-sp-d16 -U__SOFTFP__ -D__FPU_USED=1"/>
 					<stringMacro name="RM_macosx" type="VALUE_TEXT" value="rm -rf"/>
-					<stringMacro name="TOOLSPATH_macosx" type="VALUE_TEXT" value="/usr/local/StratifyLabs"/>
 					<stringMacro name="BUILD_ARCH" type="VALUE_TEXT" value="armv7e-m"/>
+					<stringMacro name="TOOLSPATH_macosx" type="VALUE_TEXT" value="/Applications/StratifyLabs-SDK/Tools/gcc"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
