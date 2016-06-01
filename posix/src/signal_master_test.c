@@ -29,7 +29,7 @@ Copyright 2016 Tyler Gilbert
 
 #define SLAVE_APP "/home/sigslave"
 
-int signal_master_test(void){
+int signal_master_test(){
 	pid_t pid;
 	int err;
 	int stat;

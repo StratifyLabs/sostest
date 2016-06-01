@@ -32,10 +32,10 @@ static volatile int t1_status;
 pthread_cond_t cond_var;
 pthread_mutex_t mutex_var;
 
-static int prep_test(void);
+static int prep_test();
 
 
-int pthread_cond_test(void){
+int pthread_cond_test(){
 	pthread_condattr_t attr;
 	pthread_mutexattr_t mattr;
 
@@ -156,7 +156,7 @@ void * t1(void * args){
 	return NULL;
 }
 
-int prep_test(void){
+int prep_test(){
 	t0_status = -1;
 	t1_status = -1;
 

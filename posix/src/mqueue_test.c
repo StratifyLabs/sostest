@@ -24,7 +24,7 @@ Copyright 2016 Tyler Gilbert
 #include <stdint.h>
 
 
-static int start_producer(void);
+static int start_producer();
 static void * consumer(void * args);
 static void * producer(void * args);
 static void add_timespec(struct timespec * ts, uint32_t nsec);
@@ -32,7 +32,7 @@ static void add_timespec(struct timespec * ts, uint32_t nsec);
 #define VALID_QUEUE "queue1"
 #define TOO_LONG_QUEUE "012345678901234567890123456789012345678901234567890"
 
-int mqueue_test(void){
+int mqueue_test(){
 	int err;
 	int errno_tmp;
 	mqd_t mqdes;
@@ -234,7 +234,7 @@ int mqueue_test(void){
 }
 
 
-int start_producer(void){
+int start_producer(){
 	pthread_t t;
 	pthread_attr_t attr;
 	int err;
@@ -331,7 +331,7 @@ void * producer(void * args){
 	int prio;
 	char msg[32];
 
-	printf("%ld:Producing\n", pthread_self()); fflush(stdout);
+	printf("%ld:Producing\n", pthread_self());
 	mqdes = mq_open(VALID_QUEUE, O_RDWR, 0, NULL);
 	if ( mqdes == -1 ){
 		printf("Producer failed to open queue\n");
@@ -360,7 +360,7 @@ void * producer(void * args){
 		}
 	}
 
-	//printf("%ld:Producer Close mq\n", pthread_self());
+	printf("%ld:Producer close\n", pthread_self()); fflush(stdout);
 	if ( mq_close(mqdes) < 0 ){
 		printf("%ld:Producer failed to close queue\n", pthread_self());
 	}

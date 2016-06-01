@@ -24,11 +24,11 @@ Copyright 2016 Tyler Gilbert
 #include <unistd.h>
 
 static int test_min_max(int (*func)(int), const char * func_name);
-static int test_schedparam(void);
-static int test_scheduler(void);
-static int test_rr_interval(void);
+static int test_schedparam();
+static int test_scheduler();
+static int test_rr_interval();
 
-int sched_test(void){
+int sched_test(){
 
 	if ( test_min_max(sched_get_priority_max, "sched_get_priority_max") < 0 ){
 		printf("sched_get_priority_max() test failed\n");
@@ -65,7 +65,7 @@ int sched_test(void){
 	return 0;
 }
 
-int test_rr_interval(void){
+int test_rr_interval(){
 	struct timespec ts;
 	int err;
 
@@ -151,7 +151,7 @@ int test_min_max(int (*func)(int), const char * func_name){
 	return 0;
 }
 
-int test_scheduler(void){
+int test_scheduler(){
 	int policy;
 	int err;
 	struct sched_param param;
@@ -318,7 +318,7 @@ int test_scheduler(void){
 	return 0;
 }
 
-int test_schedparam(void){
+int test_schedparam(){
 	int err;
 	struct sched_param param;
 

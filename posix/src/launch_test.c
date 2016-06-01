@@ -30,7 +30,7 @@ int update_progress(int progress, int max){
 }
 
 
-int launch_test(void){
+int launch_test(){
 	pid_t pid;
 	pid_t pid_alt;
 	int status;

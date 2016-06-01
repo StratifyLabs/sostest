@@ -22,13 +22,13 @@ Copyright 2016 Tyler Gilbert
 
 
 
-int test_failed_perror(void){
+int test_failed_perror(){
 	fflush(stdout);
 	perror("failed");
 	return -1;
 }
 
-void test_passed(void){
+void test_passed(){
 	printf("passed\n");
 }
 

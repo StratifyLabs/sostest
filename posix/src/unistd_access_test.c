@@ -26,7 +26,7 @@ Copyright 2016 Tyler Gilbert
 
 #define EXEC_PATH "/app/flash/posix"
 
-int unistd_access_test(void){
+int unistd_access_test(){
 	//check the access to the executable
 	int fd;
 	int ret;

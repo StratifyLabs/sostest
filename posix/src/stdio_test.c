@@ -19,7 +19,7 @@ Copyright 2016 Tyler Gilbert
 #include <unistd.h>
 
 
-int stdio_test(void){
+int stdio_test(){
 	char buffer[64];
 
 	printf("Test STDIO (stdout)...");

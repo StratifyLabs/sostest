@@ -30,7 +30,7 @@ Copyright 2016 Tyler Gilbert
 #define AIO_TEST_READ_DEVICE "/dev/adc0"
 #define AIO_TEST_WRITE_DEVICE "/dev/dac0"
 
-int aio_test(void){
+int aio_test(){
 	int fd;
 	struct aiocb aio;
 	char buffer[32];

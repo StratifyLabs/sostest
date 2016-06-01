@@ -51,7 +51,7 @@ test_case_t clock_cases[CLOCK_TOTAL] = {
 		{ .case_number = 100000, .err_number = ENOTSUP }
 };
 
-int pthread_condattr_test(void){
+int pthread_condattr_test(){
 	pthread_condattr_t attr;
 	clockid_t id;
 

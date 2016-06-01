@@ -22,6 +22,6 @@ Copyright 2016 Tyler Gilbert
 
 #include "tests.h"
 
-int listio_test(void){
+int listio_test(){
 	return 0;
 }

@@ -29,14 +29,14 @@ Copyright 2016 Tyler Gilbert
 #define NUM_SUBDIRECTORIES 3
 #define NUM_FILES 3
 
-static int mkdir_test(void);
-static int rmdir_test(void);
+static int mkdir_test();
+static int rmdir_test();
 
 static int create_files(const char * dir_path, int num_files);
 static int read_check_files(const char * dir_path);
 static int remove_files(const char * dir_path);
 
-int unistd_directory_test(void){
+int unistd_directory_test(){
 
 	if ( mkdir_test() < 0 ){
 		return -1;
@@ -50,7 +50,7 @@ int unistd_directory_test(void){
 
 }
 
-int mkdir_test(void){
+int mkdir_test(){
 	char path[PATH_MAX];
 	int i;
 	int j;
@@ -131,7 +131,7 @@ int mkdir_test(void){
 	return 0;
 }
 
-int rmdir_test(void){
+int rmdir_test(){
 	int i;
 	int j;
 	char path[PATH_MAX];

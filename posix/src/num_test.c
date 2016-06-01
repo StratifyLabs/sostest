@@ -37,8 +37,8 @@ typedef union {
 	i64 op_i64;
 } operand_t;
 
-static int float_test(void);
-static int int_test(void);
+static int float_test();
+static int int_test();
 static int mul_u64(operand_t a, operand_t b, operand_t result);
 
 typedef int (*op)(operand_t, operand_t, operand_t);
@@ -281,7 +281,7 @@ static int exec_test(int i){
 	return 0;
 }
 
-int num_test(void){
+int num_test(){
 	int_test();
 	float_test();
 
@@ -298,7 +298,7 @@ int num_test(void){
 
 
 
-int int_test(void){
+int int_test(){
 	volatile int x;
 	int y;
 
@@ -385,7 +385,7 @@ int int_test(void){
 	return 0;
 }
 
-int float_test(void){
+int float_test(){
 	volatile float x;
 	float y;
 

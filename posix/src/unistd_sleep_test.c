@@ -27,9 +27,9 @@ Copyright 2016 Tyler Gilbert
 static int calc_useconds(struct timespec * start, struct timespec * stop);
 static int usleep_test_case(int useconds, int ref);
 static int sleep_test_case(int seconds);
-static int usleep_test(void);
+static int usleep_test();
 
-int unistd_sleep_test(void){
+int unistd_sleep_test(){
 	int i;
 	int tmp;
 	bool failed;
@@ -62,7 +62,7 @@ int unistd_sleep_test(void){
 	return 0;
 }
 
-int usleep_test(void){
+int usleep_test(){
 	int i;
 	int ref;
 	int actual;

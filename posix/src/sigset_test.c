@@ -21,7 +21,7 @@ Copyright 2016 Tyler Gilbert
 
 
 
-int sigset_test(void){
+int sigset_test(){
 	sigset_t set;
 	int i;
 

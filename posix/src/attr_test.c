@@ -82,7 +82,7 @@ test_case_t scopes[SCOPE_TOTAL] = {
 
 static int test_schedparam(pthread_attr_t * attr, int prio, int policy);
 
-int pthread_attr_test(void){
+int pthread_attr_test(){
 	pthread_attr_t attr;
 	int tmp;
 	void * stackaddr;

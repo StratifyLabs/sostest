@@ -20,7 +20,7 @@ Copyright 2016 Tyler Gilbert
 #include <errno.h>
 
 
-int dirent_test(void){
+int dirent_test(){
 	DIR * dirp;
 	struct dirent * direntp;
 

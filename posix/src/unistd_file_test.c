@@ -30,16 +30,16 @@ Copyright 2016 Tyler Gilbert
 
 #define EXEC_PATH "/app/flash/posix"
 
-static int read_write_test(void); //read and writing data to files
-static int utils_test(void); //link, unlink, remove, rename, etc
+static int read_write_test(); //read and writing data to files
+static int utils_test(); //link, unlink, remove, rename, etc
 
 //Read Write Sub Tests
-static int stdc_read_write_test(void);
-static int posix_read_write_test(void);
+static int stdc_read_write_test();
+static int posix_read_write_test();
 
-static int access_test(void);
+static int access_test();
 
-int unistd_file_test(void){
+int unistd_file_test(){
 
 	if( access_test() < 0 ){
 		return -1;
@@ -60,7 +60,7 @@ int unistd_file_test(void){
 	return 0;
 }
 
-int read_write_test(void){
+int read_write_test(){
 	if ( stdc_read_write_test() ){
 		return -1;
 	}
@@ -72,7 +72,7 @@ int read_write_test(void){
 	return 0;
 }
 
-int posix_read_write_test(void){
+int posix_read_write_test(){
 	int i;
 	int j;
 	int fd;
@@ -130,7 +130,7 @@ int posix_read_write_test(void){
 }
 
 
-int stdc_read_write_test(void){
+int stdc_read_write_test(){
 	int i;
 	int j;
 	FILE * f;
@@ -178,7 +178,7 @@ int stdc_read_write_test(void){
 	return 0;
 }
 
-int utils_test(void){
+int utils_test(){
 	FILE * f;
 	struct stat st;
 	int fd;
@@ -362,7 +362,7 @@ int utils_test(void){
 	return 0;
 }
 
-int access_test(void){
+int access_test(){
 	//check the access to the executable
 
 	printf("Test access F_OK (exists)...");

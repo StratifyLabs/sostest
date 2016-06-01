@@ -25,8 +25,8 @@ Copyright 2016 Tyler Gilbert
 #define NAMED_TEST 1
 #define UNNAMED_TEST 1
 
-static int named_test(void);
-static int unnamed_test(void);
+static int named_test();
+static int unnamed_test();
 
 static void * t0(void * args);
 static void * t1(void * args);
@@ -34,7 +34,7 @@ static void * t1(void * args);
 static sem_t unnamed;
 #define SEM_NAME "my_sem"
 
-int sem_test(void){
+int sem_test(){
 
 	if ( NAMED_TEST ){
 		if ( named_test() ){
@@ -52,7 +52,7 @@ int sem_test(void){
 }
 
 
-int named_test(void){
+int named_test(){
 	sem_t * sem;
 	int value;
 	int tmp;
@@ -135,7 +135,7 @@ int named_test(void){
 	return 0;
 }
 
-int unnamed_test(void){
+int unnamed_test(){
 	int tmp;
 
 	sem_t * sem = NULL;
@@ -192,9 +192,6 @@ int unnamed_test(void){
 	}
 
 	printf("passed\n");
-
-
-
 	return 0;
 }
 
@@ -207,14 +204,12 @@ void * t0(void * args){
 		return NULL;
 	}
 
-	printf("t0 wait...");
-	fflush(stdout);
+	printf("t0 wait..."); fflush(stdout);
 	if ( sem_wait(sem) < 0 ){
 		perror("t0 sem_wait() failed");
 		return NULL;
 	}
-	printf("t0 got sem...");
-	fflush(stdout);
+	printf("t0 got sem..."); fflush(stdout);
 
 	if ( sem_close(sem) < 0 ){
 		perror("t0 sem_close() failed");
@@ -225,14 +220,12 @@ void * t0(void * args){
 
 void * t1(void * args){
 
-	printf("t1 wait...");
-	fflush(stdout);
+	printf("t1 wait..."); fflush(stdout);
 
 	if ( sem_wait(&unnamed) < 0 ){
 		printf("Failed to wait for sem (%d)\n", errno);
 	}
 
-	printf("t1 done...");
-	fflush(stdout);
+	printf("t1 done..."); fflush(stdout);
 	return NULL;
 }

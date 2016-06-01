@@ -50,7 +50,7 @@ test_case_t types[TYPES_TOTAL] = {
 };
 
 
-int pthread_mutexattr_test(void){
+int pthread_mutexattr_test(){
 	pthread_mutexattr_t attr;
 	int tmp;
 	int i;

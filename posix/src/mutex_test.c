@@ -22,12 +22,12 @@ Copyright 2016 Tyler Gilbert
 #include "tests.h"
 
 static void * t0(void * args);
-static int recursive_lock_test(void);
+static int recursive_lock_test();
 
 static pthread_mutex_t mutex_var;
 
 
-int pthread_mutex_test(void){
+int pthread_mutex_test(){
 	pthread_mutexattr_t mattr;
 	if ( pthread_mutexattr_init(&mattr) < 0 ){
 		perror("pthread_mutexattr_init() failed");
@@ -103,7 +103,7 @@ int pthread_mutex_test(void){
 	return 0;
 }
 
-int recursive_lock_test(void){
+int recursive_lock_test(){
 	int total_locks;
 	int i;
 	pthread_mutexattr_t mattr;

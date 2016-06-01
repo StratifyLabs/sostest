@@ -19,35 +19,35 @@ Copyright 2016 Tyler Gilbert
 
 #include <trace.h>
 
-int aio_test(void);
-int listio_test(void);
-int dirent_test(void);
-int mqueue_test(void);
-int num_test(void);
-int sched_test(void);
-int sem_test(void);
-int unistd_file_test(void);
-int unistd_access_test(void);
-int unistd_directory_test(void);
-int unistd_sleep_test(void);
+int aio_test();
+int listio_test();
+int dirent_test();
+int mqueue_test();
+int num_test();
+int sched_test();
+int sem_test();
+int unistd_file_test();
+int unistd_access_test();
+int unistd_directory_test();
+int unistd_sleep_test();
 
-int stdio_test(void);
+int stdio_test();
 
-int signal_master_test(void);
-int sigaction_test(void);
-int signal_test(void);
-int sigset_test(void);
+int signal_master_test();
+int sigaction_test();
+int signal_test();
+int sigset_test();
 
-int pthread_attr_test(void);
-int pthread_condattr_test(void);
-int pthread_mutexattr_test(void);
-int pthread_rwlockattr_test(void);
+int pthread_attr_test();
+int pthread_condattr_test();
+int pthread_mutexattr_test();
+int pthread_rwlockattr_test();
 
-int pthread_master_test(void); //general pthread test
-int pthread_test(void); //general pthread test
-int pthread_cond_test(void);
-int pthread_mutex_test(void);
-int pthread_rwlock_test(void);
+int pthread_master_test(); //general pthread test
+int pthread_test(); //general pthread test
+int pthread_cond_test();
+int pthread_mutex_test();
+int pthread_rwlock_test();
 
 int create_thread(void * (*func)(void*), int stacksize, int detachstate);
 
@@ -67,13 +67,13 @@ int set_get_test(const char * name,
 
 int create_thread(void * (*func)(void*), int stacksize, int detachstate);
 
-int test_failed_perror(void);
-void test_passed(void);
+int test_failed_perror();
+void test_passed();
 void test_intro(const char * func_name, const char * condition, const char * args);
 int test_errno(int ret, const char * expected_errno, int exp_errno);
 int test_success(int ret);
 
-int launch_test(void);
+int launch_test();
 
 extern char trace_buffer[32];
 #define TRACE_MESSAGE(X) do { strncpy(trace_buffer, X, 32); posix_trace_event(POSIX_TRACE_MESSAGE, trace_buffer, strlen(trace_buffer)); } while(0)

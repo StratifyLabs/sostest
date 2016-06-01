@@ -26,7 +26,7 @@ Copyright 2016 Tyler Gilbert
 static volatile int sig_sent;
 static void signal_catching_function(int sig);
 
-int signal_test(void){
+int signal_test(){
 	int sig;
 	sigset_t set;
 	sigset_t oset;

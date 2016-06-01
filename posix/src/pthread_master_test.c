@@ -32,7 +32,7 @@ Copyright 2016 Tyler Gilbert
 #define COND_TEST 1
 #define MUTEX_TEST 1
 
-int pthread_master_test(void){
+int pthread_master_test(){
 
 	if ( ATTR_TEST ){
 		if ( pthread_attr_test() < 0 ){

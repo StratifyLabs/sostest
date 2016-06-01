@@ -33,7 +33,7 @@ static void * t0(void * args);
 static void * t1(void * args);
 
 static pthread_mutex_t thread_mutex;
-int pthread_test(void){
+int pthread_test(){
 	int i;
 
 	pthread_mutexattr_t attr;
