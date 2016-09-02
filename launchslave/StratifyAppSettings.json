@@ -1,0 +1,10 @@
+{
+    "AppBuild": "build_release_armv7em_fpu",
+    "AppBuildPrefix": "build_",
+    "AppInstallPath": "/app/.install",
+    "AppRamSize": 1024,
+    "IsAppInstallAll": false,
+    "IsAppInstallFiles": false,
+    "IsAppRam": false,
+    "IsAppStartup": false
+}
