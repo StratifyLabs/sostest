@@ -1,10 +1,18 @@
 {
-    "AppBuild": "build_release_armv7m",
-    "AppBuildPrefix": "",
-    "AppInstallPath": "/app/.install",
-    "AppRamSize": 16384,
-    "IsAppInstallAll": false,
-    "IsAppInstallFiles": false,
-    "IsAppRam": false,
-    "IsAppStartup": false
+    "LocalBuild": "build_release_armv7em_fpu",
+    "LocalInstallPath": "/app/.install",
+    "LocalIsRam": false,
+    "LocalIsStartup": false,
+    "LocalProjectId": "",
+    "buildprefix": "build_",
+    "description": "posix is a utility used for testing standard posix functions.",
+    "github": "",
+    "hardwareid": "",
+    "name": "posix",
+    "permissions": "public",
+    "publisher": "Stratify Labs, Inc",
+    "ram": 0,
+    "tags": "utility",
+    "type": "StratifyApp",
+    "version": "1.0"
 }

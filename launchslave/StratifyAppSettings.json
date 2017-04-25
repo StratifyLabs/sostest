@@ -1,10 +1,18 @@
 {
-    "AppBuild": "build_release_armv7em_fpu",
-    "AppBuildPrefix": "build_",
-    "AppInstallPath": "/app/.install",
-    "AppRamSize": 1024,
-    "IsAppInstallAll": false,
-    "IsAppInstallFiles": false,
-    "IsAppRam": false,
-    "IsAppStartup": false
+    "LocalBuild": "build_release_armv7m",
+    "LocalInstallPath": "/app/.install",
+    "LocalIsRam": false,
+    "LocalIsStartup": false,
+    "LocalProjectId": "",
+    "buildprefix": "build_",
+    "description": "launchslave is a utility that is used with the posix testing program.",
+    "github": "",
+    "hardwareid": "",
+    "name": "launchslave",
+    "permissions": "public",
+    "publisher": "Stratify Labs, Inc",
+    "ram": 8192,
+    "tags": "utility",
+    "type": "StratifyApp",
+    "version": "1.0"
 }

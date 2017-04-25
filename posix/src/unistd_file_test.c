@@ -28,6 +28,8 @@ Copyright 2016 Tyler Gilbert
 #define READ_WRITE_TEST 1
 #define UTILS_TEST 1
 
+#define TEST_FILE_PATH "/home/test.txt"
+
 #define EXEC_PATH "/app/flash/posix"
 
 static int read_write_test(); //read and writing data to files
@@ -78,13 +80,13 @@ int posix_read_write_test(){
 	int fd;
 	char buffer[64];
 	int len;
-	printf("Test file read/write...");
+	printf("Test file read/write (POSIX)...");
 	fflush(stdout);
 	for(i=0; i < NUM_READ_WRITE_TESTS; i++){
 		errno = 0;
-		fd = open("/home/test.txt", O_RDWR | O_CREAT | O_TRUNC, 0666); //Create a new file test
+		fd = open(TEST_FILE_PATH, O_RDWR | O_CREAT | O_TRUNC, 0666); //Create a new file test
 		if ( fd < 0 ){
-			printf("Failed to Create /home/test.txt on %d try (%d)\n", i, errno);
+			printf("Failed to Create %s on %d try (%d)\n", TEST_FILE_PATH, i, errno);
 			return -1;
 		}
 
@@ -96,11 +98,15 @@ int posix_read_write_test(){
 				printf("Error with fprintf (%d)\n", errno);
 			}
 		}
-		close(fd);
+		errno = 0;
+		if( close(fd) < 0 ){
+			perror("Failed to close write file stream");
+			return -1;
+		}
 
-		fd = open("/home/test.txt", O_RDONLY);
+		fd = open(TEST_FILE_PATH, O_RDONLY);
 		if ( fd < 0 ){
-			printf("Failed to open /home/test.txt for reading on %d try (%d)\n", i, errno);
+			printf("Failed to open %s for reading on %d try (%d)\n", TEST_FILE_PATH, i, errno);
 			return -1;
 		}
 
@@ -117,7 +123,10 @@ int posix_read_write_test(){
 			}
 		}
 
-		close(fd);
+		if( close(fd) < 0 ){
+			perror("Failed to close read file stream");
+			return -1;
+		}
 
 		if ( (i % 10) == 0 ){
 			printf(".");
@@ -135,10 +144,10 @@ int stdc_read_write_test(){
 	int j;
 	FILE * f;
 	char buffer[64];
-	printf("Test file read/write...");
+	printf("Test file read/write (STDC)...");
 	fflush(stdout);
 	for(i=0; i < NUM_READ_WRITE_TESTS; i++){
-		f = fopen("/home/test.txt", "w"); //Create a new file test
+		f = fopen(TEST_FILE_PATH, "w"); //Create a new file test
 		if ( f == NULL ){
 			printf("Failed to Create /home/test.txt on  %d try (%d)\n", i, errno);
 			return -1;
@@ -149,11 +158,15 @@ int stdc_read_write_test(){
 				printf("Error with fprintf (%d)\n", errno);
 			}
 		}
-		fclose(f);
+		errno = 0;
+		if( fclose(f) < 0 ){
+			perror("Failed to close write file stream1");
+			return -1;
+		}
 
-		f = fopen("/home/test.txt", "r");
+		f = fopen(TEST_FILE_PATH, "r");
 		if ( f == NULL ){
-			printf("Failed to open /home/test.txt for reading on %d try (%d)\n", i, errno);
+			printf("Failed to open %s for reading on %d try (%d)\n", TEST_FILE_PATH, i, errno);
 			return -1;
 		}
 
@@ -166,8 +179,10 @@ int stdc_read_write_test(){
 			}
 		}
 
-		fclose(f);
-
+		if( fclose(f) < 0 ){
+			perror("Failed to close read file stream");
+			return -1;
+		}
 		if ( (i % 10) == 0 ){
 			printf(".");
 			fflush(stdout);
@@ -187,9 +202,9 @@ int utils_test(){
 	char buffer[64];
 
 	//Test link, unlink, remove, rename, stat, fcntl etc
-	f = fopen("/home/test.txt", "w");
+	f = fopen(TEST_FILE_PATH, "w");
 	if ( f == NULL ){
-		perror("failed to create /home/test.txt");
+		perror("failed to create test file");
 		return -1;
 	}
 	sprintf(buffer, "This is a write Test\n");
@@ -198,19 +213,19 @@ int utils_test(){
 
 	//Test stat
 	printf("Test stat()...");
-	if ( stat("/home/test.txt", &st) < 0 ){
+	if ( stat(TEST_FILE_PATH, &st) < 0 ){
 		fflush(stdout);
 		perror("failed");
 		return -1;
 	}
 
 	if ( (st.st_mode & S_IFMT) != S_IFREG ){
-		printf("/home/test.txt is not a regular file (0%o)\n", st.st_mode);
+		printf("%s is not a regular file (0%o)\n", TEST_FILE_PATH, st.st_mode);
 		return -1;
 	}
 
 	if ( st.st_size != strlen(buffer) ){
-		printf("/home/test.txt is not %d bytes (%d)\n", (int)strlen(buffer), (int)st.st_size);
+		printf("%s is not %d bytes (%d)\n", TEST_FILE_PATH, (int)strlen(buffer), (int)st.st_size);
 		return -1;
 	}
 	printf("passed\n");
@@ -261,7 +276,7 @@ int utils_test(){
 	}
 
 	printf("Test open()...");
-	fd = open("/home/test.txt", O_RDONLY);
+	fd = open(TEST_FILE_PATH, O_RDONLY);
 	if ( fd < 0 ){
 		fflush(stdout);
 		perror("failed");
@@ -278,12 +293,12 @@ int utils_test(){
 	}
 
 	if ( (st.st_mode & S_IFMT) != S_IFREG ){
-		printf("/home/test.txt is not a regular file (0%o)\n", st.st_mode);
+		printf("%s is not a regular file (0%o)\n", TEST_FILE_PATH, st.st_mode);
 		return -1;
 	}
 
 	if ( st.st_size != 21 ){
-		printf("/home/test.txt is not 21 bytes (%d)\n", (int)st.st_size);
+		printf("%s is not 21 bytes (%d)\n", TEST_FILE_PATH, (int)st.st_size);
 		return -1;
 	}
 	printf("passed\n");
@@ -304,7 +319,7 @@ int utils_test(){
 	}
 
 	if ( close(fd) < 0 ){
-		printf("Failed to close /home/test.txt (%d)\n", errno);
+		printf("Failed to close %s (%d)\n", TEST_FILE_PATH, errno);
 		return -1;
 	}
 
@@ -314,7 +329,7 @@ int utils_test(){
 	}
 
 	printf("Test rename()...");
-	if ( rename("/home/test.txt", "/home/test0.txt") < 0 ){
+	if ( rename(TEST_FILE_PATH, "/home/test0.txt") < 0 ){
 		if ( errno == ENOTSUP ){
 			printf("Not Supported...");
 		} else {
@@ -327,7 +342,7 @@ int utils_test(){
 
 	if( errno != ENOTSUP ){
 		printf("Test rename() ENOENT...");
-		if ( rename("/home/test.txt", "/home/test0.txt") == 0 ){
+		if ( rename(TEST_FILE_PATH, "/home/test0.txt") == 0 ){
 			printf("rename /home/test.txt should have failed\n");
 			return -1;
 		} else {
@@ -352,7 +367,7 @@ int utils_test(){
 	printf("passed\n");
 
 	printf("Test remove()...");
-	if ( remove("/home/test.txt") < 0 ){
+	if ( remove(TEST_FILE_PATH) < 0 ){
 		fflush(stdout);
 		perror("failed");
 		return -1;

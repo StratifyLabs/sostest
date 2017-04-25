@@ -117,7 +117,7 @@
 					<stringMacro name="BUILD_NAME" type="VALUE_TEXT" value="Unused"/>
 					<stringMacro name="BUILD_FLOAT" type="VALUE_TEXT" value="fpu/fpv5-sp-d16"/>
 					<stringMacro name="BUILD_ARCH" type="VALUE_TEXT" value="armv7e-m"/>
-					<stringMacro name="RAM_SIZE" type="VALUE_TEXT" value="4096"/>
+					<stringMacro name="RAM_SIZE" type="VALUE_TEXT" value="32768"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
