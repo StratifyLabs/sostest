@@ -96,7 +96,7 @@ int launch_test(){
 
 	printf("Test launch() (relaunch)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, 0, 0, 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch("/app/ram/launchslave", 0, 0, 0, 0, update_progress, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
