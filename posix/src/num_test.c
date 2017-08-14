@@ -31,10 +31,10 @@ typedef union {
 	u16 op_u16;
 	u32 op_u32;
 	u64 op_u64;
-	i8 op_i8;
-	i16 op_i16;
-	i32 op_i32;
-	i64 op_i64;
+	s8 op_s8;
+	s16 op_s16;
+	s32 op_s32;
+	s64 op_s64;
 } operand_t;
 
 static int float_test();
@@ -68,17 +68,17 @@ static int gte_u64(operand_t a, operand_t b, operand_t result);
 static int lt_u64(operand_t a, operand_t b, operand_t result);
 static int lte_u64(operand_t a, operand_t b, operand_t result);
 
-//i64
-static int mul_i64(operand_t a, operand_t b, operand_t result);
-static int div_i64(operand_t a, operand_t b, operand_t result);
-static int cmp_i64(operand_t a, operand_t b, operand_t result);
-static int sub_i64(operand_t a, operand_t b, operand_t result);
-static int add_i64(operand_t a, operand_t b, operand_t result);
-static int mod_i64(operand_t a, operand_t b, operand_t result);
-static int gt_i64(operand_t a, operand_t b, operand_t result);
-static int gte_i64(operand_t a, operand_t b, operand_t result);
-static int lt_i64(operand_t a, operand_t b, operand_t result);
-static int lte_i64(operand_t a, operand_t b, operand_t result);
+//s64
+static int mul_s64(operand_t a, operand_t b, operand_t result);
+static int div_s64(operand_t a, operand_t b, operand_t result);
+static int cmp_s64(operand_t a, operand_t b, operand_t result);
+static int sub_s64(operand_t a, operand_t b, operand_t result);
+static int add_s64(operand_t a, operand_t b, operand_t result);
+static int mod_s64(operand_t a, operand_t b, operand_t result);
+static int gt_s64(operand_t a, operand_t b, operand_t result);
+static int gte_s64(operand_t a, operand_t b, operand_t result);
+static int lt_s64(operand_t a, operand_t b, operand_t result);
+static int lte_s64(operand_t a, operand_t b, operand_t result);
 
 
 //float
@@ -110,14 +110,14 @@ static int lte_d(operand_t a, operand_t b, operand_t result);
 
 static int f_to_int(operand_t a, operand_t b, operand_t result);
 static int f_to_u64(operand_t a, operand_t b, operand_t result);
-static int f_to_i64(operand_t a, operand_t b, operand_t result);
-static int f_to_i32(operand_t a, operand_t b, operand_t result);
+static int f_to_s64(operand_t a, operand_t b, operand_t result);
+static int f_to_s32(operand_t a, operand_t b, operand_t result);
 static int f_to_u32 (operand_t a, operand_t b, operand_t result);
 
 static int int_to_f(operand_t a, operand_t b, operand_t result);
 static int u64_to_f(operand_t a, operand_t b, operand_t result);
-static int i64_to_f(operand_t a, operand_t b, operand_t result);
-static int i32_to_f(operand_t a, operand_t b, operand_t result);
+static int s64_to_f(operand_t a, operand_t b, operand_t result);
+static int s32_to_f(operand_t a, operand_t b, operand_t result);
 static int u32_to_f (operand_t a, operand_t b, operand_t result);
 
 
@@ -184,34 +184,34 @@ const test_t tests[] = {
 
 
 
-		{ .name = "mul_i64 100 100", .operation = mul_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100*100) },
-		{ .name = "mul_i64 -100 100", .operation = mul_i64, .a.op_i64 = -100, .b.op_i64 = 100, .result.op_i64 = (-100*100) },
-		{ .name = "div_i64 100 100", .operation = div_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100/100) },
-		{ .name = "cmp_i64 100 100", .operation = cmp_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100==100) },
-		{ .name = "sub_i64 100 100", .operation = sub_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100-100) },
-		{ .name = "sub_i64 LLONG_MAX 1024", .operation = sub_i64, .a.op_i64 = LLONG_MAX, .b.op_i64 = 1024, .result.op_i64 = ((i64)LLONG_MAX-1024) },
-		{ .name = "sub_i64 LLONG_MAX LLONG_MAX", .operation = sub_i64, .a.op_i64 = LLONG_MAX, .b.op_i64 = LLONG_MAX, .result.op_i64 = ((i64)LLONG_MAX-LLONG_MAX) },
-		{ .name = "sub_i64 0 LLONG_MAX", .operation = sub_i64, .a.op_i64 = 0, .b.op_i64 = LLONG_MAX, .result.op_i64 = ((i64)0-LLONG_MAX) },
-		{ .name = "sub_i64 INT_MIN INT_MAX", .operation = sub_i64, .a.op_i64 = INT_MIN, .b.op_i64 = INT_MAX, .result.op_i64 = ((i64)INT_MIN-INT_MAX) },
-		{ .name = "add_i64 INT_MIN INT_MAX", .operation = add_i64, .a.op_i64 = INT_MIN, .b.op_i64 = INT_MAX, .result.op_i64 = ((i64)INT_MIN+INT_MAX) },
-		{ .name = "add_i64 100 INT_MAX", .operation = add_i64, .a.op_i64 = 100, .b.op_i64 = INT_MAX, .result.op_i64 = ((i64)100+INT_MAX) },
-		{ .name = "add_i64 INT_MAX -1", .operation = add_i64, .a.op_i64 = INT_MAX, .b.op_i64 = -1, .result.op_i64 = ((i64)INT_MAX+-1) },
-		{ .name = "add_i64 INT_MAX INT_MAX/2", .operation = add_i64, .a.op_i64 = INT_MAX, .b.op_i64 = INT_MAX/2, .result.op_i64 = ((i64)INT_MAX+INT_MAX/2) },
-		{ .name = "add_i64 INT_MAX INT_MAX", .operation = add_i64, .a.op_i64 = INT_MAX, .b.op_i64 = INT_MAX, .result.op_i64 = ((i64)INT_MAX+INT_MAX) },
-		{ .name = "add_i64 LLONG_MAX -100", .operation = add_i64, .a.op_i64 = LLONG_MAX, .b.op_i64 = -100, .result.op_i64 = ((i64)LLONG_MAX+-100) },
-		{ .name = "add_i64 LLONG_MAX LLONG_MIN", .operation = add_i64, .a.op_i64 = LLONG_MAX, .b.op_i64 = LLONG_MIN, .result.op_i64 = ((i64)LLONG_MAX+LLONG_MIN) },
+		{ .name = "mul_s64 100 100", .operation = mul_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100*100) },
+		{ .name = "mul_s64 -100 100", .operation = mul_s64, .a.op_s64 = -100, .b.op_s64 = 100, .result.op_s64 = (-100*100) },
+		{ .name = "div_s64 100 100", .operation = div_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100/100) },
+		{ .name = "cmp_s64 100 100", .operation = cmp_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100==100) },
+		{ .name = "sub_s64 100 100", .operation = sub_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100-100) },
+		{ .name = "sub_s64 LLONG_MAX 1024", .operation = sub_s64, .a.op_s64 = LLONG_MAX, .b.op_s64 = 1024, .result.op_s64 = ((s64)LLONG_MAX-1024) },
+		{ .name = "sub_s64 LLONG_MAX LLONG_MAX", .operation = sub_s64, .a.op_s64 = LLONG_MAX, .b.op_s64 = LLONG_MAX, .result.op_s64 = ((s64)LLONG_MAX-LLONG_MAX) },
+		{ .name = "sub_s64 0 LLONG_MAX", .operation = sub_s64, .a.op_s64 = 0, .b.op_s64 = LLONG_MAX, .result.op_s64 = ((s64)0-LLONG_MAX) },
+		{ .name = "sub_s64 INT_MIN INT_MAX", .operation = sub_s64, .a.op_s64 = INT_MIN, .b.op_s64 = INT_MAX, .result.op_s64 = ((s64)INT_MIN-INT_MAX) },
+		{ .name = "add_s64 INT_MIN INT_MAX", .operation = add_s64, .a.op_s64 = INT_MIN, .b.op_s64 = INT_MAX, .result.op_s64 = ((s64)INT_MIN+INT_MAX) },
+		{ .name = "add_s64 100 INT_MAX", .operation = add_s64, .a.op_s64 = 100, .b.op_s64 = INT_MAX, .result.op_s64 = ((s64)100+INT_MAX) },
+		{ .name = "add_s64 INT_MAX -1", .operation = add_s64, .a.op_s64 = INT_MAX, .b.op_s64 = -1, .result.op_s64 = ((s64)INT_MAX+-1) },
+		{ .name = "add_s64 INT_MAX INT_MAX/2", .operation = add_s64, .a.op_s64 = INT_MAX, .b.op_s64 = INT_MAX/2, .result.op_s64 = ((s64)INT_MAX+INT_MAX/2) },
+		{ .name = "add_s64 INT_MAX INT_MAX", .operation = add_s64, .a.op_s64 = INT_MAX, .b.op_s64 = INT_MAX, .result.op_s64 = ((s64)INT_MAX+INT_MAX) },
+		{ .name = "add_s64 LLONG_MAX -100", .operation = add_s64, .a.op_s64 = LLONG_MAX, .b.op_s64 = -100, .result.op_s64 = ((s64)LLONG_MAX+-100) },
+		{ .name = "add_s64 LLONG_MAX LLONG_MIN", .operation = add_s64, .a.op_s64 = LLONG_MAX, .b.op_s64 = LLONG_MIN, .result.op_s64 = ((s64)LLONG_MAX+LLONG_MIN) },
 
-		{ .name = "mod_i64 100 100", .operation = mod_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100%100) },
-		{ .name = "gt_i64 100 100", .operation = gt_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_int = (100>100) },
-		{ .name = "gt_i64 -100 100", .operation = gt_i64, .a.op_i64 = -100, .b.op_i64 = 100, .result.op_int = (-100>100) },
-		{ .name = "gt_i64 100 -100", .operation = gt_i64, .a.op_i64 = 100, .b.op_i64 = -100, .result.op_int = (100>-100) },
-		{ .name = "gt_i64 0 LLONG_MAX", .operation = gt_i64, .a.op_i64 = 0, .b.op_i64 = LLONG_MAX, .result.op_int = (0>LLONG_MAX) },
-		{ .name = "gt_i64 LLONG_MAX -1", .operation = gt_i64, .a.op_i64 = LLONG_MAX, .b.op_i64 = -1, .result.op_int = (LLONG_MAX>-1) },
-		{ .name = "gt_i64 LLONG_MAX LLONG_MIN", .operation = gt_i64, .a.op_i64 = LLONG_MAX, .b.op_i64 = LLONG_MIN, .result.op_int = (LLONG_MAX>LLONG_MIN) },
-		{ .name = "gt_i64 LLONG_MIN LLONG_MAX", .operation = gt_i64, .a.op_i64 = LLONG_MIN, .b.op_i64 = LLONG_MAX, .result.op_int = (LLONG_MIN>LLONG_MAX) },
-		{ .name = "gte_i64 100 100", .operation = gte_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100>=100) },
-		{ .name = "lt_i64 100 100", .operation = lt_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100<100) },
-		{ .name = "lte_i64 100 100", .operation = lte_i64, .a.op_i64 = 100, .b.op_i64 = 100, .result.op_i64 = (100<=100) },
+		{ .name = "mod_s64 100 100", .operation = mod_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100%100) },
+		{ .name = "gt_s64 100 100", .operation = gt_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_int = (100>100) },
+		{ .name = "gt_s64 -100 100", .operation = gt_s64, .a.op_s64 = -100, .b.op_s64 = 100, .result.op_int = (-100>100) },
+		{ .name = "gt_s64 100 -100", .operation = gt_s64, .a.op_s64 = 100, .b.op_s64 = -100, .result.op_int = (100>-100) },
+		{ .name = "gt_s64 0 LLONG_MAX", .operation = gt_s64, .a.op_s64 = 0, .b.op_s64 = LLONG_MAX, .result.op_int = (0>LLONG_MAX) },
+		{ .name = "gt_s64 LLONG_MAX -1", .operation = gt_s64, .a.op_s64 = LLONG_MAX, .b.op_s64 = -1, .result.op_int = (LLONG_MAX>-1) },
+		{ .name = "gt_s64 LLONG_MAX LLONG_MIN", .operation = gt_s64, .a.op_s64 = LLONG_MAX, .b.op_s64 = LLONG_MIN, .result.op_int = (LLONG_MAX>LLONG_MIN) },
+		{ .name = "gt_s64 LLONG_MIN LLONG_MAX", .operation = gt_s64, .a.op_s64 = LLONG_MIN, .b.op_s64 = LLONG_MAX, .result.op_int = (LLONG_MIN>LLONG_MAX) },
+		{ .name = "gte_s64 100 100", .operation = gte_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100>=100) },
+		{ .name = "lt_s64 100 100", .operation = lt_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100<100) },
+		{ .name = "lte_s64 100 100", .operation = lte_s64, .a.op_s64 = 100, .b.op_s64 = 100, .result.op_s64 = (100<=100) },
 
 
 		{ .name = "multi_f 100.0 100.0", .operation = multi_f, .a.op_f = 100.0, .b.op_f = 100.0, .result.op_f = (100.0*100.0) },
@@ -241,18 +241,18 @@ const test_t tests[] = {
 		{ .name = "f_to_int 0.8", .operation = f_to_int, .a.op_f = 0.8, .b.op_f = 0.0 , .result.op_int = 0 },
 		{ .name = "f_to_int 1.9", .operation = f_to_int, .a.op_f = 1.9, .b.op_f = 0.0 , .result.op_int = 1 },
 		{ .name = "f_to_int -2.987", .operation = f_to_int, .a.op_f = -2.987, .b.op_f = 0.0 , .result.op_int = -2 },
-		{ .name = "f_to_i64 -27.2", .operation = f_to_i64, .a.op_f = -27.2, .b.op_f = 0.0 , .result.op_i64 = -27 },
+		{ .name = "f_to_s64 -27.2", .operation = f_to_s64, .a.op_f = -27.2, .b.op_f = 0.0 , .result.op_s64 = -27 },
 		{ .name = "f_to_u64 42.907", .operation = f_to_u64, .a.op_f = 42.907, .b.op_f = 0.0 , .result.op_u64 = 42 },
-		{ .name = "f_to_i32 HUGE_VAL", .operation = f_to_i32, .a.op_f = HUGE_VAL, .b.op_f = 0.0 , .result.op_i32 = INT_MAX },
-		{ .name = "f_to_i32 -HUGE_VAL", .operation = f_to_i32, .a.op_f = -HUGE_VAL, .b.op_f = 0.0 , .result.op_i32 = INT_MIN },
-		{ .name = "f_to_i32 7.2", .operation = f_to_i32, .a.op_f = 7.2, .b.op_f = 0.0 , .result.op_i32 = 7 },
+		{ .name = "f_to_s32 HUGE_VAL", .operation = f_to_s32, .a.op_f = HUGE_VAL, .b.op_f = 0.0 , .result.op_s32 = INT_MAX },
+		{ .name = "f_to_s32 -HUGE_VAL", .operation = f_to_s32, .a.op_f = -HUGE_VAL, .b.op_f = 0.0 , .result.op_s32 = INT_MIN },
+		{ .name = "f_to_s32 7.2", .operation = f_to_s32, .a.op_f = 7.2, .b.op_f = 0.0 , .result.op_s32 = 7 },
 		{ .name = "f_to_u32 0.6", .operation = f_to_u32, .a.op_f = 0.6, .b.op_f = 0.0 , .result.op_u32 = 0 },
 
 
 		{ .name = "u32_to_f 15", .operation = u32_to_f, .a.op_u32 = 15, .b.op_int = 0 , .result.op_f = 15.0 },
-		{ .name = "i32_to_f -15", .operation = i32_to_f, .a.op_i32 = -15, .b.op_int = 0 , .result.op_f = -15.0 },
+		{ .name = "s32_to_f -15", .operation = s32_to_f, .a.op_s32 = -15, .b.op_int = 0 , .result.op_f = -15.0 },
 		{ .name = "u64_to_f 15", .operation = u64_to_f, .a.op_u64 = 15, .b.op_int = 0 , .result.op_f = 15.0 },
-		{ .name = "i64_to_f -15", .operation = i64_to_f, .a.op_i64 = -15, .b.op_int = 0 , .result.op_f = -15.0 },
+		{ .name = "s64_to_f -15", .operation = s64_to_f, .a.op_s64 = -15, .b.op_int = 0 , .result.op_f = -15.0 },
 		{ .name = "int_to_f 15", .operation = int_to_f, .a.op_int = 15, .b.op_int = 0 , .result.op_f = 15.0 },
 
 		{ .name = "mul_d -0.125 HUGE_VAL", .operation = mul_d, .a.op_d = -0.125, .b.op_d = HUGE_VAL, .result.op_d = -INFINITY },
@@ -770,42 +770,42 @@ int lte_u64(operand_t a, operand_t b, operand_t result)
 }
 
 
-///i64
+///s64
 
 
 /*
  *  Integer Multiplication
  */
-int mul_i64(operand_t a, operand_t b, operand_t result)
+int mul_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	t.op_i64 = a.op_i64 * b.op_i64;
+	t.op_s64 = a.op_s64 * b.op_s64;
 
-	if( t.op_i64 == result.op_i64 )
+	if( t.op_s64 == result.op_s64 )
 	{
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
 /*
  *  Integer Substraction
  */
-int sub_i64(operand_t a, operand_t b, operand_t result)
+int sub_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	t.op_i64 = a.op_i64 - b.op_i64;
+	t.op_s64 = a.op_s64 - b.op_s64;
 
-	if( t.op_i64 == result.op_i64 )
+	if( t.op_s64 == result.op_s64 )
 	{
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -813,18 +813,18 @@ int sub_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer Addition
  */
-int add_i64(operand_t a, operand_t b, operand_t result)
+int add_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	t.op_i64 = a.op_i64 + b.op_i64;
+	t.op_s64 = a.op_s64 + b.op_s64;
 
-	if( t.op_i64 == result.op_i64 )
+	if( t.op_s64 == result.op_s64 )
 	{
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -833,17 +833,17 @@ int add_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer Division
  */
-int div_i64(operand_t a, operand_t b, operand_t result)
+int div_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
 	lldiv_t o;
-	o = lldiv(a.op_i64, b.op_i64);
+	o = lldiv(a.op_s64, b.op_s64);
 	t.op_u64 = o.quot;
 
-	//t.op_i64 = a.op_i64 / b.op_i64;
+	//t.op_s64 = a.op_s64 / b.op_s64;
 
-	if( t.op_i64 == result.op_i64 )
+	if( t.op_s64 == result.op_s64 )
 	{
 		return 1;
 	}
@@ -857,10 +857,10 @@ int div_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer Comparision
  */
-int cmp_i64(operand_t a, operand_t b, operand_t result)
+int cmp_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
-	if( a.op_i64 == b.op_i64 )
+	if( a.op_s64 == b.op_s64 )
 	{
 		t.op_int = 1;
 	}
@@ -874,7 +874,7 @@ int cmp_i64(operand_t a, operand_t b, operand_t result)
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -882,20 +882,20 @@ int cmp_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer modulus
  */
-int mod_i64(operand_t a, operand_t b, operand_t result)
+int mod_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
-	//t.op_i64 = a.op_i64 % b.op_i64;
+	//t.op_s64 = a.op_s64 % b.op_s64;
 
 	lldiv_t o;
-	o = lldiv(a.op_i64, b.op_i64);
-	t.op_i64 = o.rem;
+	o = lldiv(a.op_s64, b.op_s64);
+	t.op_s64 = o.rem;
 
-	if( t.op_i64 == result.op_i64 ){
+	if( t.op_s64 == result.op_s64 ){
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -903,10 +903,10 @@ int mod_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer Greaterthan
  */
-int gt_i64(operand_t a, operand_t b, operand_t result)
+int gt_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
-	if(a.op_i64 > b.op_i64)
+	if(a.op_s64 > b.op_s64)
 	{
 		t.op_int = 1;
 	}
@@ -920,7 +920,7 @@ int gt_i64(operand_t a, operand_t b, operand_t result)
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -928,11 +928,11 @@ int gt_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer Greater than or equal
  */
-int gte_i64(operand_t a, operand_t b, operand_t result)
+int gte_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	if(a.op_i64 >= b.op_i64)
+	if(a.op_s64 >= b.op_s64)
 	{
 		t.op_int = 1;
 	}
@@ -946,7 +946,7 @@ int gte_i64(operand_t a, operand_t b, operand_t result)
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -954,11 +954,11 @@ int gte_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer Lessthan
  */
-int lt_i64(operand_t a, operand_t b, operand_t result)
+int lt_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	if(a.op_i64 < b.op_i64)
+	if(a.op_s64 < b.op_s64)
 	{
 		t.op_int = 1;
 	}
@@ -973,7 +973,7 @@ int lt_i64(operand_t a, operand_t b, operand_t result)
 	}
 
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -981,11 +981,11 @@ int lt_i64(operand_t a, operand_t b, operand_t result)
 /*
  *  Integer Less than or equal
  */
-int lte_i64(operand_t a, operand_t b, operand_t result)
+int lte_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	if(a.op_i64 <= b.op_i64)
+	if(a.op_s64 <= b.op_s64)
 	{
 		t.op_int = 1;
 	}
@@ -999,7 +999,7 @@ int lte_i64(operand_t a, operand_t b, operand_t result)
 		return 1;
 	}
 
-	printf("%lld != %lld...", t.op_i64, result.op_i64);
+	printf("%lld != %lld...", t.op_s64, result.op_s64);
 	return 0;
 }
 
@@ -1457,38 +1457,38 @@ int f_to_u64(operand_t a, operand_t b, operand_t result)
 }
 
 
-//		float to i64
+//		float to s64
 
-int f_to_i64(operand_t a, operand_t b, operand_t result)
+int f_to_s64(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	t.op_i64 = (i64)a.op_f;
+	t.op_s64 = (s64)a.op_f;
 
-	if( t.op_i64 == result.op_i64 )
+	if( t.op_s64 == result.op_s64 )
 	{
 		return 1;
 	}
 
-	printf("%lld != %f...", t.op_i64, a.op_f);
+	printf("%lld != %f...", t.op_s64, a.op_f);
 	return 0;
 }
 
 
-//		float to i32
+//		float to s32
 
-int f_to_i32(operand_t a, operand_t b, operand_t result)
+int f_to_s32(operand_t a, operand_t b, operand_t result)
 {
 	operand_t t;
 
-	t.op_i32 = (i32)a.op_f;
+	t.op_s32 = (s32)a.op_f;
 
-	if( t.op_i32 == result.op_i32 )
+	if( t.op_s32 == result.op_s32 )
 	{
 		return 1;
 	}
 
-	printf("%ld != %f...", t.op_i32, a.op_f);
+	printf("%ld != %f...", t.op_s32, a.op_f);
 	return 0;
 }
 
@@ -1537,31 +1537,31 @@ int u64_to_f(operand_t a, operand_t b, operand_t result){
 	return 0;
 }
 
-int i64_to_f(operand_t a, operand_t b, operand_t result){
+int s64_to_f(operand_t a, operand_t b, operand_t result){
 	operand_t t;
 
-	t.op_f = (float)a.op_i64;
+	t.op_f = (float)a.op_s64;
 
 	if( t.op_f == result.op_f )
 	{
 		return 1;
 	}
 
-	printf("%f != %lld...", t.op_f, a.op_i64);
+	printf("%f != %lld...", t.op_f, a.op_s64);
 	return 0;
 }
 
-int i32_to_f(operand_t a, operand_t b, operand_t result){
+int s32_to_f(operand_t a, operand_t b, operand_t result){
 	operand_t t;
 
-	t.op_f = (float)a.op_i32;
+	t.op_f = (float)a.op_s32;
 
 	if( t.op_f == result.op_f )
 	{
 		return 1;
 	}
 
-	printf("%f != %ld...", t.op_f, a.op_i32);
+	printf("%f != %ld...", t.op_f, a.op_s32);
 	return 0;
 }
 

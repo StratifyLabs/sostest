@@ -24,15 +24,16 @@ Copyright 2016 Tyler Gilbert
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/wait.h>
-#include <stratify/stratify.h>
+#include <sos/sos.h>
 #include "tests.h"
 
-#define SLAVE_APP "/home/sigslave"
+#define SLAVE_APP "/app/flash/sigslave"
 
 int signal_master_test(){
 	pid_t pid;
 	int err;
 	int stat;
+	int i;
 	char exec_path[PATH_MAX];
 
 	if ( sigset_test() < 0 ){
@@ -60,21 +61,43 @@ int signal_master_test(){
 		return -1;
 	}
 
-	sleep(3);
-
-	printf("Send kill to %d...",  pid);
+	printf("launched %d...", pid);
 	fflush(stdout);
-	err = kill(pid, SIGKILL);
+
+	usleep(100*1000);
+
+
+	for(i=0; i < 50; i++){
+		printf("Send SIGUSR1 %d...",  i);
+		fflush(stdout);
+		errno = 0;
+		err = kill(pid, SIGUSR1);
+		if( err < 0 ){
+			printf("Failed to send signal (%d)\n", errno);
+			perror("kill SIGUSR1 failed");
+			break;
+		}
+		if( i % 4 == 0 ){
+			usleep(50*1000);
+		}
+	}
+
+
+	printf("Send SIGINT to %d...",  pid);
+	fflush(stdout);
+	err = kill(pid, SIGINT);
 
 	stat = 0;
 	wait(&stat);
 
+	/*
 	if( unlink(exec_path) < 0 ){
 		perror("failed to cleanup SLAVE_APP");
 		return -1;
 	}
+	*/
 
-	if ( stat == SIGKILL ){
+	if ( stat == SIGINT ){
 		printf("passed\n");
 	} else {
 		printf("failed: bad exit status (%d)\n", err);

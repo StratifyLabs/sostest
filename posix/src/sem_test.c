@@ -57,6 +57,8 @@ int named_test(){
 	int value;
 	int tmp;
 
+	sem_unlink(SEM_NAME);
+
 	errno = 0;
 	printf("Test sem_open()...");
 	fflush(stdout);
@@ -67,7 +69,6 @@ int named_test(){
 		return -1;
 	}
 	printf("passed\n");
-
 
 	//lock up the semaphore
 	printf("Test sem_trywait()...");

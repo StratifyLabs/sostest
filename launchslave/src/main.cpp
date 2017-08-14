@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include <stfy/Sys.hpp>
-#include <stfy/Var.hpp>
+#include <sapi/sys.hpp>
+#include <sapi/var.hpp>
 
 
 int main(int argc, char * argv[]){

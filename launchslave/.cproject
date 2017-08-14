@@ -66,8 +66,8 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.565127389" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
 								<option id="gnu.cpp.link.option.nostdlibs.1851377052" name="No startup or default libs (-nostdlib)" superClass="gnu.cpp.link.option.nostdlibs" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.libs.1424286330" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
-									<listOptionValue builtIn="false" value="app"/>
-									<listOptionValue builtIn="false" value="stratify_crt"/>
+									<listOptionValue builtIn="false" value="api"/>
+									<listOptionValue builtIn="false" value="sos_crt"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.1464609774" name="Linker flags" superClass="gnu.cpp.link.option.flags" useByScannerDiscovery="false" value="-Wl,-Map,${ProjName}.map,--defsym=_app_ram_size=${RAM_SIZE},--gc -Tldscripts/app.ld -u crt" valueType="string"/>
 								<option id="gnu.cpp.link.option.nostart.740808621" name="Do not use standard start files (-nostartfiles)" superClass="gnu.cpp.link.option.nostart" useByScannerDiscovery="false" value="true" valueType="boolean"/>
@@ -134,7 +134,7 @@
 							<option id="cdt.managedbuild.option.gnu.cross.prefix.231202084" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="${HOST}-" valueType="string"/>
 							<option id="cdt.managedbuild.option.gnu.cross.path.152108898" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" value=" ${PathDelimiter}${TOOLSPATH}/bin" valueType="string"/>
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.572789559" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
-							<builder autoBuildTarget="all" buildPath="${workspace_loc:/HelloWorld}/build_release_armv7em_fpu" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.261619547" incrementalBuildTarget="all" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
+							<builder autoBuildTarget="all" buildPath="${workspace_loc:/HelloWorld}/build_release_armv7em_fpu" cleanBuildTarget="clean" id="org.eclipse.cdt.build.core.internal.builder.261619547" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.616156074" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
 								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.option.optimization.level.1727116031" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.size" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.302937115" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.none" valueType="enumerated"/>
@@ -152,9 +152,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.2141023932" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.2096686216" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
 								<option id="gnu.cpp.link.option.nostdlibs.1161957413" name="No startup or default libs (-nostdlib)" superClass="gnu.cpp.link.option.nostdlibs" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.link.option.libs.1796428434" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="app"/>
-									<listOptionValue builtIn="false" value="stratify_crt"/>
+								<option id="gnu.cpp.link.option.libs.1796428434" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
+									<listOptionValue builtIn="false" value="api"/>
+									<listOptionValue builtIn="false" value="sos_crt"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.673939258" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-Wl,-Map,${ProjName}.map,--defsym=_app_ram_size=${RAM_SIZE},--gc -Tldscripts/app.ld -u crt" valueType="string"/>
 								<option id="gnu.cpp.link.option.nostart.1951725097" name="Do not use standard start files (-nostartfiles)" superClass="gnu.cpp.link.option.nostart" value="true" valueType="boolean"/>

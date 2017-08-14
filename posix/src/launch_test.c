@@ -17,7 +17,8 @@ Copyright 2016 Tyler Gilbert
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
-#include <stratify/stratify.h>
+#include <sos/sos.h>
+#include <sos/dev/appfs.h>
 #include <sys/wait.h>
 
 #include "tests.h"
@@ -143,7 +144,7 @@ int launch_test(){
 	printf("Test launch() (orphan)...");
 	unlink("/home/orphan.txt");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "orphan", LINK_APPFS_EXEC_OPTIONS_ORPHAN, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "orphan", APPFS_FLAG_IS_ORPHAN, 0, update_progress, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -164,7 +165,7 @@ int launch_test(){
 
 	printf("Test launch() (flash)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, LINK_APPFS_EXEC_OPTIONS_FLASH, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, APPFS_FLAG_IS_FLASH, 0, update_progress, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {

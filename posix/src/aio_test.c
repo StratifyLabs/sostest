@@ -15,15 +15,15 @@ Copyright 2016 Tyler Gilbert
 */
 
 
-
+#include <string.h>
 #include <errno.h>
 #include <stdio.h>
 #include <aio.h>
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <iface/dev/adc.h>
-#include <iface/dev/dac.h>
+#include <sos/dev/adc.h>
+#include <sos/dev/dac.h>
 
 #include "tests.h"
 
@@ -48,9 +48,10 @@ int aio_test(){
 		return -1;
 	}
 
-	attr.enabled_channels = (1<<0);
-	attr.freq = 200;
-	attr.pin_assign = 0;
+	memset(&attr, 0, sizeof(attr));
+	attr.o_flags = ADC_FLAG_SET_CONVERTER;
+	attr.freq = 100000;
+	memset(&attr.pin_assignment, 0xff, sizeof(adc_pin_assignment_t));
 
 	if( ioctl(fd, I_ADC_SETATTR, &attr) < 0 ){
 		perror("Failed to set attributes");
@@ -105,7 +106,6 @@ int aio_test(){
 
 	printf("passed\n");
 
-
 	close(fd);
 
 	printf("Open %s\n", AIO_TEST_WRITE_DEVICE);
@@ -116,9 +116,10 @@ int aio_test(){
 		return -1;
 	}
 
-	dac_attr.enabled_channels = (1<<0);
-	dac_attr.freq = 200;
-	dac_attr.pin_assign = 0;
+	memset(&dac_attr, 0, sizeof(dac_attr));
+	dac_attr.o_flags = DAC_FLAG_SET_CONVERTER;
+	dac_attr.freq = 0;
+	memset(&dac_attr.pin_assignment, 0xff, sizeof(dac_pin_assignment_t));
 
 	if( ioctl(fd, I_DAC_SETATTR, &dac_attr) < 0 ){
 		perror("Failed to set attributes");
@@ -132,6 +133,7 @@ int aio_test(){
 	aio.aio_reqprio = 0;
 	printf("Test aio_write()...");
 	fflush(stdout);
+	errno = 0;
 	if ( aio_write(&aio) == 0 ){
 		while( (err = aio_return(&aio)) < 0 ){
 			if ( err == -1 ){
@@ -144,6 +146,9 @@ int aio_test(){
 			}
 			usleep(500);
 		}
+	} else {
+		perror("AIO failed to write");
+		return -1;
 	}
 
 	if ( aio_return(&aio) != 32 ){
@@ -162,6 +167,9 @@ int aio_test(){
 	if ( aio_write(&aio) == 0 ){
 		list[0] = &aio;
 		aio_suspend(list, 1, NULL);
+	} else {
+		perror("AIO write failed");
+		return -1;
 	}
 
 	if ( aio_return(&aio) != 32 ){
