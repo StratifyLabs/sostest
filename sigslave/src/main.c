@@ -34,7 +34,7 @@ int main(int argc, char * argv[]){
 	memset(&attr.pin_assignment, 0xff, sizeof(uart_pin_assignment_t));
 	attr.pin_assignment.rx = mcu_pin(0,2);
 	attr.pin_assignment.tx = mcu_pin(0,3);
-	attr.o_flags = UART_FLAG_SET_CONTROL_LINE_STATE | UART_FLAG_IS_PARITY_NONE | UART_FLAG_IS_STOP1;
+	attr.o_flags = UART_FLAG_SET_LINE_CODING | UART_FLAG_IS_PARITY_NONE | UART_FLAG_IS_STOP1;
 	attr.width = 8;
 	attr.freq = 115200;
 
