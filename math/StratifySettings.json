@@ -1,0 +1,13 @@
+{
+    "buildprefix": "build_",
+    "description": "math is a test that is part of the sostest suite.",
+    "github": "",
+    "hardwareid": "",
+    "name": "math",
+    "permissions": "public",
+    "publisher": "Stratify Labs, Inc",
+    "ram": 0,
+    "tags": "test",
+    "type": "StratifyApp",
+    "version": "1.0"
+}

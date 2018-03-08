@@ -21,21 +21,21 @@ Copyright 2016 Tyler Gilbert
 #include "tests.h"
 
 
-#define STDIO_TEST 0
-#define AIO_TEST 1
-#define SEM_TEST 0
+#define STDIO_TEST 1
+#define AIO_TEST 0
+#define SEM_TEST 1
 #define LISTIO_TEST 0
 #define DIRENT_TEST 1
-#define MQ_TEST 0
-#define NUM_TEST 0
-#define SCHED_TEST 0
-#define PTHREAD_TEST 0
+#define MQ_TEST 1
+#define NUM_TEST 1
+#define SCHED_TEST 1
+#define PTHREAD_TEST 1
 #define DIRECTORY_TEST 1
 #define FILE_TEST 1
-#define ACCESS_TEST 0
-#define SLEEP_TEST 0
-#define SIGNAL_MASTER_TEST 0
-#define LAUNCH_TEST 0
+#define ACCESS_TEST 1
+#define SLEEP_TEST 1
+#define SIGNAL_MASTER_TEST 1
+#define LAUNCH_TEST 1
 
 int main(int argc, char * argv[]){
 

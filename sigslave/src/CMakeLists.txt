@@ -1,0 +1,2 @@
+
+set(SOURCES ${SOURCES_PREFIX}/main.c PARENT_SCOPE)

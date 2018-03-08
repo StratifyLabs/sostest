@@ -1,9 +1,4 @@
 {
-    "LocalBuild": "build_release_armv7m",
-    "LocalInstallPath": "/app/.install",
-    "LocalIsRam": false,
-    "LocalIsStartup": false,
-    "LocalProjectId": "",
     "buildprefix": "build_",
     "description": "launchslave is a utility that is used with the posix testing program.",
     "github": "",

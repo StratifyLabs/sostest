@@ -42,13 +42,13 @@ int stdio_test(){
 	}
 
 	fflush(stdin);
-	printf("Test STDIO (stdin) Enter HELLO...");
+	printf("Test STDIO (stdin) Enter WORLD...");
 	fflush(stdout);
 	fgets(buffer, 3, stdin);
-	if( strcmp(buffer, "HE") == 0 ){
+	if( strcmp(buffer, "WO") == 0 ){
 		printf("passed\n");
 	} else {
-		printf("failed (did you enter \"HELLO\"?)\n");
+		printf("failed (did you enter \"WORLD\"?)\n");
 		return -1;
 	}
 

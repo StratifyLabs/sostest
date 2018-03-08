@@ -1,0 +1,2 @@
+
+set(SOURCES ${SOURCES_PREFIX}/main.cpp PARENT_SCOPE)
