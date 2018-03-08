@@ -6,7 +6,7 @@ set(SOURCES
 	${SOURCES_PREFIX}/dirent_test.c
 	${SOURCES_PREFIX}/launch_test.c
 	${SOURCES_PREFIX}/listio_test.c
-	${SOURCES_PREFIX}/main.c
+	${SOURCES_PREFIX}/main.cpp
 	${SOURCES_PREFIX}/mqueue_test.c
 	${SOURCES_PREFIX}/mutex_test.c
 	${SOURCES_PREFIX}/mutexattr_test.c

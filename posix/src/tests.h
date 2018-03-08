@@ -19,6 +19,11 @@ Copyright 2016 Tyler Gilbert
 
 #include <trace.h>
 
+#if defined __cplusplus
+extern "C" {
+#endif
+
+
 int aio_test();
 int listio_test();
 int dirent_test();
@@ -79,5 +84,8 @@ extern char trace_buffer[32];
 #define TRACE_MESSAGE(X) do { strncpy(trace_buffer, X, 32); posix_trace_event(POSIX_TRACE_MESSAGE, trace_buffer, strlen(trace_buffer)); } while(0)
 #define TRACE_VALUE(X,Y) do { sprintf(trace_buffer, "%s-%d", X, Y); posix_trace_event(POSIX_TRACE_MESSAGE, trace_buffer, strlen(trace_buffer)); } while(0)
 
+#if defined __cplusplus
+}
+#endif
 
 #endif /* TESTS_H_ */
