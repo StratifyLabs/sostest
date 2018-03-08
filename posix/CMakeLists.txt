@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.6)
 
 # This will set the default RAM used by the application
-set(SOS_APP_RAM_SIZE 16384)
+set(SOS_APP_RAM_SIZE 32768)
 
 #Add sources to the project
 set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/src)
