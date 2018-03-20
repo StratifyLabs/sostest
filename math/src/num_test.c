@@ -23,7 +23,6 @@ typedef union {
 
 static int float_test(void);
 static int int_test(void);
-static int mul_u64(operand_t a, operand_t b, operand_t result);
 
 typedef int (*op)(operand_t, operand_t, operand_t);
 
@@ -39,9 +38,6 @@ typedef struct {
 } test_t;
 
 
-static int mul_f(operand_t a, operand_t b, operand_t result);
-static int div_f(operand_t a, operand_t b, operand_t result);
-static int cmp_f(operand_t a, operand_t b, operand_t result);
 
 // u64
 static int mul_u64(operand_t a, operand_t b, operand_t result);
@@ -68,9 +64,9 @@ static int lessthan_s64(operand_t a, operand_t b, operand_t result);
 static int lessthanorequal_s64(operand_t a, operand_t b, operand_t result);
 
 //float
-static int multi_f(operand_t a, operand_t b, operand_t result);
-static int divi_f(operand_t a, operand_t b, operand_t result);
-static int cmpa_f(operand_t a, operand_t b, operand_t result);
+static int mul_f(operand_t a, operand_t b, operand_t result);
+static int div_f(operand_t a, operand_t b, operand_t result);
+static int cmp_f(operand_t a, operand_t b, operand_t result);
 static int sub_f(operand_t a, operand_t b, operand_t result);
 static int add_f(operand_t a, operand_t b, operand_t result);
 static int greaterthan_f(operand_t a, operand_t b, operand_t result);
@@ -1152,7 +1148,6 @@ const test_t tests[] = {
     TEST_CASE_CAST(f_to_u32, op_f, op_u32, 3.402823e+38),
     TEST_CASE_CAST(f_to_u32, op_f, op_u32, -1.175494e-38),
     TEST_CASE_CAST(f_to_u32, op_f, op_u32, 0.0f),
-   //Then we need additional cases for f_to_s64, f_to_u64, f_to_s32, f_to_u32, f_to_int.
 
 };
 
@@ -1883,22 +1878,6 @@ int lessthanorequal_s64(operand_t a, operand_t b, operand_t result)
 }
 
 
-int multi_f(operand_t a, operand_t b, operand_t result)
-{
-    operand_t t;
-
-    t.op_f = a.op_f * b.op_f;
-
-    if( t.op_f == result.op_f )
-    {
-        return 1;
-    }
-
-    printf("%f != %f...", t.op_f, result.op_f);
-    return 0;
-}
-
-
 int sub_f(operand_t a, operand_t b, operand_t result)
 {
     operand_t t;
@@ -1927,52 +1906,6 @@ int add_f(operand_t a, operand_t b, operand_t result)
     t.op_f = a.op_f + b.op_f;
 
     if( t.op_f == result.op_f )
-    {
-        return 1;
-    }
-
-    printf("%f != %f...", t.op_f, result.op_f);
-    return 0;
-}
-
-
-
-/*
-                     *  Float Division
-                     */
-int divi_f(operand_t a, operand_t b, operand_t result)
-{
-    operand_t t;
-
-    t.op_f = a.op_f / b.op_f;
-
-    if( t.op_f == result.op_f )
-    {
-        return 1;
-    }
-
-    printf("%f != %f...", t.op_f, result.op_f);
-    return 0;
-}
-
-
-
-/*
-                     *  Float Comparision
-                     */
-int cmpa_f(operand_t a, operand_t b, operand_t result)
-{
-    operand_t t;
-    if( a.op_f == b.op_f )
-    {
-        t.op_int = 1;
-    }
-    else
-    {
-        t.op_int = 0;
-    }
-
-    if( t.op_int == result.op_int )
     {
         return 1;
     }
@@ -2325,7 +2258,7 @@ int f_to_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lu != %lu...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -2343,7 +2276,7 @@ int f_to_s64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%ld != %ld...", t.op_s64, result.op_s64);
+    printf("%lld != %lld...", t.op_s64, result.op_s64);
     return 0;
 }
 
@@ -2361,7 +2294,7 @@ int f_to_s32(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%d!= %d...", t.op_s32, result.op_s32);
+    printf("%ld!= %ld...", t.op_s32, result.op_s32);
     return 0;
 }
 
@@ -2378,6 +2311,6 @@ int f_to_u32(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%u != %u...", t.op_u32, result.op_u32);
+    printf("%lu != %lu...", t.op_u32, result.op_u32);
     return 0;
 }
