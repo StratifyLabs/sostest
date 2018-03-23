@@ -401,86 +401,86 @@ const test_t tests[] = {
     TEST_CASE(sub_s64, op_s64, op_s64, -999359ULL, 999983ULL, -),
 
     TEST_CASE(add_s64, op_s64, op_s64, 100ULL, 100ULL, +),
-    TEST_CASE(add_s64, op_s64, op_s64, 0ULL, 0ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 1ULL, 0ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 1ULL, 1ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 9223372036854775807ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 2305843009213693951ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 4611686018427387903ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 0ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 0ULL, 9223372036854775807ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 0ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 9223372036854775807ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 999377ULL, 999023ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 999359ULL, 999983ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, -1ULL, 0ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, -1ULL, 1ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, -9223372036854775807ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, -9223372036854775807ULL, 2305843009213693951ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, -4611686018427387903ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, -9223372036854775807ULL, 0ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 0ULL, -9223372036854775807ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, -9223372036854775807ULL, 0ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 4611686018427387903ULL, 9223372036854775807ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, -4611686018427387903ULL, -4611686018427387903ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, 999377ULL, -999023ULL, -),
-    TEST_CASE(add_s64, op_s64, op_s64, -999359ULL, 999983ULL, -),
+    TEST_CASE(add_s64, op_s64, op_s64, 0ULL, 0ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 1ULL, 0ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 1ULL, 1ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 9223372036854775807ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 2305843009213693951ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 4611686018427387903ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 0ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 0ULL, 9223372036854775807ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 0ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, 9223372036854775807ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 999377ULL, 999023ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 999359ULL, 999983ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, -1ULL, 0ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, -1ULL, 1ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, -9223372036854775807ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, -9223372036854775807ULL, 2305843009213693951ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 9223372036854775807ULL, -4611686018427387903ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, -9223372036854775807ULL, 0ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 0ULL, -9223372036854775807ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, -9223372036854775807ULL, 0ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 4611686018427387903ULL, 9223372036854775807ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, -4611686018427387903ULL, -4611686018427387903ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, 999377ULL, -999023ULL, +),
+    TEST_CASE(add_s64, op_s64, op_s64, -999359ULL, 999983ULL, +),
 
     TEST_CASE(modulus_s64, op_s64, op_s64, 100ULL, 100ULL, %),//failed
-    TEST_CASE(modulus_s64, op_s64, op_s64, 17ULL, 1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 1ULL, 10ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 41ULL, 1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 1000000000ULL, 10ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 37ULL, 1000000000ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 1000000000ULL, 4000000000ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 998681ULL, 999983ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 998681ULL, 17ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 999491999491ULL, 11ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 11ULL, 999491999491ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 11ULL, 18446744073709551614ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 18446744073709551614ULL, 1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 2ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 4ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 8ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 11ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 16ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775607ULL, 9223372036854775807ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 4611686018424387903ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036824775807ULL, 2305843009213693951ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 998831ULL, 1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 998831ULL, -999809ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -998917ULL, -999809ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -17ULL, 1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 1ULL, 10ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -41ULL, -1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -1000000000ULL, 10ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -37ULL, 1000000000ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -1000000000ULL, 4000000000ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -998681ULL, 999983ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -998681ULL, 17ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 999491999491ULL, -11ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -11ULL, -999491999491ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 0ULL, 999491999491ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 0ULL, -999491999491ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -11ULL, 18446744073709551614ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -18446744073709551614ULL, 1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 2ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, -4ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 8ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, -11ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 16ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036834775807ULL, -9223372036854775807ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 922337203ULL, 775807ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036834775807ULL, -54775807ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 4611686018427387903ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 84273ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 903ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 3ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, -2305843009213693951ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 2305843009213693951ULL, -230ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 2305843009213693951ULL, -3ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 2305843009213693951ULL, -1ULL, /),
-    TEST_CASE(modulus_s64, op_s64, op_s64, 0ULL, -2305843009213693951ULL, /),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 17ULL, 1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 1ULL, 10ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 41ULL, 1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 1000000000ULL, 10ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 37ULL, 1000000000ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 1000000000ULL, 4000000000ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 998681ULL, 999983ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 998681ULL, 17ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 999491999491ULL, 11ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 11ULL, 999491999491ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 11ULL, 18446744073709551614ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 18446744073709551614ULL, 1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 2ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 4ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 8ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 11ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 16ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775607ULL, 9223372036854775807ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, 4611686018424387903ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036824775807ULL, 2305843009213693951ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 998831ULL, 1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 998831ULL, -999809ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -998917ULL, -999809ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -17ULL, 1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 1ULL, 10ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -41ULL, -1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -1000000000ULL, 10ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -37ULL, 1000000000ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -1000000000ULL, 4000000000ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -998681ULL, 999983ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -998681ULL, 17ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 999491999491ULL, -11ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -11ULL, -999491999491ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 0ULL, 999491999491ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 0ULL, -999491999491ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -11ULL, 18446744073709551614ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -18446744073709551614ULL, 1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 2ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, -4ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 8ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, -11ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 16ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036834775807ULL, -9223372036854775807ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 922337203ULL, 775807ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036834775807ULL, -54775807ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 4611686018427387903ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 84273ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 903ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, -9223372036854775807ULL, 3ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 9223372036854775807ULL, -2305843009213693951ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 2305843009213693951ULL, -230ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 2305843009213693951ULL, -3ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 2305843009213693951ULL, -1ULL, %),
+    TEST_CASE(modulus_s64, op_s64, op_s64, 0ULL, -2305843009213693951ULL, %),
 
     TEST_CASE(greaterthan_s64, op_s64, op_int, 100ULL, 100ULL, >),
     TEST_CASE(greaterthan_s64, op_s64, op_int, 100ULL, 1ULL, >),
@@ -1212,6 +1212,7 @@ int cmp_f(operand_t a, operand_t b, operand_t result){
         return 1;
     }
 
+    printf("%d != %d...", t.op_int, result.op_int);
     return 0;
 }
 
@@ -1254,7 +1255,7 @@ int mul_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1272,7 +1273,7 @@ int sub_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1293,7 +1294,7 @@ int add_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1313,7 +1314,7 @@ int div_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1339,7 +1340,7 @@ int cmp_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%d != %d...", t.op_int, result.op_int);
     return 0;
 }
 
@@ -1356,7 +1357,7 @@ int modulus_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 
 }
@@ -1382,7 +1383,7 @@ int greaterthan_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1408,7 +1409,7 @@ int greaterthanorequal_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1435,7 +1436,7 @@ int lessthan_u64(operand_t a, operand_t b, operand_t result)
     }
 
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1461,7 +1462,7 @@ int lessthanorequal_u64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
     return 0;
 }
 
@@ -1540,7 +1541,7 @@ int div_s64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_u64, result.op_u64);
+    printf("%lld != %lld...", t.op_s64, result.op_s64);
     return 0;
 }
 
@@ -1566,7 +1567,7 @@ int cmp_s64(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lld != %lld...", t.op_s64, result.op_s64);
+    printf("%d != %d...", t.op_int, result.op_int);
     return 0;
 }
 
@@ -1928,7 +1929,7 @@ int cmp_d(operand_t a, operand_t b, operand_t result)
         return 1;
     }
 
-    printf("%lf != %lf...", t.op_d, result.op_d);
+    printf("%d != %d...", t.op_int, result.op_int);
     return 0;
 }
 
@@ -2077,7 +2078,7 @@ int f_to_s64(operand_t a, operand_t b, operand_t result)
 {
     operand_t t;
 
-    t.op_s64 = (int)a.op_f;
+    t.op_s64 = (s64)a.op_f;
 
     if( t.op_s64 == result.op_s64 )
     {
@@ -2095,7 +2096,7 @@ int f_to_s32(operand_t a, operand_t b, operand_t result)
 {
     operand_t t;
 
-    t.op_s32 = (int)a.op_f;
+    t.op_s32 = (s32)a.op_f;
 
     if( t.op_s32 == result.op_s32 )
     {
@@ -2112,7 +2113,7 @@ int f_to_u32(operand_t a, operand_t b, operand_t result)
 {
     operand_t t;
 
-    t.op_u32 = (int)a.op_f;
+    t.op_u32 = (u32)a.op_f;
 
     if( t.op_u32 == result.op_u32 )
     {
