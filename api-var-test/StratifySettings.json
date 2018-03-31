@@ -1,13 +1,13 @@
 {
     "buildprefix": "build_",
-    "description": "math is a test that is part of the sostest suite.",
+    "description": "api-var-test is an application that tests the var namespace classes in the Stratify API.",
     "github": "",
     "hardwareid": "",
-    "name": "math",
+    "name": "api-var-test",
     "permissions": "public",
     "publisher": "Stratify Labs, Inc",
     "ram": 0,
     "tags": "test",
     "type": "StratifyApp",
-    "version": "0.5"
+    "version": "0.1"
 }
