@@ -3,10 +3,10 @@
 #include <sapi/sys.hpp>
 
 #include "DataTest.hpp"
-int DataTest::reqursive_number = 0;
+int DataTest::recursive_number = 0;
 
 DataTest::DataTest() : Test("var::Data"){
-    reqursive_number = 0;
+    recursive_number = 0;
 
 }
 
@@ -35,7 +35,17 @@ bool DataTest::execute_fill(){
     memset(buffer, 0, 128);
     data.fill(0);
     if( memcmp(data.data_const(), buffer, 128) != 0 ){
-        print_case_message("fill:why:0", "data.fill(0)");
+        print_case_message("fill:why:0", "data.fill(0) did't cmp with zero buffer");
+        result = false;
+    }
+    data.fill(2);
+    if( memcmp(data.data_const(), buffer, 128) == 0 ){
+        print_case_message("fill:why:0", "data.fill(2) cmp with zero buffer");
+        result = false;
+    }
+    data.clear();
+    if( memcmp(data.data_const(), buffer, 128) != 0 ){
+        print_case_message("fill:why:0", "after data.clear() did'nt cmp with zero buffer");
         result = false;
     }
 
@@ -54,28 +64,77 @@ bool DataTest::execute_fill(){
 bool DataTest::execute_alloc(){
     bool result = true;
     char temp_string[] = "temp string";
+    u16 data_size = 512;
     //test every API to see if it works as expected -- included giving it invalid values
     Data data;
-    Data dynamic_data(512);
+    Data dynamic_data(data_size);
     Data exist_string(temp_string, sizeof(temp_string));
 
     if(data.data() != 0){
         print_case_message("why", "allocate memory exist");
+        result = false;
     }
     if(exist_string.data() == 0 || (exist_string.capacity() != sizeof(temp_string))){
         print_case_message("why", "exist_string failed to allocate memory");
+        result = false;
     }
     if(data.data_const() == 0){
         print_case_message("why", "data_const() failed");
+        result = false;
     }
     if( dynamic_data.data() == 0 ){
         //failed to allocate memory
         print_case_message("why", "failed to allocate memory");
+        result = false;
     }
-    if( dynamic_data.data_const() == 0 || (dynamic_data.capacity() != 512)){
+    if( dynamic_data.data_const() == 0 || (dynamic_data.capacity() != data_size)){
         //failed to allocate memory
         print_case_message("why", "data_const() failed");
+        result = false;
     }
+    data_size--;
+    dynamic_data.alloc(data_size, true);
+    if( dynamic_data.data_const() == 0 ||
+        dynamic_data.data() == 0 ||
+        (dynamic_data.capacity() < data_size)){
+        //failed to allocate memory
+        print_case_message("why", "1 alloc() with resize failed");
+        print_case_message("    in", "size %d - %d",dynamic_data.capacity() ,data_size);
+        result = false;
+    }
+    data_size--;
+    dynamic_data.alloc(data_size, false);
+    if( dynamic_data.data_const() == 0 ||
+        dynamic_data.data() == 0 ||
+        (dynamic_data.capacity() < data_size)){
+        //failed to allocate memory
+        print_case_message("why", "2 alloc() with out resize failed");
+        print_case_message("    in", "size %d - %d",dynamic_data.capacity() ,data_size);
+        result = false;
+    }
+    data_size--;
+    dynamic_data.resize(data_size);
+    if( dynamic_data.data_const() == 0 ||
+        dynamic_data.data() == 0 ||
+        (dynamic_data.capacity() < data_size)){
+        //failed to allocate memory
+        print_case_message("why", "3 alloc() with resize failed");
+        print_case_message("    in", "size %d - %d",dynamic_data.capacity() ,data_size);
+        result = false;
+    }
+    if (dynamic_data.set_capacity(data_size-1)!=0){
+        //failed to allocate memory
+        print_case_message("why", "set_capacity failed menos que");
+        result = false;
+    }
+    if (dynamic_data.set_capacity(data_size+1)!=0){
+        //failed to allocate memory
+        print_case_message("why", "set_capacity failed mas que");
+        result = false;
+    }
+
+
+
     return result;
 }
 
@@ -141,19 +200,18 @@ bool DataTest::execute_class_stress_case(){
         if( memcmp(buffer, data.data_const(), data_size) ){
             print_case_message("why", "memcmp failed");
         }
-
     }
     Data data(145);
-    if(!execute_reqursive(data)){
-        print_case_message("req","reqursive test failed %d",reqursive_number);
+    if(!execute_recursive(data)){
+        print_case_message("req","reqursive test failed %d",recursive_number);
     }else{
-        print_case_message("req","reqursive test succesfull number%d",reqursive_number);
+        print_case_message("req","reqursive test succesfull number%d",recursive_number);
     }
     return result;
 }
 
-bool DataTest::execute_reqursive(Data data){
-    reqursive_number++;
+bool DataTest::execute_recursive(Data data){
+    recursive_number++;
     if (data.calc_size() > data.minimum_size()){
         Data data_new(data.calc_size()-1);
         if( data_new.data() == 0 ){
@@ -161,12 +219,14 @@ bool DataTest::execute_reqursive(Data data){
             return 0;
         }else{
             char fill_temp;
-            fill_temp = reqursive_number;
+            //remember value
+            fill_temp = recursive_number;
             data_new.fill(fill_temp);
-            if (!execute_reqursive(data_new)){
+            if (!execute_recursive(data_new)){
                 return 0;
             }
             char buffer[data.calc_size()];
+            //recursive value changes after execute_recursive
             memset(buffer, fill_temp, data_new.calc_size());
             if( memcmp(buffer, data_new.data_const(), data_new.calc_size()) ){
                 //failed data
