@@ -185,30 +185,22 @@ bool DataTest::execute_class_stress_case(){
     bool result = true;
     int i;
 
-    srand(8);
+    for(i=0; i < 1000; i++){
+        //add recursive test
+        u8 size_temp = rand()&0x7f;
+        Data data(size_temp);
+        recursive_number = 0;
+        if(!execute_recursive(data)){
+            print_case_message("req","reqursive test failed %d",recursive_number);
+            result = false;
+        }
+    }
 
-    for(i=0; i < 5000; i++){
-        u32 data_size = rand() & 0xfff; //12 bits is up to 4096
-        Data data(data_size);
-        if( data.data() == 0 ){
-            print_case_message("alloc failed", errno);
-            break;
-        }
-        char buffer[data_size];
-        memset(buffer, 0xaa, data_size);
-        data.fill(0xaa);
-        if( memcmp(buffer, data.data_const(), data_size) ){
-            print_case_message("why", "memcmp failed");
-        }
-    }
-    Data data(145);
-    if(!execute_recursive(data)){
-        print_case_message("req","reqursive test failed %d",recursive_number);
-    }else{
-        print_case_message("req","reqursive test succesfull number%d",recursive_number);
-    }
     return result;
 }
+/*! \details test used for "stress" test in var::String
+   * @return false if some test failed true if passed
+ */
 
 bool DataTest::execute_recursive(Data data){
     recursive_number++;
@@ -216,14 +208,14 @@ bool DataTest::execute_recursive(Data data){
         Data data_new(data.calc_size()-1);
         if( data_new.data() == 0 ){
             //failed to allocate memory
-            return 0;
+            return false;
         }else{
             char fill_temp;
             //remember value
             fill_temp = recursive_number;
             data_new.fill(fill_temp);
             if (!execute_recursive(data_new)){
-                return 0;
+                return false;
             }
             char buffer[data.calc_size()];
             //recursive value changes after execute_recursive
@@ -235,7 +227,7 @@ bool DataTest::execute_recursive(Data data){
                 print_case_message("why", "memcmp failed %d",fill_temp);
                 print_case_message("data %d",t[0]);
                 print_case_message("buffer %d",buffer[0]);
-                return 0;
+                return false;
             }
         }
     }
