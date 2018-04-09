@@ -18,6 +18,8 @@ private:
     //API testing methods
     bool execute_fill();
     bool execute_alloc();
+    bool execute_recursive(Data data);
+    static int recursive_number;
 };
 
 #endif // DATATEST_HPP

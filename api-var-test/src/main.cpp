@@ -50,6 +50,11 @@ int main(int argc, char * argv[]){
         test.execute(o_execute_flags);
     }
 
+    if( o_flags & TOKEN_TEST_FLAG ){
+        TokenTest test;
+        test.execute(o_execute_flags);
+    }
+
 
     Test::finalize();
     return 0;
