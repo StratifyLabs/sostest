@@ -42,6 +42,9 @@ static int div_u64(operand_t a, operand_t b, operand_t result);
 static int cmp_u64(operand_t a, operand_t b, operand_t result);
 static int sub_u64(operand_t a, operand_t b, operand_t result);
 static int add_u64(operand_t a, operand_t b, operand_t result);
+static int shift_to_left_u64(operand_t a, operand_t b, operand_t result);
+static int shift_to_right_u64(operand_t a, operand_t b, operand_t result);
+
 static int modulus_u64(operand_t a, operand_t b, operand_t result);
 static int greaterthan_u64(operand_t a, operand_t b, operand_t result);
 static int greaterthanorequal_u64(operand_t a, operand_t b, operand_t result);
@@ -90,8 +93,26 @@ static int f_to_s32(operand_t a, operand_t b, operand_t result);
 static int f_to_u32 (operand_t a, operand_t b, operand_t result);
 
 //int to float
+static int int_to_f(operand_t a, operand_t b, operand_t result);
+static int u64_to_f(operand_t a, operand_t b, operand_t result);
+static int s64_to_f(operand_t a, operand_t b, operand_t result);
+static int s32_to_f(operand_t a, operand_t b, operand_t result);
+static int u32_to_f (operand_t a, operand_t b, operand_t result);
+
 //double to int
+static int d_to_int(operand_t a, operand_t b, operand_t result);
+static int d_to_u64(operand_t a, operand_t b, operand_t result);
+static int d_to_s64(operand_t a, operand_t b, operand_t result);
+static int d_to_s32(operand_t a, operand_t b, operand_t result);
+static int d_to_u32 (operand_t a, operand_t b, operand_t result);
+
 //int to double
+static int int_to_d(operand_t a, operand_t b, operand_t result);
+static int u64_to_d(operand_t a, operand_t b, operand_t result);
+static int s64_to_d(operand_t a, operand_t b, operand_t result);
+static int s32_to_d(operand_t a, operand_t b, operand_t result);
+static int u32_to_d (operand_t a, operand_t b, operand_t result);
+
 
 #define TEST_CASE(function_name, op_type, result_type, a_value, b_value, operation_value) \
 { .name = #function_name, .a_str = #a_value, .b_str = #b_value, .op_str = #operation_value, .operation = function_name, .a.op_type = a_value, .b.op_type = b_value, .result.result_type = (a_value operation_value b_value) }
@@ -153,6 +174,22 @@ const test_t tests[] = {
     TEST_CASE(div_u64, op_u64, op_u64, 0xffffffffffffffffULL, 0xffffffffffffffffULL, /),
     TEST_CASE(div_u64, op_u64, op_u64, 0xfffffffffffffffeULL, 0xfffffffffffffffeULL, /),
     TEST_CASE(div_u64, op_u64, op_u64, 0x8000000000000000ULL, 0x8000000000000000ULL, /),
+    TEST_CASE(shift_to_left_u64, op_u64, op_u64, 0x0000000000000001ULL, 17ULL, <<),
+    TEST_CASE(shift_to_left_u64, op_u64, op_u64, 0x0000000000000001ULL, 33ULL, <<),
+    TEST_CASE(shift_to_left_u64, op_u64, op_u64, 0x1000000000000001ULL, 33ULL, <<),
+    TEST_CASE(shift_to_left_u64, op_u64, op_u64, 0xffffffffffffffffULL, 12ULL, <<),
+    TEST_CASE(shift_to_left_u64, op_u64, op_u64, 0xeeeeeeeeeeeeeeeeULL, 28ULL, <<),
+    TEST_CASE(shift_to_left_u64, op_u64, op_u64, 0x8888888888888888ULL, 31ULL, <<),
+    TEST_CASE(shift_to_left_u64, op_u64, op_u64, 0x0000000080000000ULL, 31ULL, <<),
+    TEST_CASE(shift_to_right_u64, op_u64, op_u64, 0x0000000000000001ULL, 17ULL, >>),
+    TEST_CASE(shift_to_right_u64, op_u64, op_u64, 0x0000000000000001ULL, 33ULL, >>),
+    TEST_CASE(shift_to_right_u64, op_u64, op_u64, 0x1000000000000001ULL, 33ULL, >>),
+    TEST_CASE(shift_to_right_u64, op_u64, op_u64, 0xffffffffffffffffULL, 12ULL, >>),
+    TEST_CASE(shift_to_right_u64, op_u64, op_u64, 0xeeeeeeeeeeeeeeeeULL, 28ULL, >>),
+    TEST_CASE(shift_to_right_u64, op_u64, op_u64, 0x8888888888888888ULL, 31ULL, >>),
+    TEST_CASE(shift_to_right_u64, op_u64, op_u64, 0x0000000080000000ULL, 31ULL, >>),
+
+
 
     TEST_CASE(cmp_u64, op_u64, op_u64, 100ULL, 100ULL, ==),
     TEST_CASE(cmp_u64, op_u64, op_u64, 18446744073709551614ULL, 18446744073709551615ULL, ==),
@@ -1158,6 +1195,155 @@ const test_t tests[] = {
     TEST_CASE_CAST(f_to_u32, op_f, op_u32, -1.175494e-38f),
     TEST_CASE_CAST(f_to_u32, op_f, op_u32, 0.0f),
 
+    TEST_CASE_CAST(int_to_f, op_int, op_f, 1),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, -1),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, 12),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, -12),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, 1000000),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, -1000000),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, 0xefff),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, 1234567),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, -1234567),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, 2034567),
+    TEST_CASE_CAST(int_to_f, op_int, op_f, -2034567),
+
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, 0x7eeeeeeeffffffff),
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, 0xfeeeeeeeffffffff),
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, 10000000),
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, -10000000),
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, 40000000),
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, -40000000),
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, 880000000),
+    TEST_CASE_CAST(s64_to_f, op_s64, op_f, -880000000),
+
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 12),
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 48),
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 1024),
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 8838),
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 0xffffffffffffffff),
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 0xeffffffffffffff),
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 0xfeefffffffff0000),
+    TEST_CASE_CAST(u64_to_f, op_u64, op_f, 0x1234566789aabbcc),
+
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, 12),
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, -12),
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, 156),
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, -125), //a bunch of just random number cases
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, 2000000),
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, -2000000),
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, 1001111),
+    TEST_CASE_CAST(s32_to_f, op_s32, op_f, -1000022),
+
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 48),
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 0),
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 1355678),
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 48567), //a bunch of just random number cases
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 1),
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 1000000),
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 18456),
+    TEST_CASE_CAST(u32_to_f, op_u32, op_f, 987654),
+
+    TEST_CASE_CAST(d_to_int, op_d, op_int, 0.4),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -1.1),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, HUGE_VALF),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -8.06),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -2.7e+2),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -2.7e-10),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -27272727272727.0),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -2.7e+10),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, 2.7e+10),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, 18e+10),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, 1386.0),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -1386.0),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, INFINITY),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, 3.402823e+38),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, -1.175494e-38),
+    TEST_CASE_CAST(d_to_int, op_d, op_int, 0.0),
+
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, 0.4),
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, -1.1),
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, HUGE_VALF),
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, -8.06),
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, INFINITY),
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, 3.402823e+38),
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, -1.175494e-38),
+    TEST_CASE_CAST(d_to_s64, op_d, op_s64, 0.0),
+
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, 0.4),
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, -1.1),
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, HUGE_VALF),
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, -8.06),
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, INFINITY),
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, 3.402823e+38),
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, -1.175494e-38),
+    TEST_CASE_CAST(d_to_u64, op_d, op_u64, 0.0),
+
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, 0.4),
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, -1.1),
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, HUGE_VALF),
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, -8.06), //a bunch of just random number cases
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, INFINITY),
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, 3.402823e+38),
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, -1.175494e-38),
+    TEST_CASE_CAST(d_to_s32, op_d, op_s32, 0.0),
+
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, 0.4),
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, -1.1),
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, HUGE_VALF),
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, -8.06), //a bunch of just random number cases
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, INFINITY),
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, 3.402823e+38),
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, -1.175494e-38),
+    TEST_CASE_CAST(d_to_u32, op_d, op_u32, 0.0),
+
+    TEST_CASE_CAST(int_to_d, op_int, op_d, 1),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, -1),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, 12),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, -12),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, 1000000),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, -1000000),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, 0xefff),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, 1234567),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, -1234567),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, 2034567),
+    TEST_CASE_CAST(int_to_d, op_int, op_d, -2034567),
+
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, 0x7eeeeeeeffffffff),
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, 0xfeeeeeeeffffffff),
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, 10000000),
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, -10000000),
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, 40000000),
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, -40000000),
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, 880000000),
+    TEST_CASE_CAST(s64_to_d, op_s64, op_d, -880000000),
+
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 12),
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 48),
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 1024),
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 8838),
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 0xffffffffffffffff),
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 0xeffffffffffffff),
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 0xfeefffffffff0000),
+    TEST_CASE_CAST(u64_to_d, op_u64, op_d, 0x1234566789aabbcc),
+
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, 12),
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, -12),
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, 156),
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, -125), //a bunch of just random number cases
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, 2000000),
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, -2000000),
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, 1001111),
+    TEST_CASE_CAST(s32_to_d, op_s32, op_d, -1000022),
+
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 48),
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 0),
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 1355678),
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 48567), //a bunch of just random number cases
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 1),
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 1000000),
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 18456),
+    TEST_CASE_CAST(u32_to_d, op_u32, op_d, 987654)
+
 };
 
 
@@ -1279,6 +1465,40 @@ int sub_u64(operand_t a, operand_t b, operand_t result)
     operand_t t;
 
     t.op_u64 = a.op_u64 - b.op_u64;
+
+    if( t.op_u64 == result.op_u64 )
+    {
+        return 1;
+    }
+
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
+    return 0;
+}
+/*
+ *  shift to left register <<
+ */
+int shift_to_left_u64(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+
+    t.op_u64 = a.op_u64 << b.op_u64;
+
+    if( t.op_u64 == result.op_u64 )
+    {
+        return 1;
+    }
+
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
+    return 0;
+}
+/*
+ *  shift to right register >>
+ */
+int shift_to_right_u64(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+
+    t.op_u64 = a.op_u64 >> b.op_u64;
 
     if( t.op_u64 == result.op_u64 )
     {
@@ -2133,5 +2353,190 @@ int f_to_u32(operand_t a, operand_t b, operand_t result)
     }
 
     printf("%lu != %lu...", t.op_u32, result.op_u32);
+    return 0;
+}
+//to float
+int int_to_f(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_f = (float)a.op_int;
+    if( t.op_f == result.op_f )
+    {
+        return 1;
+    }
+    printf("%f != %f...", t.op_f, result.op_f);
+    return 0;
+}
+
+int u64_to_f(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_f = (float)a.op_u64;
+    if( t.op_f == result.op_f )
+    {
+        return 1;
+    }
+    printf("%f != %f...", t.op_f, result.op_f);
+    return 0;
+}
+
+int s64_to_f(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_f = (float)a.op_s64;
+    if( t.op_f == result.op_f )
+    {
+        return 1;
+    }
+    printf("%f != %f...", t.op_f, result.op_f);
+    return 0;
+}
+
+int s32_to_f(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_f = (float)a.op_s32;
+    if( t.op_f == result.op_f )
+    {
+        return 1;
+    }
+    printf("%f != %f...", t.op_f, result.op_f);
+    return 0;
+}
+
+int u32_to_f(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_f = (float)a.op_u32;
+    if( t.op_f == result.op_f )
+    {
+        return 1;
+    }
+    printf("%f != %f...", t.op_f, result.op_f);
+    return 0;
+}
+//from double
+int d_to_int(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_int = (int)a.op_d;
+    if( t.op_int == result.op_int )
+    {
+        return 1;
+    }
+    printf("%d != %d...", t.op_int, result.op_int);
+    return 0;
+}
+
+int d_to_u64(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_u64 = (u64)a.op_d;
+
+    if( t.op_u64 == result.op_u64 )
+    {
+        return 1;
+    }
+
+    printf("%llu != %llu...", t.op_u64, result.op_u64);
+    return 0;
+}
+
+int d_to_s64(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+
+    t.op_s64 = (s64)a.op_d;
+
+    if( t.op_s64 == result.op_s64 )
+    {
+        return 1;
+    }
+
+    printf("%lld != %lld...", t.op_s64, result.op_s64);
+    return 0;
+}
+
+int d_to_s32(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_s32 = (s32)a.op_d;
+    if( t.op_s32 == result.op_s32 )
+    {
+        return 1;
+    }
+    printf("%ld!= %ld...", t.op_s32, result.op_s32);
+    return 0;
+}
+
+int d_to_u32(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_u32 = (u32)a.op_d;
+    if( t.op_u32 == result.op_u32 )
+    {
+        return 1;
+    }
+    printf("%lu != %lu...", t.op_u32, result.op_u32);
+    return 0;
+}
+//to double
+int int_to_d(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_d = (double)a.op_int;
+    if( t.op_d == result.op_d )
+    {
+        return 1;
+    }
+    printf("%lf != %lf...", t.op_d, result.op_d);
+    return 0;
+}
+
+int u64_to_d(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_d = (double)a.op_u64;
+    if( t.op_d == result.op_d )
+    {
+        return 1;
+    }
+    printf("%lf != %lf...", t.op_d, result.op_d);
+    return 0;
+}
+
+int s64_to_d(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_d = (double)a.op_s64;
+    if( t.op_d == result.op_d )
+    {
+        return 1;
+    }
+    printf("%lf != %lf...", t.op_d, result.op_d);
+    return 0;
+}
+
+int s32_to_d(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_d = (double)a.op_s32;
+    if( t.op_d == result.op_d )
+    {
+        return 1;
+    }
+    printf("%lf != %lf...", t.op_d, result.op_d);
+    return 0;
+}
+
+int u32_to_d(operand_t a, operand_t b, operand_t result)
+{
+    operand_t t;
+    t.op_d = (double)a.op_u32;
+    if( t.op_d == result.op_d )
+    {
+        return 1;
+    }
+    printf("%lf != %lf...", t.op_d, result.op_d);
     return 0;
 }
