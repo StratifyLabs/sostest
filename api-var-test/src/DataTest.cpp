@@ -35,17 +35,17 @@ bool DataTest::execute_fill(){
     memset(buffer, 0, 128);
     data.fill(0);
     if( memcmp(data.data_const(), buffer, 128) != 0 ){
-        print_case_message("fill:why:0", "data.fill(0) did't cmp with zero buffer");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     data.fill(2);
     if( memcmp(data.data_const(), buffer, 128) == 0 ){
-        print_case_message("fill:why:0", "data.fill(2) cmp with zero buffer");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     data.clear();
     if( memcmp(data.data_const(), buffer, 128) != 0 ){
-        print_case_message("fill:why:0", "after data.clear() did'nt cmp with zero buffer");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
 
@@ -53,7 +53,7 @@ bool DataTest::execute_fill(){
     memset(buffer, 0xaa, 128);
 
     if( memcmp(data.data_const(), buffer, 128) != 0 ){
-        print_case_message("fill:why:1", "data.fill(0xaa)");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
 
@@ -71,25 +71,25 @@ bool DataTest::execute_alloc(){
     Data exist_string(temp_string, sizeof(temp_string));
 
     if(data.data() != 0){
-        print_case_message("why", "allocate memory exist");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if(exist_string.data() == 0 || (exist_string.capacity() != sizeof(temp_string))){
-        print_case_message("why", "exist_string failed to allocate memory");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if(data.data_const() == 0){
-        print_case_message("why", "data_const() failed");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if( dynamic_data.data() == 0 ){
         //failed to allocate memory
-        print_case_message("why", "failed to allocate memory");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if( dynamic_data.data_const() == 0 || (dynamic_data.capacity() != data_size)){
         //failed to allocate memory
-        print_case_message("why", "data_const() failed");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     data_size--;
@@ -98,8 +98,7 @@ bool DataTest::execute_alloc(){
         dynamic_data.data() == 0 ||
         (dynamic_data.capacity() < data_size)){
         //failed to allocate memory
-        print_case_message("why", "1 alloc() with resize failed");
-        print_case_message("    in", "size %d - %d",dynamic_data.capacity() ,data_size);
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     data_size--;
@@ -108,8 +107,7 @@ bool DataTest::execute_alloc(){
         dynamic_data.data() == 0 ||
         (dynamic_data.capacity() < data_size)){
         //failed to allocate memory
-        print_case_message("why", "2 alloc() with out resize failed");
-        print_case_message("    in", "size %d - %d",dynamic_data.capacity() ,data_size);
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     data_size--;
@@ -118,18 +116,17 @@ bool DataTest::execute_alloc(){
         dynamic_data.data() == 0 ||
         (dynamic_data.capacity() < data_size)){
         //failed to allocate memory
-        print_case_message("why", "3 alloc() with resize failed");
-        print_case_message("    in", "size %d - %d",dynamic_data.capacity() ,data_size);
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if (dynamic_data.set_capacity(data_size-1)!=0){
         //failed to allocate memory
-        print_case_message("why", "set_capacity failed menos que");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if (dynamic_data.set_capacity(data_size+1)!=0){
         //failed to allocate memory
-        print_case_message("why", "set_capacity failed mas que");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
 
@@ -145,7 +142,8 @@ bool DataTest::execute_class_performance_case(){
         u32 data_size = rand() & 0xfff; //12 bits is up to 4096
         Data data(data_size);
         if( data.data() == 0 ){
-            print_case_message("alloc failed", errno);
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+			result = false;
             break;
         }
 
@@ -153,13 +151,15 @@ bool DataTest::execute_class_performance_case(){
         memset(buffer, 0xaa, data_size);
         data.fill(0xaa);
         if( memcmp(buffer, data.data_const(), data_size) ){
-            print_case_message("why", "memcmp failed");
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+			result = false;
         }
         memset(buffer, 0x00, data_size);
 		//add clear test
         data.clear();
         if( memcmp(buffer, data.data_const(), data_size) ){
-            print_case_message("why", "memcmp failed");
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+			result = false;
         }
         if (data_size){
             char* t;
@@ -171,7 +171,8 @@ bool DataTest::execute_class_performance_case(){
                 t[data.calc_size()-1] = 0x0e;
             }
             if( !memcmp(buffer, data.data_const(), data_size) ){
-                print_case_message("why", "memcmp not failed %d ",i);
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+				result = false;
             }
         }
     }
@@ -191,7 +192,7 @@ bool DataTest::execute_class_stress_case(){
         Data data(size_temp);
         recursive_number = 0;
         if(!execute_recursive(data)){
-            print_case_message("req","reqursive test failed %d",recursive_number);
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
     }
@@ -221,12 +222,7 @@ bool DataTest::execute_recursive(Data data){
             //recursive value changes after execute_recursive
             memset(buffer, fill_temp, data_new.calc_size());
             if( memcmp(buffer, data_new.data_const(), data_new.calc_size()) ){
-                //failed data
-                char* t;
-                t = data_new.cdata();
-                print_case_message("why", "memcmp failed %d",fill_temp);
-                print_case_message("data %d",t[0]);
-                print_case_message("buffer %d",buffer[0]);
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 return false;
             }
         }
