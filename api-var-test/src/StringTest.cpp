@@ -15,28 +15,28 @@ StringTest::StringTest() : Test("var::String"){
 bool StringTest::execute_class_api_case(){
     bool result = true;
     if(!api_case_assign()){
-        print_case_message("why", "String assing test failed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
         result = false;
     }else{
-        print_case_message("why", "String assing test passed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
     }
     if(!api_case_compare()){
-        print_case_message("why", "String compare test failed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
         result = false;
     }else{
-        print_case_message("why", "String compare test passed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
     }
     if(!api_case_find()){
-        print_case_message("why", "String find test failed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
         result = false;
     }else{
-        print_case_message("why", "String find test passed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
     }
     if(!api_case_special()){
-        print_case_message("why", "String special test failed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
         result = false;
     }else{
-        print_case_message("why", "String special test passed");
+        print_case_message("String special test passed");
     }
     return result;
 }
@@ -50,13 +50,13 @@ bool StringTest::api_case_assign(){
     bool result = true;
 
     s1.assign("uno");
-    if(s1.data() == 0 || s2.data()==0){
-        print_case_message("why", "allocate memory failed");
+    if(s1.data() == 0 || s2.data() != 0 ){
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
         result = false;
     }
     s1.free();
     if(s1.data() != 0){
-        print_case_message("why", "allocate memory exist after clear");   
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
         result = false;
     }
     s2.assign("123456789",3,5);
@@ -68,7 +68,7 @@ bool StringTest::api_case_assign(){
     s3 = "string_lenth_15";
     s1.assign(s3.c_str(),s3.length()-3);
     if(s1.data() == 0){
-        print_case_message("why", "allocate memory failed");
+        print_case_message("Failed: %s: %d", __FUNCTION__, __LINE__);
         result = false;
     }
     s1.append(s3.at(s3.length()-3));

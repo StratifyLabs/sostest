@@ -26,7 +26,7 @@ Copyright 2016 Tyler Gilbert
 #include "tests.h"
 
 #define LARGE_THREADS_TOTAL 4
-#define SMALL_THREADS_TOTAL (7)
+#define SMALL_THREADS_TOTAL (5)
 #define JOINED_THREADS_TOTAL (3)
 
 static void * t0(void * args);
@@ -199,7 +199,7 @@ void * t0(void * args){
 		printf("t%d failed to lock mutex (%d)\n", *t, errno);
 	}
 	printf("t%d...", *t);
-	usleep(200*1000);
+    usleep(700*1000);
 	if ( pthread_mutex_unlock(&thread_mutex) < 0 ){
 		printf("t%d failed to lock mutex (%d)\n", *t, errno);
 	}
