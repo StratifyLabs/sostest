@@ -447,7 +447,7 @@ bool StringTest::execute_class_performance_case(){
             inserts.append("a");
         }
         base_c = base;
-        //insert an erase
+        //insert and erase
         for (u32 i=1;i<base.len();i++){
             base.insert(i,inserts.c_str());
             base.erase(i,inserts.len());
@@ -475,7 +475,7 @@ bool StringTest::execute_class_performance_case(){
             base.append("b");
         }
         base_c = base;
-        //insert an erase
+        //insert and erase
         for (u32 i=1;i<base.len();i++){
             base.insert(i,inserts.c_str());
             base.erase(i,inserts.len());
