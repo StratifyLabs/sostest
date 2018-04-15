@@ -25,7 +25,7 @@ bool TokenTest::execute_class_api_case(){
     String s1 = "Uno,dos,tres, quatro or  cinko";
     Token one(s1.c_str(),",. ",";",0);
     if(one.size() != 6){
-        print_case_message("token", "token calculate failed");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     String s[8];
@@ -51,6 +51,7 @@ bool TokenTest::execute_class_api_case(){
     Token two(s_common.c_str(),",; ","(",0);
     for(u32 i =0;i<48;i++){
         if (strncmp(two.at(i),s[i%8],s[i%8].len())){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
     }

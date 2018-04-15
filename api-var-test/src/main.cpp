@@ -18,6 +18,7 @@ enum {
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
+void show_usage(const Cli & cli);
 
 int main(int argc, char * argv[]){
     Cli cli(argc, argv);
@@ -29,6 +30,10 @@ int main(int argc, char * argv[]){
     o_flags = decode_cli(cli, o_execute_flags);
 
     Test::initialize(cli.name(), cli.version());
+
+    if( o_flags == 0 ){
+       show_usage(cli);
+    }
 
     if( o_flags & DATA_TEST_FLAG ){
         DataTest test;
@@ -87,6 +92,26 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-vector") ){ o_flags |= VECTOR_TEST_FLAG; }
 
     return o_flags;
+
+}
+
+void show_usage(const Cli & cli){
+    printf("\n");
+    printf("usage: %s\n", cli.name());
+    printf("    -all            execute all type of test for all object.\n");
+    printf("    -execute_all    execute all type of test.\n");
+    printf("    -api            execute api test.\n");
+    printf("    -stress         execute stress test.\n");
+    printf("    -performance    execute performance test.\n");
+    printf("    -additional     execute additional test.\n");
+    printf("    -test_all       execute test for all object.\n");
+    printf("    -data           execute test for Data.\n");
+    printf("    -queue          execute test for Queue.\n");
+    printf("    -string         execute test for String.\n");
+    printf("    -token          execute test for Token.\n");
+    printf("    -vector         execute test for Vector.\n");
+    printf("    -ring           execute test for Ring.\n");
+    printf("    -v              options to show the version.\n");
 
 }
 

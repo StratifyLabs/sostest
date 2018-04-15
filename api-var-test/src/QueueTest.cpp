@@ -20,7 +20,7 @@ bool QueueTest::execute_class_performance_case(){
         }
         for (u32 i = 0;i<500;i++){
             if((u8_queue.front()!=(u8)i)||(u32_queue.front()!=i)||(double_queue.front()!=(double)i)){
-                print_case_message("queue verification failed");
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 result = false;
                 break;
             }
@@ -32,7 +32,7 @@ bool QueueTest::execute_class_performance_case(){
             u8_queue.clear();
             u32_queue.clear();
             double_queue.clear();
-            print_case_message("is empty failed");
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
     }
@@ -55,7 +55,7 @@ bool QueueTest::execute_class_stress_case(){
         }
         for (u32 i = 0;i<500;i++){
             if((u8_queue.front()!=(u8)i)||(u32_queue.front()!=i)||(double_queue.front()!=(double)i)){
-                print_case_message("queue verification test failed");
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 result = false;
                 break;
             }
@@ -64,7 +64,7 @@ bool QueueTest::execute_class_stress_case(){
             double_queue.pop();
         }
         if(!u8_queue.is_empty() || !u32_queue.is_empty() || !double_queue.is_empty()){
-            print_case_message("queue not emty after last pop ");
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             u8_queue.clear();
             u32_queue.clear();
             double_queue.clear();
@@ -89,20 +89,16 @@ bool QueueTest::execute_class_api_case(){
     double_queue.push(3.1456);
     if((u8_queue.front()!= 1) || (u32_queue.front()!= 0xffffffff) ||
             (double_queue.front()!= 3.1456)){
-        print_case_message("queue verification test failed");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("queue verification test success");
     }
     u8_queue.pop();
     u32_queue.pop();
     double_queue.pop();
     if(!u8_queue.is_empty() || !u32_queue.is_empty() ||
             !double_queue.is_empty() ){
-        print_case_message("queue not emty after last pop ");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("queue is_emty success");
     }
     for (i=0;i<250;i++){
         u8_queue.push(i);
@@ -111,21 +107,20 @@ bool QueueTest::execute_class_api_case(){
     }
     if((u8_queue.count()!= 250) || (u32_queue.count()!= 250) ||
             (double_queue.count() != 250)){
-        print_case_message("queue count failed");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("queue count success");
     }
     for (i=0;i<249;i++){
         if ((u8_queue.back()!= 249) || (u32_queue.back()!= 249) ||
                 (double_queue.back()!= (double)249)){
-            print_case_message("back failed %d",u8_queue.back());
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
         }
         if ((u8_queue.front()!= i) || (u32_queue.front()!= i) ||
                 (double_queue.front()!= (double)i)){
-            print_case_message("front %d",u8_queue.front());
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
             break;
         }
         u8_queue.pop();
@@ -133,27 +128,22 @@ bool QueueTest::execute_class_api_case(){
         double_queue.pop();
     }
     if(i!=249){
-        print_case_message("queue back and front failed on %d",i);
-    }else{
-        print_case_message("queue back and front success");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+		result = false;
     }
 
     if((u8_queue.count()!= 1) || (u32_queue.count()!= 1) ||
             (double_queue.count() != 1)){
-        print_case_message("queue count after pop 249 failed");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("queue count after pop 249 success");
     }
     u8_queue.clear();
     u32_queue.clear();
     double_queue.clear();
     if((u8_queue.count()!= 0) || (u32_queue.count()!= 0) ||
             (double_queue.count() != 0)){
-        print_case_message("queue count after clear failed");
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("queue count after clear success");
     }
 
 
