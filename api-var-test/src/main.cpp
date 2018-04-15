@@ -8,6 +8,8 @@
 #include "StringTest.hpp"
 #include "TokenTest.hpp"
 #include "VectorTest.hpp"
+#include "ArrayTest.hpp"
+#include "RingTest.hpp"
 
 enum {
     DATA_TEST_FLAG = (1<<5),
@@ -15,6 +17,8 @@ enum {
     STRING_TEST_FLAG = (1<<7),
     TOKEN_TEST_FLAG = (1<<8),
     VECTOR_TEST_FLAG = (1<<9),
+    ARRAY_TEST_FLAG = (1<<10),
+    RING_TEST_FLAG = (1<<11),
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
@@ -60,6 +64,16 @@ int main(int argc, char * argv[]){
         test.execute(o_execute_flags);
     }
 
+    if( o_flags & RING_TEST_FLAG ){
+        RingTest test;
+        test.execute(o_execute_flags);
+    }
+
+    if( o_flags & ARRAY_TEST_FLAG ){
+        ArrayTest test;
+        test.execute(o_execute_flags);
+    }
+
 
     Test::finalize();
     return 0;
@@ -90,6 +104,8 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-string") ){ o_flags |= STRING_TEST_FLAG; }
     if(cli.is_option("-token") ){ o_flags |= TOKEN_TEST_FLAG; }
     if(cli.is_option("-vector") ){ o_flags |= VECTOR_TEST_FLAG; }
+    if(cli.is_option("-ring") )  { o_flags |= RING_TEST_FLAG; }
+    if(cli.is_option("-array") ) { o_flags |= ARRAY_TEST_FLAG; }
 
     return o_flags;
 
@@ -111,6 +127,7 @@ void show_usage(const Cli & cli){
     printf("    -token          execute test for Token.\n");
     printf("    -vector         execute test for Vector.\n");
     printf("    -ring           execute test for Ring.\n");
+    printf("    -array          execute test for Array.\n");
     printf("    -v              options to show the version.\n");
 
 }
