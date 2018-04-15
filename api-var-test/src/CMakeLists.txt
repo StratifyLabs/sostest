@@ -11,4 +11,9 @@ set(SOURCES
 	${SOURCES_PREFIX}/VectorTest.hpp
 	${SOURCES_PREFIX}/TokenTest.cpp
 	${SOURCES_PREFIX}/TokenTest.hpp
+	${SOURCES_PREFIX}/ArrayTest.cpp
+	${SOURCES_PREFIX}/ArrayTest.hpp
+	${SOURCES_PREFIX}/RingTest.cpp
+	${SOURCES_PREFIX}/RingTest.hpp
+
 	PARENT_SCOPE)
