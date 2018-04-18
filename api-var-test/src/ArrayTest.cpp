@@ -1,17 +1,16 @@
 #include <sapi/var.hpp>
 #include "ArrayTest.hpp"
 
+int ArrayTest::recursive_number = 0;
+
 ArrayTest::ArrayTest(): Test("var::Array"){
-
+    recursive_number = 0;
 }
-
-
 
 /*! \details test "performance" a var::Array
  *
  * @return false if some test failed
  */
-
 bool ArrayTest::execute_class_performance_case(){
     bool result = true;
     Array <u8,1000>u8_array;
@@ -58,7 +57,16 @@ bool ArrayTest::execute_class_performance_case(){
 
 bool ArrayTest::execute_class_stress_case(){
     bool result = true;
-
+    u32 i;
+    for(i=0; i < 1000; i++){
+        //add recursive test
+        Array <u64,64>array;
+        recursive_number = 0;
+        if(!execute_recursive(array)){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+        }
+    }
     return result;
 }
 /*! \details test "api" a var::Array
@@ -138,3 +146,25 @@ bool ArrayTest::execute_class_api_case(){
     return result;
 }
 
+/*! \details test used for "stress" test in var::Array
+   * @return false if some test failed true if passed
+*/
+bool ArrayTest::execute_recursive(Array <u64,64>array){
+    recursive_number++;
+    if (recursive_number < 46){
+        u64 fill_temp;
+        //remember value
+        fill_temp = recursive_number;
+        array.fill(fill_temp);
+        if (!execute_recursive(array)){
+            return false;
+        }
+        u8 i = rand()&0x3f;
+        if(array.back()!=fill_temp||array.front()!=fill_temp
+                ||array.at(i)!=fill_temp){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            return false;
+        }
+    }
+    return 1;
+}

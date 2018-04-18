@@ -7,7 +7,6 @@ int DataTest::recursive_number = 0;
 
 DataTest::DataTest() : Test("var::Data"){
     recursive_number = 0;
-
 }
 
 
@@ -184,7 +183,7 @@ bool DataTest::execute_class_performance_case(){
 
 bool DataTest::execute_class_stress_case(){
     bool result = true;
-    int i;
+    u32 i;
 
     for(i=0; i < 1000; i++){
         //add recursive test

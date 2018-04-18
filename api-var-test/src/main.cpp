@@ -33,11 +33,12 @@ int main(int argc, char * argv[]){
 
     o_flags = decode_cli(cli, o_execute_flags);
 
-    Test::initialize(cli.name(), cli.version());
-
     if( o_flags == 0 ){
        show_usage(cli);
+       exit(0);
     }
+
+    Test::initialize(cli.name(), cli.version());
 
     if( o_flags & DATA_TEST_FLAG ){
         DataTest test;
