@@ -50,7 +50,7 @@ bool StringTest::api_case_assign(){
     bool result = true;
 
     s1.assign("uno");
-    if(s1.data() == 0 || s2.data()!=0){
+    if(s1.data() == 0 || s2.data()==0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -441,7 +441,7 @@ bool StringTest::execute_class_performance_case(){
     for (u32 i =0;i<250;i++){
         base.append("b");
     }
-    for(u32 j = 1;j<150;j++){
+    for(u32 j = 1;j<100;j++){
         inserts = "a";
         for (u32 i =0;i<j;i++){
             inserts.append("a");
@@ -465,11 +465,11 @@ bool StringTest::execute_class_performance_case(){
     }
     //insert value is const
     inserts = "a";
-    for (u32 i =0;i<(max_insert_value-1);i++){
+    for (u32 i =0;i<max_insert_value;i++){
         inserts.append("a");
     }
     u32 max_base_value = 0;
-    for(u32 j = 1;j<1000;j++){
+    for(u32 j = 1;j<200;j++){
         base = "b";
         for (u32 i =0;i<j;i++){
             base.append("b");

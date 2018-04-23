@@ -1,5 +1,6 @@
 #include <sapi/var.hpp>
 #include "TokenTest.hpp"
+int TokenTest::recursive_number = 0;
 
 TokenTest::TokenTest(): Test("var::Token"){
 
@@ -45,7 +46,9 @@ bool TokenTest::execute_class_performance_case(){
 
 bool TokenTest::execute_class_stress_case(){
     bool result = true;
-
+    String token_string = "";
+    String delim_string = "";
+    result = execute_recursive(token_string, delim_string);
     return result;
 }
 /*! \details test "api" a var::Token
@@ -116,3 +119,26 @@ bool TokenTest::execute_class_api_case(){
     return result;
 }
 
+bool TokenTest::execute_recursive(String &token_string,String &delim_string){
+    recursive_number++;
+    u16 token_number = recursive_number;
+    if(token_string.length()<400){
+        token_string.append("temp");
+        char delim = 0x20 | (recursive_number&0x0f);
+        delim_string.append(delim);
+        token_string.append(delim);
+        Token new_token(token_string.c_str(),delim_string.c_str(),0);
+        if(!execute_recursive(token_string, delim_string)){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            return false;
+        }
+        if((new_token.count()) != token_number){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            return false;
+        }
+    }else{
+        print_case_message("token count %lu",token_number);
+    }
+
+    return true;
+}
