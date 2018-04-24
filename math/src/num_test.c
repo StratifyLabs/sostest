@@ -2,6 +2,7 @@
 
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 
 #include <mcu/types.h>
@@ -26,6 +27,7 @@ typedef int (*op)(operand_t, operand_t, operand_t);
 typedef struct {
     const char * name;
     const char * a_str;
+    const char * a_str_type;
     const char * b_str;
     const char * op_str;
     op operation;
@@ -115,10 +117,10 @@ static int u32_to_d (operand_t a, operand_t b, operand_t result);
 
 
 #define TEST_CASE(function_name, op_type, result_type, a_value, b_value, operation_value) \
-{ .name = #function_name, .a_str = #a_value, .b_str = #b_value, .op_str = #operation_value, .operation = function_name, .a.op_type = a_value, .b.op_type = b_value, .result.result_type = (a_value operation_value b_value) }
+{ .name = #function_name, .a_str = #a_value, .a_str_type = #op_type, .b_str = #b_value, .op_str = #operation_value, .operation = function_name, .a.op_type = a_value, .b.op_type = b_value, .result.result_type = (a_value operation_value b_value) }
 
 #define TEST_CASE_CAST(function_name, op_type, result_type, a_value) \
-{ .name = #function_name, .a_str = #a_value, .b_str = "--", .op_str = " cast ", .operation = function_name, .a.op_type = a_value, .b.op_int = 0, .result.result_type = (a_value) }
+{ .name = #function_name, .a_str = #a_value, .a_str_type = #op_type, .b_str = "--", .op_str = " cast ", .operation = function_name, .a.op_type = a_value, .b.op_int = 0, .result.result_type = (a_value) }
 
 
 const test_t tests[] = {
@@ -1348,26 +1350,69 @@ const test_t tests[] = {
 
 
 
-static int exec_test(int i){
-    if( tests[i].a_str != 0 ){
-        printf("test %s %s%s%s...", tests[i].name, tests[i].a_str, tests[i].op_str, tests[i].b_str); fflush(stdout);
-    } else {
-        printf("test %s...", tests[i].name); fflush(stdout);
-    }
-    if( tests[i].operation(tests[i].a, tests[i].b, tests[i].result) == 0 ){
-        printf("failed\n");
-        return -1;
-    } else {
-        printf("passed\n");
+static int exec_test(int i,u32 o_execute_flags){
+    if(((o_execute_flags & COMPARISON_TEST_FLAG)&&
+            ((!strncmp(tests[i].op_str, "==",2))||
+             (!strncmp(tests[i].op_str, "!=",2))||
+             (!strncmp(tests[i].op_str, ">=",2))||
+             (!strncmp(tests[i].op_str, "<=",2))||
+             (!strncmp(tests[i].op_str, ">",1))||
+             (!strncmp(tests[i].op_str, "<",1))
+            ))||
+       ((o_execute_flags & ARITHMETIC_TEST_FLAG)&&
+            ((!strncmp(tests[i].op_str, "+",1))||
+             (!strncmp(tests[i].op_str, "-",1))||
+             (!strncmp(tests[i].op_str, "/",1))||
+             (!strncmp(tests[i].op_str, "*",1))||
+             (!strncmp(tests[i].op_str, "%",1))
+            ))||
+       ((o_execute_flags & LOGICAL_TEST_FLAG)&&
+            ((!strncmp(tests[i].op_str, "|",1))||
+             (!strncmp(tests[i].op_str, "&",1))||
+             (!strncmp(tests[i].op_str, "~",1))||
+             (!strncmp(tests[i].op_str, "^",1))
+            ))||
+       ((o_execute_flags & SHIFT_TEST_FLAG)&&
+            ((!strncmp(tests[i].op_str, ">>",2))||
+             (!strncmp(tests[i].op_str, "<<",2))
+            ))||
+       ((o_execute_flags & TYPE_CAST_TEST_FLAG)&&
+            ((!strncmp(tests[i].b_str, "--",2))
+            ))){
+        if( tests[i].a_str != 0 ){
+            printf("test %s %s%s%s...", tests[i].name, tests[i].a_str, tests[i].op_str, tests[i].b_str); fflush(stdout);
+        } else {
+            printf("test %s...", tests[i].name); fflush(stdout);
+        }
+        if( tests[i].operation(tests[i].a, tests[i].b, tests[i].result) == 0 ){
+            printf("failed\n");
+            return -1;
+        } else {
+            printf("passed\n");
+        }
     }
     return 0;
 }
 
-int num_test_execute(u32 o_flags){
+int num_test_execute(u32 o_flags, u32 o_execute_flags){
     int i;
     int total = sizeof(tests) / sizeof(test_t);
     for(i=0; i < total; i++){
-        exec_test(i);
+        if(((o_flags & U8_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_u8")))||
+           ((o_flags & U16_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_u16")))||
+           ((o_flags & U32_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_u32")))||
+           ((o_flags & U64_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_u64")))||
+           ((o_flags & I8_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_i8")))||
+           ((o_flags & S16_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_s16")))||
+           ((o_flags & S32_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_s32")))||
+           ((o_flags & S64_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_s64")))||
+           ((o_flags & FLOAT_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_f")))||
+           ((o_flags & DOUBLE_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_d")))||
+           ((o_flags & INT_TEST_FLAG)&&(!strcmp(tests[i].a_str_type, "op_int")))
+            ){
+
+            exec_test(i, o_execute_flags);
+        }
     }
     return 0;
 }
