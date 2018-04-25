@@ -32,6 +32,11 @@ int main(int argc, char * argv[]){
 
     Test::initialize(cli.name(), cli.version());
 
+    if( o_flags == 0 ){
+       show_usage(cli);
+       exit(0);
+    }
+
     if( o_flags & BASE64_TEST_FLAG){
         Base64Test test;
         test.execute(o_execute_flags);
@@ -98,5 +103,22 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 
 }
 
+void show_usage(const Cli & cli){
+    printf("\n");
+    printf("usage: %s\n", cli.name());
+    printf("    -all            execute all type of test for all object.\n");
+    printf("    -execute_all    execute all type of test.\n");
+    printf("    -api            execute api test.\n");
+    printf("    -stress         execute stress test.\n");
+    printf("    -performance    execute performance test.\n");
+    printf("    -additional     execute additional test.\n");
 
-
+    printf("    -test_all       execute test for all object.\n");
+    printf("    -base64         execute test for Base64.\n");
+    printf("    -checksum       execute test for Checksum.\n");
+    printf("    -ema            execute test for Ema.\n");
+    printf("    -lookup         execute test for Lookup.\n");
+    printf("    -pid            execute test for Pid.\n");
+    printf("    -rle            execute test for Rle.\n");
+    printf("    -v              options to show the version.\n");
+}
