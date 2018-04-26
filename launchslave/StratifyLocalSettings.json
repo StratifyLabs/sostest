@@ -1,6 +1,6 @@
 {
-    "LocalBuild": "build_release_v7em_f4sh",
-    "LocalInstallPath": "/app/.install",
+    "LocalBuild": "build_release_v7m",
+    "LocalInstallPath": "/home",
     "LocalIsRam": false,
     "LocalIsStartup": false,
     "LocalProjectId": ""

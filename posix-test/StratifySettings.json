@@ -4,7 +4,7 @@
     "description": "posix tests POSIX fuctions are is part of the sostest suite.",
     "github": "https://github.com/StratifyLabs/sostest",
     "hardwareid": "",
-    "name": "posix",
+    "name": "posix-test",
     "permissions": "public",
     "publisher": "Stratify Labs, Inc",
     "ram": 0,

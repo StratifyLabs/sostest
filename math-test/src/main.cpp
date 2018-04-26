@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include <sapi/sys.hpp>
-
 #include "num_test.h"
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);

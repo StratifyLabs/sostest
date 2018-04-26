@@ -1,0 +1,13 @@
+{
+    "buildprefix": "build_",
+    "description": "api-draw-test is an application that tests the calc namespace classes in the Stratify API.",
+    "github": "",
+    "hardwareid": "",
+    "name": "api-draw-test",
+    "permissions": "public",
+    "publisher": "Stratify Labs, Inc",
+    "ram": 0,
+    "tags": "test",
+    "type": "StratifyApp",
+    "version": "0.1"
+}
