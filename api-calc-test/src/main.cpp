@@ -20,6 +20,7 @@ enum {
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
+void show_usage(const Cli & cli);
 
 int main(int argc, char * argv[]){
     Cli cli(argc, argv);
