@@ -10,7 +10,6 @@ set(SOURCES
 	${SOURCES_PREFIX}/mqueue_test.c
 	${SOURCES_PREFIX}/mutex_test.c
 	${SOURCES_PREFIX}/mutexattr_test.c
-	${SOURCES_PREFIX}/num_test.c
 	${SOURCES_PREFIX}/pthread_master_test.c
 	${SOURCES_PREFIX}/pthread_test.c
 	${SOURCES_PREFIX}/rwlock_test.c
@@ -29,4 +28,6 @@ set(SOURCES
 	${SOURCES_PREFIX}/unistd_file_test.c
 	${SOURCES_PREFIX}/unistd_sleep_test.c
 	${SOURCES_PREFIX}/tests.h
+	${SOURCES_PREFIX}/SchedTest.cpp
+	${SOURCES_PREFIX}/SchedTest.hpp
 	PARENT_SCOPE)

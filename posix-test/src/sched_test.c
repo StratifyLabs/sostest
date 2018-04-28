@@ -347,6 +347,7 @@ int test_schedparam(){
 		printf("passed\n");
 	}
 
+
 	printf("Test sched_setparam()...");
 	param.sched_priority = 0;
 	err = sched_setparam(getpid(), &param);
