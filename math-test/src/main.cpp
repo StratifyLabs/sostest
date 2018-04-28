@@ -1,46 +1,63 @@
 #include <stdio.h>
 
 #include <sapi/sys.hpp>
+#include <sapi/var.hpp>
+#include <sapi/test.hpp>
 #include "num_test.h"
 
-u32 decode_cli(const Cli & cli, u32 & execute_flags);
+u32 decode_cli(const Cli & cli);
 void show_usage(const Cli & cli);
 
 int main(int argc, char * argv[]){
     Cli cli(argc, argv);
     cli.set_publisher("Stratify Labs, Inc");
     cli.handle_version();
-    u32 o_flags;
     u32 o_execute_flags;
+    u32 idx;
 
-    o_flags = decode_cli(cli, o_execute_flags);
+    o_execute_flags = decode_cli(cli);
 
-    if( o_flags == 0 ){
+    if( o_execute_flags == 0 ){
        show_usage(cli);
        exit(0);
     }
 
-    return num_test_execute(o_flags, o_execute_flags);
+    Test::initialize("math-test", cli.version());
+
+    for(idx = 0; idx < num_test_count(); idx++){
+        const test_t * test = num_test_get(idx);
+        if( (test->o_execute_flags & o_execute_flags) == test->o_execute_flags ){
+            String name;
+            String case_name;
+            name.sprintf("%d:%s: %s %s %s", idx, test->name, test->a_str, test->op_str, test->b_str);
+            case_name.sprintf("case:%s", name.str(), test->a_str, test->op_str, test->b_str);
+            Function<int, operand_t, operand_t, operand_t> function_test(name.str(), test->operation);
+            function_test.execute_case(case_name.str(), 1, 0,
+                                       test->a, test->b, test->result);
+        }
+    }
+
+    Test::finalize();
+
+    return 0;
 }
 
-u32 decode_cli(const Cli & cli, u32 & execute_flags){
+u32 decode_cli(const Cli & cli){
     u32 o_flags = 0;
-
-    execute_flags = 0;
 
     if(cli.is_option("-all") ){
         o_flags = 0xffffffff;
-        execute_flags |= EXECUTE_ALL_TEST_FLAG;
         return o_flags;
     }
-    if(cli.is_option("-execute_all")){ execute_flags |= EXECUTE_ALL_TEST_FLAG; }
-    if(cli.is_option("-comp") ){ execute_flags |= COMPARISON_TEST_FLAG; }
-    if(cli.is_option("-arithm") ){ execute_flags |= ARITHMETIC_TEST_FLAG; }
-    if(cli.is_option("-logic") ){ execute_flags |= LOGICAL_TEST_FLAG; }
-    if(cli.is_option("-shift") ){ execute_flags |= SHIFT_TEST_FLAG; }
-    if(cli.is_option("-typecast") ){ execute_flags |= TYPE_CAST_TEST_FLAG; }
 
-    if(cli.is_option("-test_all") ){ o_flags = 0xffffffff; }
+    if(cli.is_option("-execute_all")){ o_flags |= EXECUTE_ALL_TEST_FLAG; }
+    if(cli.is_option("-comp") ){ o_flags |= COMPARISON_TEST_FLAG; }
+    if(cli.is_option("-arithm") ){ o_flags |= ARITHMETIC_TEST_FLAG; }
+    if(cli.is_option("-logic") ){ o_flags |= LOGICAL_TEST_FLAG; }
+    if(cli.is_option("-shift") ){ o_flags |= SHIFT_TEST_FLAG; }
+    if(cli.is_option("-typecast") ){ o_flags |= TYPE_CAST_TEST_FLAG; }
+
+    if(cli.is_option("-test_all") ){ o_flags |= 0xfffffff0; }
     if(cli.is_option("-u8") ){ o_flags |= U8_TEST_FLAG; }
     if(cli.is_option("-u16") ){ o_flags |= U16_TEST_FLAG; }
     if(cli.is_option("-u32") ){ o_flags |= U32_TEST_FLAG; }
