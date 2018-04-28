@@ -90,6 +90,27 @@ bool ChecksumTest::execute_class_api_case(){
             result = false;
         }
     }
+    //imposible value
+    //zero size
+    {
+        data_struct_u8_t data;
+        //set member variables
+        data.member_a = rand();
+        data.member_b = rand();
+        data.member_c = rand();
+        data.checksum = Checksum::calc_zero_sum((u8*)&data, 0);
+        Checksum::verify_zero_sum((u8*)&data, 0);
+    }
+    {
+        data_struct_u8_t data;
+        //set member variables
+        data.member_a = rand();
+        data.member_b = rand();
+        data.member_c = rand();
+        data.checksum = Checksum::calc_zero_sum((u32*)&data, 0);
+        Checksum::verify_zero_sum((u32*)&data, 0);
+    }
+
     return result;
 }
 
@@ -211,6 +232,20 @@ bool ChecksumTest::execute_class_stress_case(){
         }
 
     }
+    //imposible value
+    //fill 0xffffffff value
+    {
+        data_buffer_u32_t data;
+        for (u16 i =0;i<1000;i++){
+            //set member variables
+            for (u16 j=0; j<(sizeof(data)/4-1);j++){
+                data.buffer[j] = 0xffffffff;
+            }
+            data.checksum = Checksum::calc_zero_sum((u32*)&data, 0);
+            Checksum::verify_zero_sum((u32*)&data, 0);
+        }
+    }
+
     return result;
 }
 
