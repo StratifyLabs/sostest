@@ -25,12 +25,43 @@ enum {
     TYPE_CAST_TEST_FLAG = (1<<4)
 };
 
+typedef union {
+    float op_f;
+    double op_d;
+    int op_int;
+    u8 op_u8;
+    u16 op_u16;
+    u32 op_u32;
+    u64 op_u64;
+    i8 op_i8;
+    s16 op_i16;
+    s32 op_s32;
+    s64 op_s64;
+} operand_t;
+
+typedef int (*op)(operand_t, operand_t, operand_t);
+
+typedef struct {
+    const char * name;
+    const char * a_str;
+    const char * a_str_type;
+    const char * b_str;
+    const char * op_str;
+    op operation;
+    operand_t a;
+    operand_t b;
+    operand_t result;
+    u32 o_execute_flags;
+} test_t;
 
 #if defined __cplusplus
 extern "C" {
 #endif
 
 int num_test_execute(u32 o_flags,u32 o_execute_flags);
+
+const test_t * num_test_get(u32 idx);
+u32 num_test_count();
 
 #if defined __cplusplus
 }
