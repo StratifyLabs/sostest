@@ -69,7 +69,7 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     //update switches
     if(cli.is_option("-test_all") ){ o_flags = 0xffffffff; }
     if(cli.is_option("-micro_time") ){ o_flags |= MICRO_TIME_TEST_FLAG; }
-    if(cli.is_option("-micro_timer") ){ o_flags |= MICRO_TIMER_TEST_FLAG; }
+    if(cli.is_option("-microtimer") ){ o_flags |= MICRO_TIMER_TEST_FLAG; }
     if(cli.is_option("-time") ){ o_flags |= TIME_TEST_FLAG; }
 
     return o_flags;
