@@ -227,7 +227,12 @@ bool MicroTimerTest::execute_class_api_case(){
 
     return result;
 }
-
+/*! \details test "stress" a chrono::MicroTimer
+ *  const and random value,
+ *	mistaken 
+ * some time more then waiting value
+ * @return false if some test failed
+ */
 bool MicroTimerTest::execute_class_stress_case(){
     bool result = true;
     const u32 delay_time_usec = 200;
@@ -253,7 +258,7 @@ bool MicroTimerTest::execute_class_stress_case(){
         if(temp_usec > (time_usec + 2*delay_time_usec)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
-            print_case_message("Failed %lu:%lu:%lu", temp_usec , (time_usec + 2*delay_time),i);
+            //print_case_message("Failed %lu:%lu:%lu", temp_usec , (time_usec + 2*delay_time),i);
             break;
         }
         time_usec = timer_count.calc_usec();
@@ -277,7 +282,7 @@ bool MicroTimerTest::execute_class_stress_case(){
         if((temp_usec > (time_usec + 2*delay_time))/* ||
            (temp_usec > (time_usec + delay_time + 400))*/){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            print_case_message("Failed %lu:%lu:%lu:%lu", delay_time,timer_count.calc_usec(), (time_usec + 2*delay_time),i);
+            //print_case_message("Failed %lu:%lu:%lu:%lu", delay_time,timer_count.calc_usec(), (time_usec + 2*delay_time),i);
             result = false;
             break;
         }
