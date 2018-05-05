@@ -5,6 +5,10 @@ MicroTimerTest::MicroTimerTest() : Test("chrono::MicroTimer")
 {
 
 }
+/*! \details test "api" a chrono::MicroTimer
+ *  constructors,start,resume,wait,
+ * @return false if some test failed
+ */
 
 bool MicroTimerTest::execute_class_api_case(){
     bool result = true;
