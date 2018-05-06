@@ -235,7 +235,7 @@ bool MicroTimerTest::execute_class_api_case(){
  */
 bool MicroTimerTest::execute_class_stress_case(){
     bool result = true;
-    const u32 delay_time_usec = 200;
+    const u32 delay_time_usec = 500;
     u32 delay_time = 100;
     MicroTimer timer_count;
     u32 time_usec,temp_usec;
@@ -268,7 +268,7 @@ bool MicroTimerTest::execute_class_stress_case(){
     print_case_message_with_key("max delta time","%lu",max_delta_time);
     max_delta_time = 0;
     for (u16 i = 1;i<1000;i++){
-        delay_time = (rand()&0xffff) + 100;
+        delay_time = (rand()&0xfff) + 100;
         timer_count.wait_usec(delay_time);
         temp_usec = timer_count.calc_usec();
         if((temp_usec - (time_usec + delay_time))>max_delta_time){
