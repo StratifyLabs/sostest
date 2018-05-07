@@ -1,9 +1,14 @@
 #include "MicroTimerTest.hpp"
 #include "sapi/chrono.hpp"
+#include <sapi/sys.hpp>
 MicroTimerTest::MicroTimerTest() : Test("chrono::MicroTimer")
 {
 
 }
+/*! \details test "api" a chrono::MicroTimer
+ *  constructors,start,resume,wait,
+ * @return false if some test failed
+ */
 
 bool MicroTimerTest::execute_class_api_case(){
     bool result = true;
@@ -222,31 +227,67 @@ bool MicroTimerTest::execute_class_api_case(){
 
     return result;
 }
-
+/*! \details test "stress" a chrono::MicroTimer
+ *  const and random value,
+ *	mistaken 
+ * some time more then waiting value
+ * @return false if some test failed
+ */
 bool MicroTimerTest::execute_class_stress_case(){
     bool result = true;
-    const u32 delay_time_usec = 100;
+    const u32 delay_time_usec = 200;
+    u32 delay_time = 100;
     MicroTimer timer_count;
     u32 time_usec,temp_usec;
     time_usec = 0;
+    u32 max_delta_time;
+    max_delta_time = 0;
+    timer_count.restart();
     for (u16 i = 1;i<10000;i++){
-        timer_count.start();
         timer_count.wait_usec(delay_time_usec);
         temp_usec = timer_count.calc_usec();
-        //timer_count.resume();
-        if(temp_usec < i*delay_time_usec){
+        if((temp_usec - (time_usec + delay_time_usec))>max_delta_time){
+            max_delta_time = temp_usec - (time_usec + delay_time_usec);
+        }
+        if(temp_usec < (time_usec + delay_time_usec)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
         }
 
-        if(temp_usec > (time_usec + (i+1)*delay_time_usec)){
+        if(temp_usec > (time_usec + 2*delay_time_usec)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            print_case_message("Failed %lu:%lu:%lu", timer_count.calc_usec(), (time_usec + (i+1)*delay_time_usec),i);
+            result = false;
+            //print_case_message("Failed %lu:%lu:%lu", temp_usec , (time_usec + 2*delay_time),i);
+            break;
+        }
+        time_usec = timer_count.calc_usec();
+    }
+    time_usec = 0;
+    timer_count.restart();
+    print_case_message_with_key("max delta time","%lu",max_delta_time);
+    max_delta_time = 0;
+    for (u16 i = 1;i<1000;i++){
+        delay_time = (rand()&0xffff) + 100;
+        timer_count.wait_usec(delay_time);
+        temp_usec = timer_count.calc_usec();
+        if((temp_usec - (time_usec + delay_time))>max_delta_time){
+            max_delta_time = temp_usec - (time_usec + delay_time);
+        }
+        if(temp_usec < time_usec + delay_time){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if((temp_usec > (time_usec + 2*delay_time))/* ||
+           (temp_usec > (time_usec + delay_time + 400))*/){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            //print_case_message("Failed %lu:%lu:%lu:%lu", delay_time,timer_count.calc_usec(), (time_usec + 2*delay_time),i);
             result = false;
             break;
         }
         time_usec = timer_count.calc_usec();
     }
+    print_case_message_with_key("max delta time","%lu",max_delta_time);
     return result;
 }
