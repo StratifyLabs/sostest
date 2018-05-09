@@ -4,10 +4,10 @@
 #include <sapi/test.hpp>
 
 
-class MicroTimerTest : public Test
+class TimerTest : public Test
 {
 public:
-    MicroTimerTest();
+    TimerTest();
 
     bool execute_class_api_case();
     bool execute_class_stress_case();

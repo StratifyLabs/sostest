@@ -1,93 +1,84 @@
-#include "MicroTimerTest.hpp"
+#include "TimerTest.hpp"
 #include "sapi/chrono.hpp"
 #include <sapi/sys.hpp>
-MicroTimerTest::MicroTimerTest() : Test("chrono::MicroTimer")
+TimerTest::TimerTest() : Test("chrono::Timer")
 {
 
 }
-/*! \details test "api" a chrono::MicroTimer
- *  constructors,start,resume,wait,
+/*! \details test "api" a chrono::Timer
+ *  constructors,start,resume,wait,microseconds,milliseconds,seconds
+ * is_stopped,is_started,is_running,is_reset
  * @return false if some test failed
  */
 
-bool MicroTimerTest::execute_class_api_case(){
+bool TimerTest::execute_class_api_case(){
     bool result = true;
     const u32 delay_time_usec = 100;
     const u32 delay_time_msec = 10;
     const u32 delay_time_sec = 1;
-    MicroTimer timer_count;
-    MicroTime time_test;
-    u32 time_usec,time_msec,time_sec;
+    Timer timer_count;
+    u32 time_microsecond;
     timer_count.start();
-    timer_count.wait_usec(delay_time_usec);
+    timer_count.wait_microseconds(delay_time_usec);
     //for incredible add resume
     timer_count.resume();
-    if (timer_count.calc_usec() < delay_time_usec){
+    if (timer_count.microseconds() < delay_time_usec){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if (timer_count.calc_usec() > 2*delay_time_usec){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-
-    timer_count.stop();
-    time_usec = timer_count.calc_usec();
-    time_test = timer_count.calc_value();
-    if(time_test.microseconds() != time_usec){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if (time_usec < delay_time_usec){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if (time_usec > 2*delay_time_usec){
+    if (timer_count.microseconds() > 2*delay_time_usec){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
 
     timer_count.stop();
-    if(time_usec != timer_count.calc_usec()){
+    time_microsecond = timer_count.microseconds();
+    if (time_microsecond < delay_time_usec){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_usec()!=timer_count.usec()){
+    if (time_microsecond > 2*delay_time_usec){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
+    timer_count.stop();
+    if(time_microsecond != timer_count.microseconds()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     timer_count.reset();
-    if(timer_count.calc_usec()!=0){
+    if(timer_count.microseconds()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    timer_count.wait_usec(delay_time_usec);
-    if(timer_count.calc_usec()!=0){
+    timer_count.wait_microseconds(delay_time_usec);
+    if(timer_count.microseconds()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     timer_count.restart();
-    timer_count.wait_usec(delay_time_usec);
+    timer_count.wait_microseconds(delay_time_usec);
     timer_count.stop();
-    time_usec = timer_count.calc_usec();
-    if (time_usec < delay_time_usec){
+    time_microsecond = timer_count.microseconds();
+    if (time_microsecond < delay_time_usec){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     timer_count.stop();
-    if(time_usec != timer_count.calc_usec()){
+    if(time_microsecond != timer_count.microseconds()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     timer_count.resume();
-    timer_count.wait_usec(delay_time_usec);
-    time_usec = timer_count.calc_usec();
-    if (time_usec < 2*delay_time_usec){
+    timer_count.wait_microseconds(delay_time_usec);
+    time_microsecond = timer_count.microseconds();
+    if (time_microsecond < 2*delay_time_usec){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     timer_count.restart();
-    if(timer_count.calc_usec() > delay_time_usec){
+    if(timer_count.microseconds() > delay_time_usec){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -128,15 +119,15 @@ bool MicroTimerTest::execute_class_api_case(){
     }
     //after reset
     timer_count.reset();
-    if(timer_count.calc_usec()!=0){
+    if(timer_count.microseconds()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_msec()!=0){
+    if(timer_count.milliseconds()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_sec()!=0){
+    if(timer_count.seconds()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -159,93 +150,79 @@ bool MicroTimerTest::execute_class_api_case(){
     }
     //msec
     timer_count.restart();
-    timer_count.wait_msec(delay_time_msec);
+    timer_count.wait_milliseconds(delay_time_msec);
     timer_count.stop();
-    time_msec = timer_count.calc_msec();
-    time_test = timer_count.calc_value();
-    if(time_test.milliseconds() != time_msec){
+    if(timer_count.milliseconds()<delay_time_msec||
+       timer_count.milliseconds()>(delay_time_msec*2)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-
-    if(timer_count.calc_msec()<delay_time_msec||
-       timer_count.calc_msec()>(delay_time_msec*2)){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(timer_count.calc_msec()!=(timer_count.calc_usec()/1000)){
+    if(timer_count.milliseconds()!=(timer_count.microseconds()/1000)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     timer_count.resume();
-    timer_count.wait_msec(delay_time_msec);
-    if(timer_count.calc_msec()<(2*delay_time_msec)){
-        print_case_message("micro calc_masec %lu ",timer_count.calc_msec());
+    timer_count.wait_milliseconds(delay_time_msec);
+    if(timer_count.milliseconds()<(2*delay_time_msec)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_msec()!=(timer_count.calc_usec()/1000)){
+    if(timer_count.milliseconds()!=(timer_count.microseconds()/1000)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     //sec
     timer_count.restart();
-    timer_count.wait_sec(delay_time_sec);
+    timer_count.wait_seconds(delay_time_sec);
     timer_count.stop();
-    time_sec = timer_count.calc_sec();
-    time_test = timer_count.calc_value();
-    if(time_test.seconds() != time_sec){
+    if(timer_count.seconds() != delay_time_sec){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_sec() != delay_time_sec){
+    if(timer_count.seconds()!=(timer_count.milliseconds()/1000)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_sec()!=(timer_count.calc_msec()/1000)){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(timer_count.calc_msec()!=(timer_count.calc_usec()/1000)){
+    if(timer_count.milliseconds()!=(timer_count.microseconds()/1000)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     timer_count.resume();
-    timer_count.wait_sec(delay_time_sec);
-    if(timer_count.calc_sec()<(2*delay_time_sec)){
+    timer_count.wait_seconds(delay_time_sec);
+    if(timer_count.seconds()<(2*delay_time_sec)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_sec()!=(timer_count.calc_msec()/1000)){
+    if(timer_count.seconds()!=(timer_count.milliseconds()/1000)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(timer_count.calc_msec()!=(timer_count.calc_usec()/1000)){
+    if(timer_count.milliseconds()!=(timer_count.microseconds()/1000)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
 
     return result;
 }
-/*! \details test "stress" a chrono::MicroTimer
+/*! \details test "stress" a chrono::Timer
  *  const and random value,
  *	mistaken 
  * some time more then waiting value
  * @return false if some test failed
  */
-bool MicroTimerTest::execute_class_stress_case(){
+bool TimerTest::execute_class_stress_case(){
     bool result = true;
     const u32 delay_time_usec = 500;
     u32 delay_time = 100;
-    MicroTimer timer_count;
+    Timer timer_count;
     u32 time_usec,temp_usec;
     time_usec = 0;
     u32 max_delta_time;
     max_delta_time = 0;
     timer_count.restart();
     for (u16 i = 1;i<10000;i++){
-        timer_count.wait_usec(delay_time_usec);
-        temp_usec = timer_count.calc_usec();
+        timer_count.wait_microseconds(delay_time_usec);
+        temp_usec = timer_count.microseconds();
         if((temp_usec - (time_usec + delay_time_usec))>max_delta_time){
             max_delta_time = temp_usec - (time_usec + delay_time_usec);
         }
@@ -261,7 +238,7 @@ bool MicroTimerTest::execute_class_stress_case(){
             //print_case_message("Failed %lu:%lu:%lu", temp_usec , (time_usec + 2*delay_time),i);
             break;
         }
-        time_usec = timer_count.calc_usec();
+        time_usec = timer_count.microseconds();
     }
     time_usec = 0;
     timer_count.restart();
@@ -269,8 +246,8 @@ bool MicroTimerTest::execute_class_stress_case(){
     max_delta_time = 0;
     for (u16 i = 1;i<1000;i++){
         delay_time = (rand()&0xfff) + 100;
-        timer_count.wait_usec(delay_time);
-        temp_usec = timer_count.calc_usec();
+        timer_count.wait_microseconds(delay_time);
+        temp_usec = timer_count.microseconds();
         if((temp_usec - (time_usec + delay_time))>max_delta_time){
             max_delta_time = temp_usec - (time_usec + delay_time);
         }
@@ -286,7 +263,7 @@ bool MicroTimerTest::execute_class_stress_case(){
             result = false;
             break;
         }
-        time_usec = timer_count.calc_usec();
+        time_usec = timer_count.microseconds();
     }
     print_case_message_with_key("max delta time","%lu",max_delta_time);
     return result;
