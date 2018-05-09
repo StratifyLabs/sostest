@@ -19,8 +19,7 @@ bool MicroTimeTest::execute_class_api_case(){
     MicroTime micro_time;
     u32 value_u;
     u32 check_value;
-    if(micro_time.microseconds()!=micro_time.usec()||
-            micro_time.msec()!=micro_time.milliseconds()){
+    if(micro_time.microseconds()!=micro_time.milliseconds()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -139,32 +138,10 @@ bool MicroTimeTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    time_from = MicroTime::from_usec(check_value);
-    if(time_from.microseconds()!=check_value ||
-       time_from.milliseconds()!=check_value/1000||
-       time_from.seconds()!=check_value/1000000){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
     time_from = MicroTime::from_milliseconds(check_value);
     if(time_from.microseconds()/1000!=check_value ||
        time_from.milliseconds()!=check_value||
        time_from.seconds()!=check_value/1000){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    time_from = MicroTime::from_msec(check_value);
-    if(time_from.microseconds()/1000!=check_value ||
-       time_from.milliseconds()!=check_value||
-       time_from.seconds()!=check_value/1000){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-
-    time_from = MicroTime::from_sec(check_value);
-    if(time_from.microseconds()/1000000!=check_value ||
-       time_from.milliseconds()/1000!=check_value||
-       time_from.seconds()!=check_value){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -179,11 +156,6 @@ bool MicroTimeTest::execute_class_api_case(){
     time_from = MicroTime::from_microseconds(check_value);
     micro_time_t  micro_time_test;
     micro_time_test = time_from.microseconds();
-    if(micro_time_test != check_value){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    micro_time_test = time_from.usec();
     if(micro_time_test != check_value){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
