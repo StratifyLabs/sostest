@@ -7,7 +7,7 @@ enum {
     U16_TEST_FLAG = (1<<6),
     U32_TEST_FLAG = (1<<7),
     U64_TEST_FLAG = (1<<8),
-    I8_TEST_FLAG = (1<<9),
+    S8_TEST_FLAG = (1<<9),
     S16_TEST_FLAG = (1<<10),
     S32_TEST_FLAG = (1<<11),
     S64_TEST_FLAG = (1<<12),
@@ -17,7 +17,7 @@ enum {
 };
 
 enum {
-    EXECUTE_ALL_TEST_FLAG = 0xffffffff,
+    EXECUTE_ALL_TEST_FLAG = 0x1f,
     COMPARISON_TEST_FLAG = (1<<0),
     ARITHMETIC_TEST_FLAG = (1<<1),
     LOGICAL_TEST_FLAG = (1<<2),

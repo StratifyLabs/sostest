@@ -18,7 +18,7 @@ bool StringTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }else{
-        print_case_message("String assing test passed");
+        print_case_message("String assign test passed");
     }
     if(!api_case_compare()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -40,7 +40,7 @@ bool StringTest::execute_class_api_case(){
     }
     return result;
 }
-/*! \details Test  for assing a var::String
+/*! \details Test  for assign a var::String
  * @return false if same test failed
  */
 
@@ -121,7 +121,7 @@ bool StringTest::api_case_compare(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if (s1.compare(0,s3.len(),(String &) s3)){
+    if (s1.compare(0,s3.len(),s3)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
