@@ -87,7 +87,7 @@ bool TokenTest::execute_class_api_case(){
     //parse string for and verify with base
     Token two(s_common.c_str(),",; ","(",0);
     for(u32 i =0;i<48;i++){
-        if (strncmp(two.at(i),s[i%8],s[i%8].len())){
+        if (strncmp(two.at(i),s[i%8].str(),s[i%8].len())){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }

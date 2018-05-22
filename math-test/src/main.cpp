@@ -32,8 +32,7 @@ int main(int argc, char * argv[]){
             name.sprintf("%d:%s: %s %s %s", idx, test->name, test->a_str, test->op_str, test->b_str);
             case_name.sprintf("case:%s", name.str(), test->a_str, test->op_str, test->b_str);
             Function<int, operand_t, operand_t, operand_t> function_test(name.str(), test->operation);
-            function_test.execute_case(case_name.str(), 1, 0,
-                                       test->a, test->b, test->result);
+            function_test.execute_case_with_expected_return(case_name.str(), 1, 0, test->a, test->b, test->result);
         }
     }
 
@@ -57,12 +56,12 @@ u32 decode_cli(const Cli & cli){
     if(cli.is_option("-shift") ){ o_flags |= SHIFT_TEST_FLAG; }
     if(cli.is_option("-typecast") ){ o_flags |= TYPE_CAST_TEST_FLAG; }
 
-    if(cli.is_option("-test_all") ){ o_flags |= 0xfffffff0; }
+    if(cli.is_option("-test_all") ){ o_flags |= 0xffffffe0; }
     if(cli.is_option("-u8") ){ o_flags |= U8_TEST_FLAG; }
     if(cli.is_option("-u16") ){ o_flags |= U16_TEST_FLAG; }
     if(cli.is_option("-u32") ){ o_flags |= U32_TEST_FLAG; }
     if(cli.is_option("-u64") ){ o_flags |= U64_TEST_FLAG; }
-    if(cli.is_option("-i8") ){ o_flags |= I8_TEST_FLAG; }
+    if(cli.is_option("-s8") ){ o_flags |= S8_TEST_FLAG; }
     if(cli.is_option("-s16") )  { o_flags |= S16_TEST_FLAG; }
     if(cli.is_option("-s32") ) { o_flags |= S32_TEST_FLAG; }
     if(cli.is_option("-s64") ){ o_flags |= S64_TEST_FLAG; }
@@ -77,26 +76,26 @@ u32 decode_cli(const Cli & cli){
 void show_usage(const Cli & cli){
     printf("\n");
     printf("usage: %s\n", cli.name());
-    printf("    -all            execute all test for all data type.\n");
+    printf("    -all            execute all tests for all data type\n");
 //test type
-    printf("    -execute_all    execute all type of test.\n");
-    printf("    -comp           comparison operations : =,!=,>=,<=,>,<.\n");
-    printf("    -arithm         arithmetic : +,-,/,*,%%.\n");
-    printf("    -logic          logical: |,&,~,^.\n");
-    printf("    -shift          shift operation: >>,<<.\n");
+    printf("    -execute_all    execute test types\n");
+    printf("    -comp           comparison operations : =,!=,>=,<=,>,<\n");
+    printf("    -arithm         arithmetic : +,-,/,*,%%\n");
+    printf("    -logic          logical: |,&,~,^\n");
+    printf("    -shift          shift operation: >>,<<\n");
     printf("    -typecast       type cast operation (type)(value)\n");
 //data type
-    printf("    -test_all       execute test for all data type.\n");
-    printf("    -u8             execute test for u8.\n");
-    printf("    -u16            execute test for u16.\n");
-    printf("    -u32            execute test for u32.\n");
-    printf("    -u64            execute test for u64.\n");
-    printf("    -i8             execute test for i8.\n");
-    printf("    -s16            execute test for s16.\n");
-    printf("    -s32            execute test for s32.\n");
-    printf("    -s64            execute test for s64.\n");
-    printf("    -float          execute test for float.\n");
-    printf("    -double         execute test for double.\n");
-    printf("    -int            execute test for int.\n");
+    printf("    -test_all       execute test for all data type\n");
+    printf("    -u8             execute test for u8\n");
+    printf("    -u16            execute test for u16\n");
+    printf("    -u32            execute test for u32\n");
+    printf("    -u64            execute test for u64\n");
+    printf("    -s8             execute test for s8\n");
+    printf("    -s16            execute test for s16\n");
+    printf("    -s32            execute test for s32\n");
+    printf("    -s64            execute test for s64\n");
+    printf("    -float          execute test for float\n");
+    printf("    -double         execute test for double\n");
+    printf("    -int            execute test for int\n");
 }
 

@@ -30,4 +30,6 @@ set(SOURCES
 	${SOURCES_PREFIX}/tests.h
 	${SOURCES_PREFIX}/SchedTest.cpp
 	${SOURCES_PREFIX}/SchedTest.hpp
+	${SOURCES_PREFIX}/PThreadTest.cpp
+	${SOURCES_PREFIX}/PThreadTest.hpp
 	PARENT_SCOPE)

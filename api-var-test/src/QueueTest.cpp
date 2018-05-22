@@ -1,4 +1,5 @@
 #include <sapi/var.hpp>
+#include <sapi/sys.hpp>
 #include "QueueTest.hpp"
 
 QueueTest::QueueTest() : Test("var::Queue"){
@@ -44,16 +45,21 @@ bool QueueTest::execute_class_performance_case(){
 
 bool QueueTest::execute_class_stress_case(){
     bool result = true;
+    const u32 inner_max = 200;
+    const u32 outer = 1000;
     Queue <u8>u8_queue;
     Queue <u32>u32_queue;
     Queue <double>double_queue;
-    for (u32 j =0;j<200;j++){
-        for (u32 i = 0;i<500;i++){
+
+    for (u32 j =0;j<outer;j++){
+        u32 inner = rand() % inner_max + 1;
+
+        for (u32 i = 0;i<inner;i++){
             u8_queue.push(i);
             u32_queue.push(i);
             double_queue.push((double)i);
         }
-        for (u32 i = 0;i<500;i++){
+        for (u32 i = 0;i<inner;i++){
             if((u8_queue.front()!=(u8)i)||(u32_queue.front()!=i)||(double_queue.front()!=(double)i)){
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 result = false;

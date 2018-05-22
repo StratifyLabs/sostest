@@ -2,6 +2,7 @@
 
 #include <sapi/sys.hpp>
 #include <sapi/test.hpp>
+#include <sapi/chrono.hpp>
 
 #include "DataTest.hpp"
 #include "QueueTest.hpp"
@@ -37,6 +38,8 @@ int main(int argc, char * argv[]){
        show_usage(cli);
        exit(0);
     }
+
+    srand(Clock::get_time().nanoseconds());
 
     Test::initialize(cli.name(), cli.version());
 
@@ -115,21 +118,21 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 void show_usage(const Cli & cli){
     printf("\n");
     printf("usage: %s\n", cli.name());
-    printf("    -all            execute all type of test for all object.\n");
-    printf("    -execute_all    execute all type of test.\n");
-    printf("    -api            execute api test.\n");
-    printf("    -stress         execute stress test.\n");
-    printf("    -performance    execute performance test.\n");
-    printf("    -additional     execute additional test.\n");
-    printf("    -test_all       execute test for all object.\n");
-    printf("    -data           execute test for Data.\n");
-    printf("    -queue          execute test for Queue.\n");
-    printf("    -string         execute test for String.\n");
-    printf("    -token          execute test for Token.\n");
-    printf("    -vector         execute test for Vector.\n");
-    printf("    -ring           execute test for Ring.\n");
-    printf("    -array          execute test for Array.\n");
-    printf("    -v              options to show the version.\n");
+    printf("    -all            execute all test types (stress, api, performance) for all objects\n");
+    printf("    -execute_all    execute all test types\n");
+    printf("    -api            execute api test\n");
+    printf("    -stress         execute stress test\n");
+    printf("    -performance    execute performance test\n");
+    printf("    -additional     execute additional tests (if any)\n");
+    printf("    -test_all       execute test for all objects\n");
+    printf("    -data           execute test for Data\n");
+    printf("    -queue          execute test for Queue\n");
+    printf("    -string         execute test for String\n");
+    printf("    -token          execute test for Token\n");
+    printf("    -vector         execute test for Vector\n");
+    printf("    -ring           execute test for Ring\n");
+    printf("    -array          execute test for Array\n");
+    printf("    -v              options to show the version\n");
 
 }
 

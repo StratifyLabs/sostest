@@ -1,5 +1,5 @@
 /*
-Copyright 2016 Tyler Gilbert
+Copyright 2016-2018 Tyler Gilbert
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ Copyright 2016 Tyler Gilbert
 #include "tests.h"
 
 #include "SchedTest.hpp"
+#include "PThreadTest.hpp"
 
 enum {
     STDIO_TEST = 1<<4,
@@ -52,7 +53,6 @@ int main(int argc, char * argv[]){
 
     o_execute_flags = decode_cli(cli);
 
-
     if( o_execute_flags == 0 ){
         show_usage(cli);
         exit(1);
@@ -62,6 +62,11 @@ int main(int argc, char * argv[]){
 
     if( o_execute_flags & SCHED_TEST ){
         SchedTest test;
+        test.execute(o_execute_flags);
+    }
+
+    if( o_execute_flags & PTHREAD_TEST ){
+        PThreadTest test;
         test.execute(o_execute_flags);
     }
 
@@ -188,10 +193,7 @@ u32 decode_cli(const Cli & cli){
         return o_flags;
     }
 
-    if(cli.is_option("-execute_all")){ o_flags |= Test::EXECUTE_ALL; }
-    if(cli.is_option("-api") ){ o_flags |= Test::EXECUTE_API; }
-    if(cli.is_option("-performance") ){ o_flags |= Test::EXECUTE_PERFORMANCE; }
-    if(cli.is_option("-stress") ){ o_flags |= Test::EXECUTE_STRESS; }
+    o_flags = Test::parse_options(cli);
 
     if(cli.is_option("-test_all") ){ o_flags |= 0xfffffff0; }
     if(cli.is_option("-stdio") ){ o_flags |= STDIO_TEST; }
