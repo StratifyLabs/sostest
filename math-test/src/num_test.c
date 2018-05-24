@@ -1558,15 +1558,11 @@ int add_u64(operand_t a, operand_t b, operand_t result)
      */
 int div_u64(operand_t a, operand_t b, operand_t result)
 {
-    //operand_t t;
+    operand_t t;
 
-    lldiv_t t;
+    t.op_u64 = a.op_u64 / b.op_u64;
 
-    t = lldiv(a.op_u64, b.op_u64);
-
-    //t.op_u64 = a.op_u64 / b.op_u64;
-
-    if( t.quot == result.op_u64 )
+    if( t.op_u64 == result.op_u64 )
     {
         return 1;
     }

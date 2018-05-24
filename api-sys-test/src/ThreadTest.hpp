@@ -6,6 +6,10 @@
 class ThreadTest : public Test {
 public:
     ThreadTest();
+
+    //api
+    //performance
+    //stress
 };
 
 #endif // THREADTEST_HPP
