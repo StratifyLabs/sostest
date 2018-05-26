@@ -16,6 +16,7 @@ bool TimeTest::execute_class_api_case(){
     Time now;
     time_t current_time_uno,current_time_dos;
     tm time_tm_uno,time_tm_dos;
+    u8 const time_delay_sec =1;
     Device rtc;
     rtc.open("/dev/rtc", O_RDWR);
     rtc_attr_t attr;
@@ -24,7 +25,7 @@ bool TimeTest::execute_class_api_case(){
     timer_sh.start();
     current_time_uno = now.get_time_of_day();
     time_tm_uno = now.get_tm();
-    timer_sh.wait_sec(1);
+    timer_sh.wait_sec(time_delay_sec);
     current_time_dos = now.get_time_of_day();
     time_tm_dos = now.get_tm();
     if(time_compare(time_tm_uno,time_tm_dos)){
@@ -55,7 +56,7 @@ bool TimeTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    timer_sh.wait_sec(1);
+    timer_sh.wait_sec(time_delay_sec);
     current_time_dos = now.get_time_of_day();
     time_tm_dos = now.get_tm();
     if(time_tm_dos.tm_year != time_struct.tm_year){
