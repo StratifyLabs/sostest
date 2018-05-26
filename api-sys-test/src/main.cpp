@@ -69,7 +69,7 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-additional") ){ execute_flags |= Test::EXECUTE_ADDITIONAL; }
 
     //update switches
-    if(cli.is_option("-test_all") ){ o_flags = 0xffffffff; }
+    if(cli.is_option("-test_all") ){ o_flags = 0xffffffe0; }
     if(cli.is_option("-aio") ){ o_flags |= AIO_TEST_FLAG; }
     if(cli.is_option("-appfs") ){ o_flags |= APPFS_TEST_FLAG; }
     if(cli.is_option("-assets") ){ o_flags |= ASSETS_TEST_FLAG; }
