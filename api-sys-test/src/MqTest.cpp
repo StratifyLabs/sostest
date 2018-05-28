@@ -1,6 +1,5 @@
 #include "MqTest.hpp"
 
-MqTest::MqTest()
-{
+MqTest::MqTest():Test("sys::Mq"){
 
 }
