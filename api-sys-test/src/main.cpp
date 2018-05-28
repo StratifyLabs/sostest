@@ -4,7 +4,7 @@
 #include <sapi/test.hpp>
 
 #include "ThreadTest.hpp"
-
+#include "SchedTest.hpp"
 
 //update flags
 enum {
@@ -24,10 +24,11 @@ enum {
     SYS_TEST_FLAG = (1<<17),
     THREAD_TEST_FLAG = (1<<18),
     TRACE_TEST_FLAG = (1<<19),
-    FILE_INFO_TEST_FLAG = (1<<10),
+    FILE_INFO_TEST_FLAG = (1<<20),
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
+void show_usage(const Cli & cli);
 
 int main(int argc, char * argv[]){
     Cli cli(argc, argv);
@@ -38,7 +39,18 @@ int main(int argc, char * argv[]){
 
     o_flags = decode_cli(cli, o_execute_flags);
 
+    if( o_flags == 0 ){
+       show_usage(cli);
+       exit(0);
+    }
+
+
     Test::initialize(cli.name(), cli.version());
+
+    if( o_flags & SCHED_TEST_FLAG ){
+        SchedTest test;
+        test.execute(o_execute_flags);
+    }
 
     if( o_flags & THREAD_TEST_FLAG ){
         ThreadTest test;
@@ -91,5 +103,34 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 
 }
 
+
+void show_usage(const Cli & cli){
+    printf("\n");
+    printf("usage: %s\n", cli.name());
+    printf("    -all            execute all test types (stress, api, performance) for all objects\n");
+    printf("    -execute_all    execute all test types\n");
+    printf("    -api            execute api test\n");
+    printf("    -stress         execute stress test\n");
+    printf("    -performance    execute performance test\n");
+    printf("    -additional     execute additional tests (if any)\n");
+    printf("    -test_all       execute test for all objects\n");
+//    printf("    -aio           execute test \n");
+//    printf("    -appfs          execute test\n");
+//    printf("    -assets         execute test\n");
+//    printf("    -cli          execute test \n");
+//    printf("    -dir         execute test \n");
+//    printf("    -file           execute test \n");
+//    printf("    -file_info          execute test \n");
+//    printf("    -messenger           execute test \n");
+//    printf("    -mq          execute test \n");
+//    printf("    -mutex         execute test \n");
+    printf("    -sched          execute test sys sched \n");
+//    printf("    -sem         execute test \n");
+//    printf("    -signal           execute test \n");
+//    printf("    -sys          execute test \n");
+    printf("    -thread         execute test \n");
+//    printf("    -trace           execute test \n");
+    printf("    -v              options to show the version\n");
+}
 
 

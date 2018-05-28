@@ -1,6 +1,6 @@
 #include "MutexTest.hpp"
 
-MutexTest::MutexTest()
+MutexTest::MutexTest():Test("sys::Mutex")
 {
 
 }
