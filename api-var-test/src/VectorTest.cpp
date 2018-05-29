@@ -24,7 +24,7 @@ bool VectorTest::execute_class_api_case(){
     bool result = true;
     const int test_count = 200;
     {
-        Vector <int>vector_test;
+        Vector<int> vector_test;
         u16 vector_size;
         if(vector_test.size()!=0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -33,7 +33,7 @@ bool VectorTest::execute_class_api_case(){
         for (u16 i =0; i<vector_size; i++){
             vector_test.push_back(i);
             if(vector_test.count()!=(u16)(i+1)){
-                print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+                print_case_message("Failed in cycle %s:%d:%d != %d", __PRETTY_FUNCTION__, __LINE__, i, vector_test.count());
                 result = false;
                 break;
             }

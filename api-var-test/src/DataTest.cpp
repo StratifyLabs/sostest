@@ -86,21 +86,21 @@ bool DataTest::execute_alloc(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if( dynamic_data.data_const() == 0 || (dynamic_data.capacity() != data_size)){
+    if( dynamic_data.data_const() == 0 || (dynamic_data.capacity() < data_size)){
         //failed to allocate memory
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    data_size--;
+    data_size-=Data::minimum_size();
     dynamic_data.alloc(data_size, true);
     if( dynamic_data.data_const() == 0 ||
         dynamic_data.data() == 0 ||
         (dynamic_data.capacity() < data_size)){
         //failed to allocate memory
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        print_case_message("Failed %s:%d %d < %d", __PRETTY_FUNCTION__, __LINE__, dynamic_data.capacity(), data_size);
         result = false;
     }
-    data_size--;
+    data_size-=Data::minimum_size();
     dynamic_data.alloc(data_size, false);
     if( dynamic_data.data_const() == 0 ||
         dynamic_data.data() == 0 ||
@@ -109,7 +109,7 @@ bool DataTest::execute_alloc(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    data_size--;
+    data_size-=Data::minimum_size();
     dynamic_data.resize(data_size);
     if( dynamic_data.data_const() == 0 ||
         dynamic_data.data() == 0 ||
@@ -138,10 +138,10 @@ bool DataTest::execute_class_performance_case(){
     bool result = true;
     int i;
     for(i=0; i < 5000; i++){
-        u32 data_size = rand() & 0xfff; //12 bits is up to 4096
+        u32 data_size = (rand() & 0xfff) + 1; //12 bits is up to 4096
         Data data(data_size);
         if( data.data() == 0 ){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            print_case_message("Failed %s:%d (%d, %d)", __PRETTY_FUNCTION__, __LINE__, i, data_size);
 			result = false;
             break;
         }
@@ -164,11 +164,7 @@ bool DataTest::execute_class_performance_case(){
             char* t;
             t = data.cdata();
 			//change one byte in data
-            if (data_size < data.minimum_size()){
-                t[data_size-1] = 0x0e;
-            }else{
-                t[data.calc_size()-1] = 0x0e;
-            }
+            t[data_size-1] = 0x0e;
             if( !memcmp(buffer, data.data_const(), data_size) ){
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 				result = false;
@@ -187,7 +183,7 @@ bool DataTest::execute_class_stress_case(){
 
     for(i=0; i < 1000; i++){
         //add recursive test
-        u8 size_temp = rand()&0x7f;
+        u8 size_temp = rand() % 512;
         Data data(size_temp);
         recursive_number = 0;
         if(!execute_recursive(data)){
@@ -204,23 +200,25 @@ bool DataTest::execute_class_stress_case(){
 
 bool DataTest::execute_recursive(Data data){
     recursive_number++;
-    if (data.calc_size() > data.minimum_size()){
-        Data data_new(data.calc_size()-1);
+    if (data.capacity() > data.minimum_size()){
+        Data data_new(data.capacity()-Data::minimum_size());
         if( data_new.data() == 0 ){
             //failed to allocate memory
+            print_case_message("Failed %s:%d %d", __PRETTY_FUNCTION__, __LINE__, data.capacity()-Data::minimum_size());
             return false;
-        }else{
+        } else {
             char fill_temp;
             //remember value
             fill_temp = recursive_number;
             data_new.fill(fill_temp);
             if (!execute_recursive(data_new)){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 return false;
             }
-            char buffer[data.calc_size()];
+            char buffer[data.capacity()];
             //recursive value changes after execute_recursive
-            memset(buffer, fill_temp, data_new.calc_size());
-            if( memcmp(buffer, data_new.data_const(), data_new.calc_size()) ){
+            memset(buffer, fill_temp, data_new.capacity());
+            if( memcmp(buffer, data_new.data_const(), data_new.capacity()) ){
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 return false;
             }

@@ -18,7 +18,8 @@ enum {
     F32_TEST_FLAG = (1<<13),
 };
 
-u32 decode_cli(const Cli & cli, u32 & execute_flags);
+static void show_usage(const Cli & cli);
+static u32 decode_cli(const Cli & cli, u32 & execute_flags);
 
 int main(int argc, char * argv[]){
     Cli cli(argc, argv);
@@ -28,6 +29,11 @@ int main(int argc, char * argv[]){
     u32 o_execute_flags;
 
     o_flags = decode_cli(cli, o_execute_flags);
+
+    if( o_flags == 0 ){
+        show_usage(cli);
+        exit(1);
+    }
 
     Test::initialize(cli.name(), cli.version());
 
@@ -40,6 +46,11 @@ int main(int argc, char * argv[]){
 
     return 0;
 
+}
+
+void show_usage(const Cli & cli){
+    printf("Usage: %s\n", cli.name());
+    printf("TODO: Show usage\n");
 }
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags){
