@@ -12,8 +12,9 @@ bool TransformQ31Test::execute_class_api_case(){
     bool result = true;
     Timer t;
 
-    SignalComplexQ31 data(1024);
-    SignalComplexQ31 data1;
+    RealFftQ31 fft(128);
+    SignalComplexQ31 data = fft.create_source_signal();
+    SignalComplexQ31 data1 = fft.create_destination_signal();
 
     //zero out complex values
     data.fill(0);
@@ -28,7 +29,6 @@ bool TransformQ31Test::execute_class_api_case(){
     }
 
     print_case_message("Construct FFT");
-    RealFftQ31 fft(data.count());
 
     if( fft.error_number() != 0 ){
         result = false;
@@ -36,7 +36,7 @@ bool TransformQ31Test::execute_class_api_case(){
     } else {
         print_case_message("Perform FFT");
         t.start();
-        data1 = data.transform(fft);
+        data.transform(data1, fft);
         t.stop();
         print_case_message("FFT in %ld microseconds", t.microseconds());
     }
