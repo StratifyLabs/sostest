@@ -12,9 +12,9 @@ bool TransformQ31Test::execute_class_api_case(){
     bool result = true;
     Timer t;
 
-    RealFftQ31 fft(128);
-    SignalComplexQ31 data = fft.create_source_signal();
-    SignalComplexQ31 data1 = fft.create_destination_signal();
+    FftRealQ31 fft(128);
+    SignalComplexQ31 data = fft.create_time_signal();
+    SignalComplexQ31 data1 = fft.create_frequency_signal();
 
     //zero out complex values
     data.fill(ComplexQ31(0,0));

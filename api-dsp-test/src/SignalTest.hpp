@@ -156,4 +156,16 @@ public:
     }
 };
 
+class SignalF32Test : public SignalTest<SignalF32> {
+public:
+    SignalF32Test() : SignalTest("dsp::SignalF32"){
+
+    }
+
+    bool is_api_available(){
+        return SignalQ31::arm_dsp_api_f32() != 0;
+    }
+};
+
+
 #endif // SIGNALTEST_HPP

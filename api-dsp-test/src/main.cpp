@@ -3,10 +3,10 @@
 #include <sapi/sys.hpp>
 #include <sapi/test.hpp>
 
-#include "TransformQ31Test.hpp"
 #include "SignalTest.hpp"
-#include "MatrixQ31Test.hpp"
+#include "MatrixTest.hpp"
 #include "FilterTest.hpp"
+#include "TransformTest.hpp"
 
 //update flags
 enum {
@@ -49,6 +49,11 @@ int main(int argc, char * argv[]){
         test.execute(o_execute_flags);
     }
 
+    if( (o_flags & SIGNAL_TEST_FLAG) && (o_flags & F32_TEST_FLAG) ){
+        SignalF32Test test;
+        test.execute(o_execute_flags);
+    }
+
     if( (o_flags & FILTER_TEST_FLAG) && (o_flags & Q15_TEST_FLAG) ){
         FilterQ15Test test;
         test.execute(o_execute_flags);
@@ -64,13 +69,33 @@ int main(int argc, char * argv[]){
         test.execute(o_execute_flags);
     }
 
+    if( (o_flags & MATRIX_TEST_FLAG) && (o_flags & Q15_TEST_FLAG) ){
+        MatrixQ15Test test;
+        test.execute(o_execute_flags);
+    }
+
     if( (o_flags & MATRIX_TEST_FLAG) && (o_flags & Q31_TEST_FLAG) ){
         MatrixQ31Test test;
         test.execute(o_execute_flags);
     }
 
+    if( (o_flags & MATRIX_TEST_FLAG) && (o_flags & F32_TEST_FLAG) ){
+        MatrixF32Test test;
+        test.execute(o_execute_flags);
+    }
+
+    if( (o_flags & TRANSFORM_TEST_FLAG) && (o_flags & Q15_TEST_FLAG) ){
+        TransformQ15Test test;
+        test.execute(o_execute_flags);
+    }
+
     if( (o_flags & TRANSFORM_TEST_FLAG) && (o_flags & Q31_TEST_FLAG) ){
         TransformQ31Test test;
+        test.execute(o_execute_flags);
+    }
+
+    if( (o_flags & TRANSFORM_TEST_FLAG) && (o_flags & F32_TEST_FLAG) ){
+        TransformF32Test test;
         test.execute(o_execute_flags);
     }
 
