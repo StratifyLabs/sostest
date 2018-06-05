@@ -1,15 +1,13 @@
 #ifndef SIGNALQ31TEST_HPP
 #define SIGNALQ31TEST_HPP
 
-#include <sapi/test.hpp>
+#include "SignalTest.hpp"
 
-class SignalQ31Test : public Test {
+class SignalQ31Test : public SignalTest<SignalQ31> {
 public:
-    SignalQ31Test();
+    SignalQ31Test() : SignalTest("dsp::SignalQ31"){
 
-    bool execute_class_api_case();
-    bool execute_class_performance_case();
-    bool execute_class_stress_case();
+    }
 };
 
 #endif // SIGNALQ31TEST_HPP

@@ -4,9 +4,9 @@
 #include <sapi/test.hpp>
 
 #include "TransformQ31Test.hpp"
-#include "SignalQ31Test.hpp"
+#include "SignalTest.hpp"
 #include "MatrixQ31Test.hpp"
-#include "FilterQ31Test.hpp"
+#include "FilterTest.hpp"
 
 //update flags
 enum {
@@ -39,13 +39,28 @@ int main(int argc, char * argv[]){
 
     Test::initialize(cli.name(), cli.version());
 
+    if( (o_flags & SIGNAL_TEST_FLAG) && (o_flags & Q15_TEST_FLAG) ){
+        SignalQ15Test test;
+        test.execute(o_execute_flags);
+    }
+
     if( (o_flags & SIGNAL_TEST_FLAG) && (o_flags & Q31_TEST_FLAG) ){
         SignalQ31Test test;
         test.execute(o_execute_flags);
     }
 
+    if( (o_flags & FILTER_TEST_FLAG) && (o_flags & Q15_TEST_FLAG) ){
+        FilterQ15Test test;
+        test.execute(o_execute_flags);
+    }
+
     if( (o_flags & FILTER_TEST_FLAG) && (o_flags & Q31_TEST_FLAG) ){
         FilterQ31Test test;
+        test.execute(o_execute_flags);
+    }
+
+    if( (o_flags & FILTER_TEST_FLAG) && (o_flags & F32_TEST_FLAG) ){
+        FilterF32Test test;
         test.execute(o_execute_flags);
     }
 
@@ -60,9 +75,7 @@ int main(int argc, char * argv[]){
     }
 
     Test::finalize();
-
     return 0;
-
 }
 
 void show_usage(const Cli & cli){
@@ -72,7 +85,6 @@ void show_usage(const Cli & cli){
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags){
     u32 o_flags = 0;
-
     execute_flags = 0;
 
     if(cli.is_option("-all") ){
@@ -80,7 +92,6 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
         execute_flags |= Test::EXECUTE_ALL;
         return o_flags;
     }
-
 
     if(cli.is_option("-execute_all") ){ execute_flags |= Test::EXECUTE_ALL; }
     if(cli.is_option("-api") ){ execute_flags |= Test::EXECUTE_API; }
@@ -100,7 +111,6 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-f32") ){ o_flags |= F32_TEST_FLAG; }
 
     return o_flags;
-
 }
 
 

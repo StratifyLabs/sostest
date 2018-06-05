@@ -17,7 +17,7 @@ bool TransformQ31Test::execute_class_api_case(){
     SignalComplexQ31 data1 = fft.create_destination_signal();
 
     //zero out complex values
-    data.fill(0);
+    data.fill(ComplexQ31(0,0));
 
     u32 i;
     for(i=0; i < data.count(); i++){
