@@ -201,6 +201,8 @@ bool TimerTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+//corners value 
+    timer_count.wait_seconds(0);
 
     return result;
 }
@@ -239,6 +241,9 @@ bool TimerTest::execute_class_stress_case(){
             break;
         }
         time_usec = timer_count.microseconds();
+//corners value 
+        timer_count.wait_seconds(0);
+
     }
     time_usec = 0;
     timer_count.restart();

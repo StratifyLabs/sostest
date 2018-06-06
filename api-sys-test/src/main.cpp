@@ -5,6 +5,7 @@
 
 #include "ThreadTest.hpp"
 #include "SchedTest.hpp"
+#include "MutexTest.hpp"
 
 //update flags
 enum {
@@ -54,6 +55,11 @@ int main(int argc, char * argv[]){
 
     if( o_flags & THREAD_TEST_FLAG ){
         ThreadTest test;
+        test.execute(o_execute_flags);
+    }
+
+    if( o_flags & MUTEX_TEST_FLAG ){
+        MutexTest test;
         test.execute(o_execute_flags);
     }
 
@@ -123,7 +129,7 @@ void show_usage(const Cli & cli){
 //    printf("    -file_info          execute test \n");
 //    printf("    -messenger           execute test \n");
 //    printf("    -mq          execute test \n");
-//    printf("    -mutex         execute test \n");
+    printf("    -mutex         execute test \n");
     printf("    -sched          execute test sys sched \n");
 //    printf("    -sem         execute test \n");
 //    printf("    -signal           execute test \n");
