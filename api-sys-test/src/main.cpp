@@ -6,6 +6,7 @@
 #include "ThreadTest.hpp"
 #include "SchedTest.hpp"
 #include "MutexTest.hpp"
+#include "MqTest.hpp"
 
 //update flags
 enum {
@@ -37,32 +38,28 @@ int main(int argc, char * argv[]){
     cli.handle_version();
     u32 o_flags;
     u32 o_execute_flags;
-
     o_flags = decode_cli(cli, o_execute_flags);
-
     if( o_flags == 0 ){
        show_usage(cli);
        exit(0);
     }
-
-
     Test::initialize(cli.name(), cli.version());
-
     if( o_flags & SCHED_TEST_FLAG ){
         SchedTest test;
         test.execute(o_execute_flags);
     }
-
     if( o_flags & THREAD_TEST_FLAG ){
         ThreadTest test;
         test.execute(o_execute_flags);
     }
-
     if( o_flags & MUTEX_TEST_FLAG ){
         MutexTest test;
         test.execute(o_execute_flags);
     }
-
+    if( o_flags & MQ_TEST_FLAG ){
+        MqTest test;
+        test.execute(o_execute_flags);
+    }
     Test::finalize();
     return 0;
 
@@ -128,7 +125,7 @@ void show_usage(const Cli & cli){
 //    printf("    -file           execute test \n");
 //    printf("    -file_info          execute test \n");
 //    printf("    -messenger           execute test \n");
-//    printf("    -mq          execute test \n");
+    printf("    -mq          execute test \n");
     printf("    -mutex         execute test \n");
     printf("    -sched          execute test sys sched \n");
 //    printf("    -sem         execute test \n");

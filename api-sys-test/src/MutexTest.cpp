@@ -1,17 +1,17 @@
 #include <sapi/sys.hpp>
 #include <sapi/chrono.hpp>
 #include "MutexTest.hpp"
-u32 count_0 = 0;
-u32 count_1 = 0;
-u32 count_2 = 0;
-u32 count_common;
-static u32 wait_time_1 = 400;
-static u32 wait_time_2 = 400;
+static u32 count_0 = 0;
+static u32 count_1 = 0;
+static u32 count_2 = 0;
+static u32 count_common;
+static u32 wait_time_1 = 800;
+static u32 wait_time_2 = 800;
 static void * thread_1(void * args);
 static void * thread_2(void * args);
 static int common_use_function(int id);
-int uno_id,dos_id,common_id;
-Mutex mutex_test;
+static int uno_id,dos_id,common_id;
+static Mutex mutex_test;
 
 MutexTest::MutexTest():Test("sys::Mutex")
 {
@@ -25,8 +25,11 @@ MutexTest::MutexTest():Test("sys::Mutex")
  *  set_type,set_prio_ceiling,set_pshared,set_protocol
  *
  * not writed test
- *
+ *  lock_timed
+ * * @todo more performance test for size prio and flags
  * not tested on
+ * @style in mutex_attr get_type() use "int" but set_type() use enum type
+ * @style in mutex_attr get_protocol() use "int" but set_protocok use enum protocol
  */
 bool MutexTest::execute_class_api_case(){
     bool result = true;
@@ -137,15 +140,16 @@ bool MutexTest::execute_api_mutex_attr_case(MutexAttr * mutex_attr){
  *
  *
  * not writed test
- *
+ *  lock_timed
  * not tested on
+ * thread1 and thread2 not lock mutex
  */
 bool MutexTest::execute_class_stress_case(){
     bool result = true;
-    const u32 itteration =100;
+    const u32 itteration =1000;
     Thread uno_thread,dos_thread;
     enum Sched::policy uno_policy,dos_policy;
-    uno_policy = Sched::RR;dos_policy = Sched::FIFO;
+    uno_policy = Sched::FIFO;dos_policy = Sched::FIFO;
     int uno_priority,dos_priority;
     uno_priority =1, dos_priority = 2;
     MutexAttr mutex_attr;
@@ -153,8 +157,9 @@ bool MutexTest::execute_class_stress_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    mutex_attr.set_type(MutexAttr::NORMAL);
-    mutex_attr.set_protocol(MutexAttr::PRIO_NONE_PROTOCOL);
+    mutex_attr.set_type(MutexAttr::RECURSIVE);
+    mutex_attr.set_protocol(MutexAttr::PRIO_INHERIT_PROTOCOL);
+    mutex_attr.set_pshared(true);
     mutex_test.set_attr(mutex_attr);
     if(mutex_test.lock()<0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -175,38 +180,39 @@ bool MutexTest::execute_class_stress_case(){
     }
     /*while((count_1==0) || (count_2==0)){
         Thread::yield();
+        Timer::wait_microseconds(100);
     }*/
     count_1 =1;
     count_2 =1;
     for(u32 i=0;i<itteration;i++){
         if(mutex_test.lock()<0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            break;
             result = false;
+            break;
         }else{
             //print_case_message("itterate %d:%d:%d:%d",count_common,i,count_1,count_2);
         }
-        Timer::wait_microseconds(100);
+        Timer::wait_microseconds(500);
         count_0++;
         if(mutex_test.unlock()<0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            break;
             result = false;
+            break;
         }
         Thread::yield();
-        Timer::wait_microseconds(100);
-        if(count_1==0 || count_2==0){
-            print_case_message("Failed in cycle %s:%d:%d:%d", __PRETTY_FUNCTION__, __LINE__,count_common,i);
-            break;
-            result = false;
-        }else{
-            //print_case_message("itterate %d:%d:%d:%d",count_common,i,count_1,count_2);
-        }
+        Timer::wait_microseconds(5000);
     }
+    if(count_1==1 || count_2==1){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        print_case_message("count %d:%d:%d",count_0,count_1,count_2);
+        result = false;
+    }
+
+
     if(uno_thread.is_running()){
         uno_thread.kill(0);
     }else{
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+
         result = false;
     }
     if(dos_thread.is_running()){
@@ -222,7 +228,7 @@ bool MutexTest::execute_class_stress_case(){
  *
  *
  * not writed test
- *
+ *  lock_timed
  * not tested on
  */
 bool MutexTest::execute_class_performance_case(){
@@ -234,6 +240,7 @@ static void * thread_1(void * args){
     mutex_test.lock();
     if(count_0==0){
         count_1 = 0;
+        mutex_test.unlock();
         return &count_1;
     }
     count_1++;
@@ -256,6 +263,7 @@ static void * thread_2(void * args){
     mutex_test.lock();
     if(count_0==0){
         count_2 = 0;
+        mutex_test.unlock();
         return &count_2;
     }
     count_2++;
@@ -277,7 +285,7 @@ static int common_use_function(int id){
     mutex_test.lock();
     common_id = id;
     Timer::wait_microseconds(wait_time_2);
-    u8 itterate = 5;
+    u8 itterate = 100;
     for (itterate=itterate;itterate;itterate--){
         Timer::wait_microseconds(wait_time_2);
         if((int)Thread::self()!=common_id){
