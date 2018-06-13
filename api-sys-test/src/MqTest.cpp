@@ -303,11 +303,12 @@ bool MqTest::execute_class_stress_case(){
         print_case_message("open answer");
         for (u32 i =0;i<itterate;i++){
             if(mq.send(message_thread_1,sizeof(message_thread_1),0)>0){
+                print_case_message("sent");
                 Sched::yield();
-                Timer::wait_microseconds(10000);
+                Timer::wait_microseconds(5000);
                 len_mess = mq_answer.receive(message_buff,sizeof(message_thread_2));
                 if((len_mess == sizeof(message_thread_2)) && \
-                        (strcmp(message_buff,message_thread_2)!=0)){
+                        (strcmp(message_buff,message_thread_2)==0)){
                     print_case_message("receive answer");
                 }
             }else{
@@ -344,27 +345,19 @@ static void * thread_1(void * args){
     if (mq_answer.create(mq_name_thread_answer,mq_oflag,mode,MqAttr::RDWR\
                          ,20,16)>=0){
         if(mq.open(mq_name_thread,mq_oflag)>=0){
-            printf("open");
             while(1){
                 count_1++;
-                Timer::wait_microseconds(10000);
                 len_mess = mq.receive(message_buff,sizeof(message_thread_1));
                 if((len_mess == sizeof(message_thread_1)) && \
-                        (strcmp(message_buff,message_thread_1)!=0)){
-                    printf("receive1");
+                        (strcmp(message_buff,message_thread_1)==0)){
                     mq_answer.send(message_thread_2,sizeof(message_thread_2),0);
                 }else if((len_mess == sizeof(message_thread_3)) &&\
-                         (strcmp(message_buff,message_thread_3)!=0)){
+                         (strcmp(message_buff,message_thread_3)==0)){
                     mq_answer.send(message_thread_4,sizeof(message_thread_4),0);
-                    printf("receive3");
                     break;
                 }
             }
-        }else{
-            printf("not open");
         }
-    }else{
-        printf("not create");
     }
 
     return &count_1;
