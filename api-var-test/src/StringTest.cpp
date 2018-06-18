@@ -207,7 +207,7 @@ bool StringTest::api_case_special(){
     capacity = s_upper_case.capacity();
     capacity+=4096;
     s_upper_case.set_capacity(capacity);
-    if (s_upper_case.capacity()!= capacity){
+    if (s_upper_case.capacity() < capacity){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }

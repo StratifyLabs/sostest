@@ -22,7 +22,7 @@ ThreadTest::ThreadTest() : Test("sys::Thread"){
  */
 bool ThreadTest::execute_class_api_case(){
     bool result = true;
-    Thread uno_thread,dos_thread,tres_thread,quatro_thread;
+    Thread uno_thread(4096),dos_thread(1024),tres_thread(1024),quatro_thread(1024);
     pid_t uno_id,dos_id,tres_id,quatro_id;
     enum Sched::policy uno_policy,dos_policy,tres_policy,quatro_policy;
     int uno_priority =1;
@@ -33,8 +33,9 @@ bool ThreadTest::execute_class_api_case(){
     dos_policy = Sched::FIFO;
     tres_policy = Sched::RR;
     quatro_policy = Sched::FIFO;
+    Timer timer_count;
 
-    if(uno_thread.get_detachstate()!=PTHREAD_CREATE_DETACHED){
+    if(uno_thread.get_detachstate()!=Thread::DETACHED){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -42,6 +43,33 @@ bool ThreadTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+
+    //join detach
+    if( uno_thread.set_detachstate(Thread::DETACHED) < 0 ){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(uno_thread.get_detachstate()!=Thread::DETACHED){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(uno_thread.is_joinable()){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if( uno_thread.set_detachstate(Thread::JOINABLE) < 0 ){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(uno_thread.get_detachstate()==Thread::DETACHED){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(!uno_thread.is_joinable()){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
     if(uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
@@ -59,19 +87,53 @@ bool ThreadTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    //repeat
-    if(!(uno_thread.create(handle_thread_1,this,uno_priority+1,uno_policy)==-1)){
+    //repeat -- should fail before thread is busy
+    if( !(uno_thread.create(handle_thread_1,this,uno_priority+1,uno_policy) < 0) ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(dos_thread.is_valid()){//check before create
+
+    if( dos_thread.is_valid() == true ){ //should be invalid before creating
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+
+    if( dos_thread.set_detachstate(Thread::DETACHED) < 0 ){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(dos_thread.get_detachstate()!=Thread::DETACHED){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(dos_thread.is_joinable()){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if( dos_thread.set_detachstate(Thread::JOINABLE) < 0 ){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(dos_thread.get_detachstate()==Thread::DETACHED){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(!dos_thread.is_joinable()){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
+    timer_count.start();
     if(dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+
+    if( dos_thread.is_valid() == false ){ //should be valid after creating
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
     dos_id = dos_thread.get_pid();
     if(!dos_id){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -116,12 +178,13 @@ bool ThreadTest::execute_class_api_case(){
         result = false;
     }
     if (uno_thread.get_priority()!= uno_priority||
-         dos_thread.get_priority()!= dos_priority||
-         tres_thread.get_priority()!= tres_priority||
-         quatro_thread.get_priority()!= quatro_priority){
+            dos_thread.get_priority()!= dos_priority||
+            tres_thread.get_priority()!= tres_priority||
+            quatro_thread.get_priority()!= quatro_priority){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+    print_case_message("Priority test");
     for(int i=0;i< Sched::get_priority_max(uno_policy);i++){
         uno_priority= (uno_priority==(Sched::get_priority_max(uno_policy)))?uno_priority:uno_priority+1;
         dos_priority= (dos_priority==Sched::get_priority_max(dos_policy))?dos_priority:dos_priority+1;
@@ -132,89 +195,80 @@ bool ThreadTest::execute_class_api_case(){
         tres_thread.set_priority(tres_priority);
         quatro_thread.set_priority(quatro_priority);
 
-        if (uno_thread.get_priority()!= uno_priority||
-            dos_thread.get_priority()!= dos_priority||
-            tres_thread.get_priority()!= tres_priority||
-            quatro_thread.get_priority()!= quatro_priority){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        if( uno_thread.get_priority() != uno_priority ){
+            print_case_message("Failed %s:%d (%d != %d)", __PRETTY_FUNCTION__, __LINE__, uno_thread.get_priority(), uno_priority);
+            result = false;
+        }
+
+        if( dos_thread.get_priority() != dos_priority ){
+            print_case_message("Failed %s:%d (%d != %d)", __PRETTY_FUNCTION__, __LINE__, dos_thread.get_priority(), dos_priority);
+            result = false;
+        }
+
+        if( tres_thread.get_priority() != tres_priority ){
+            print_case_message("Failed %s:%d (%d != %d) %d", __PRETTY_FUNCTION__, __LINE__, tres_thread.get_priority(), tres_priority, tres_thread.error_number());
+            result = false;
+        }
+
+        if( quatro_thread.get_priority() != quatro_priority ){
+            print_case_message("Failed %s:%d (%d != %d) %d", __PRETTY_FUNCTION__, __LINE__, quatro_thread.get_priority(), quatro_priority, quatro_thread.error_number());
             result = false;
         }
     }
+
     if(uno_priority!=Sched::get_priority_max(uno_policy)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
 
     }
+
+    print_case_message("Yield to threads");
     if(uno_thread.is_running()||dos_thread.is_running()||\
-          tres_thread.is_running()||quatro_thread.is_running()){
+            tres_thread.is_running()||quatro_thread.is_running()){
         Thread::yield();//self proccess
     }
-    //join detach
-    uno_thread.set_detachstate(PTHREAD_CREATE_DETACHED);
-    if(uno_thread.get_detachstate()!=PTHREAD_CREATE_DETACHED){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(uno_thread.is_joinable()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    uno_thread.set_detachstate(PTHREAD_CREATE_JOINABLE);
-    if(uno_thread.get_detachstate()==PTHREAD_CREATE_DETACHED){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(!uno_thread.is_joinable()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    //stack size
-    if(!uno_thread.get_stacksize()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    dos_thread.set_detachstate(PTHREAD_CREATE_DETACHED);
-    if(dos_thread.get_detachstate()!=PTHREAD_CREATE_DETACHED){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(dos_thread.is_joinable()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    dos_thread.set_detachstate(PTHREAD_CREATE_JOINABLE);
-    if(dos_thread.get_detachstate()==PTHREAD_CREATE_DETACHED){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(!dos_thread.is_joinable()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    //stack size
-    if(!uno_thread.get_stacksize()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(count_1 == 0||count_2==0||count_3==0||count_4 ==0){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-//    void** temp;
-//    pid_t current_pid;
-    Timer timer_count;
 
-//    current_pid = Sched::get_pid();
-    timer_count.start();
-    Thread::join(uno_thread);
-//    uno_thread.wait(temp,1500);
-//    print_case_message("timer after join %lu",timer_count.microseconds());
+    //stack size
+    if(!uno_thread.get_stacksize()){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
+    //stack size
+    if(!uno_thread.get_stacksize()){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(count_1 == 0 || count_2==0 || count_3==0 || count_4 ==0){
+        print_case_message("Failed %s:%d (%d,%d,%d,%d)", __PRETTY_FUNCTION__, __LINE__, count_1, count_2, count_3, count_4);
+        result = false;
+    }
+    //    void** temp;
+    //    pid_t current_pid;
+
+    //    current_pid = Sched::get_pid();
+    print_case_message("Join uno");
+    //Thread::join(uno_thread);
+
+    if( uno_thread.join() < 0 ){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
+    print_case_message("Join dos");
+
+    if( Thread::join(dos_thread) < 0 ){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    //    uno_thread.wait(temp,1500);
+    //    print_case_message("timer after join %lu",timer_count.microseconds());
     //while before all thread is stoped
     while(uno_thread.is_running()||dos_thread.is_running()||\
           tres_thread.is_running()||quatro_thread.is_running()){
         Thread::yield();
     }
-//    print_case_message("timer after join %lu",timer_count.microseconds());
+    //    print_case_message("timer after join %lu",timer_count.microseconds());
 
     if((count_1 < 2)||(count_2<2)||(count_3<2)||(count_4<2)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -222,22 +276,43 @@ bool ThreadTest::execute_class_api_case(){
     }
     //wait_time sets only in joined thread
     if(timer_count.microseconds()< wait_time){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        print_case_message("Failed %s:%d (%d < %d)", __PRETTY_FUNCTION__, __LINE__, timer_count.microseconds(), wait_time);
         result = false;
     }
+
+    print_case_message("Repeat create uno");
+
     //repeat create thread
-    if(uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1){
+    if( uno_thread.set_detachstate(Thread::DETACHED) < 0 ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+    if( uno_thread.create(handle_thread_1,this,uno_priority,uno_policy) < 0 ){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
     if(uno_thread.is_running()){
-        uno_thread.kill(0);
-    }else{
+#if 0 //Signal::CONT causes the OS to stall Issue
+        if( uno_thread.kill(Signal::STOP) < 0 ){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+        }
+
+        if( uno_thread.kill(Signal::CONT) < 0 ){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+        }
+#endif
+
+    } else {
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+
+    uno_thread.wait(0, 100);
     //check after kill
-    if(uno_thread.is_running()){
+    if( uno_thread.is_running() ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -279,37 +354,49 @@ bool ThreadTest::execute_class_stress_case(){
     max_prior_FIFO= Sched::get_priority_max(dos_policy);
     for(u32 i=0;i<itterate_num;i++){
         u32 max_time;
+        print_case_message("Running iteration %d", i);
         wait_time_quatro = ((u16)rand() & 0x1ff) +200;//used for quatro thread
         wait_time = ((u16)rand() & 0x1ff)+200;//used for thread uno dos tres
         max_time = wait_time>wait_time_quatro?wait_time:wait_time_quatro;//use max value
         max_time = wait_time;
         timer_count.start();
         count_1=0;count_2=0;count_3=0;count_4=0;
+        uno_priority= ((i % max_prior_RR)==0?1:(i % max_prior_RR));
+        dos_priority= ((i % max_prior_FIFO)==0?1:(i % max_prior_FIFO));
+
         if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
-            (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
-            (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-            (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
+                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
+                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
+                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        uno_priority= ((i % max_prior_RR)==0?1:(i % max_prior_RR));
-        uno_thread.set_priority(uno_priority);
+
+        if( uno_thread.set_priority(uno_priority) < 0 ){
+            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+            result = false;
+            break;
+        }
         if (uno_thread.get_priority()!= uno_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        dos_priority= ((i % max_prior_FIFO)==0?1:(i % max_prior_FIFO));
-        dos_thread.set_priority(dos_priority);
+
+
+        if( dos_thread.set_priority(dos_priority) < 0 ){
+            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+            result = false;
+        }
+
         if (dos_thread.get_priority()!= dos_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
 
-        while(uno_thread.is_running()||dos_thread.is_running()||\
-              tres_thread.is_running()||quatro_thread.is_running()){
+        while(uno_thread.is_running()||dos_thread.is_running()||tres_thread.is_running()||quatro_thread.is_running()){
             Thread::yield();
         }
         if((count_1 != 2)||(count_2!=2)||(count_3!=2)||(count_4!=2)){
@@ -324,10 +411,10 @@ bool ThreadTest::execute_class_stress_case(){
             break;
         }
 
-        uno_thread.kill(0);
-        dos_thread.kill(0);
-        tres_thread.kill(0);
-        quatro_thread.kill(0);
+        uno_thread.wait(0, 10);
+        dos_thread.wait(0, 10);
+        tres_thread.wait(0, 10);
+        quatro_thread.wait(0, 10);
         timer_count.stop();
     }
     //FIFO sheduler
@@ -344,9 +431,9 @@ bool ThreadTest::execute_class_stress_case(){
         timer_count.start();
         count_1=0;count_2=0;count_3=0;count_4=0;
         if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
-            (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
-            (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-            (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
+                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
+                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
+                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
@@ -402,9 +489,9 @@ bool ThreadTest::execute_class_stress_case(){
         timer_count.start();
         count_1=0;count_2=0;count_3=0;count_4=0;
         if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
-            (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
-            (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-            (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
+                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
+                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
+                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;

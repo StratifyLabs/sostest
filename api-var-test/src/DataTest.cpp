@@ -183,13 +183,14 @@ bool DataTest::execute_class_stress_case(){
 
     for(i=0; i < 1000; i++){
         //add recursive test
-        u8 size_temp = rand() % 512;
+        u16 size_temp = rand() % 256;
         Data data(size_temp);
         recursive_number = 0;
         if(!execute_recursive(data)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
+        ::free((void*)1);
     }
 
     return result;
@@ -200,11 +201,11 @@ bool DataTest::execute_class_stress_case(){
 
 bool DataTest::execute_recursive(Data data){
     recursive_number++;
-    if (data.capacity() > data.minimum_size()){
-        Data data_new(data.capacity()-Data::minimum_size());
+    if (data.capacity() > data.minimum_size()*2){
+        Data data_new(data.capacity()-Data::minimum_size()*2);
         if( data_new.data() == 0 ){
             //failed to allocate memory
-            print_case_message("Failed %s:%d %d", __PRETTY_FUNCTION__, __LINE__, data.capacity()-Data::minimum_size());
+            print_case_message("Failed %s:%d %d %d", __PRETTY_FUNCTION__, __LINE__, data.capacity()-Data::minimum_size(), recursive_number);
             return false;
         } else {
             char fill_temp;
@@ -212,7 +213,7 @@ bool DataTest::execute_recursive(Data data){
             fill_temp = recursive_number;
             data_new.fill(fill_temp);
             if (!execute_recursive(data_new)){
-                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                //print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 return false;
             }
             char buffer[data.capacity()];
@@ -224,5 +225,5 @@ bool DataTest::execute_recursive(Data data){
             }
         }
     }
-    return 1;
+    return true;
 }

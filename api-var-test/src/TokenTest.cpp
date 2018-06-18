@@ -1,4 +1,6 @@
 #include <sapi/var.hpp>
+#include <sapi/chrono.hpp>
+
 #include "TokenTest.hpp"
 int TokenTest::recursive_number = 0;
 
@@ -48,6 +50,8 @@ bool TokenTest::execute_class_stress_case(){
     bool result = true;
     String token_string = "";
     String delim_string = "";
+    token_string.clear();
+    print_case_message("Start recursive test:%s", token_string.c_str());
     result = execute_recursive(token_string, delim_string);
     return result;
 }
@@ -122,21 +126,24 @@ bool TokenTest::execute_class_api_case(){
 bool TokenTest::execute_recursive(String &token_string,String &delim_string){
     recursive_number++;
     u16 token_number = recursive_number;
-    if(token_string.length()<400){
-        token_string.append("temp");
+    print_case_message("recursive token:%d", recursive_number);
+    if(token_string.length() < 200){
+        String tmp;
+        tmp.sprintf("tmp%d", recursive_number);
+        token_string.append(tmp);
         char delim = 0x20 | (recursive_number&0x0f);
         delim_string.append(delim);
         token_string.append(delim);
-        Token new_token(token_string.c_str(),delim_string.c_str(),0);
+        Token new_token(token_string.c_str(),delim_string.c_str());
         if(!execute_recursive(token_string, delim_string)){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            return false;
+            //print_case_message("Failed %s:%d (%d)", __PRETTY_FUNCTION__, __LINE__, token_number);
+            //return false;
         }
         if((new_token.count()) != token_number){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            print_case_message("Failed %s:%d (%d != %d)", __PRETTY_FUNCTION__, __LINE__, new_token.count(), token_number);
             return false;
         }
-    }else{
+    } else {
         print_case_message("token count %lu",token_number);
     }
 
