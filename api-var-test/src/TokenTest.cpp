@@ -130,7 +130,7 @@ bool TokenTest::execute_recursive(String &token_string,String &delim_string){
     if(token_string.length() < 200){
         String tmp;
         tmp.sprintf("tmp%d", recursive_number);
-        token_string.append(tmp);
+        token_string.append(tmp.str());
         char delim = 0x20 | (recursive_number&0x0f);
         delim_string.append(delim);
         token_string.append(delim);
