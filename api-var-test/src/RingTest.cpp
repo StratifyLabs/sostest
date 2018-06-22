@@ -38,8 +38,8 @@ bool RingTest::execute_class_api_case(){
     u8 packet_read[size_packet];
     u8 buffer[size_packet*8];
     u32 writed_data_size;
-    Ring ring1(buffer, sizeof(buffer));
-    Ring ring2(size_packet*16);
+    Ring<u8> ring1(buffer, sizeof(buffer));
+    Ring<u8> ring2(size_packet*16);
     //fill write buffer for test
     for (u16 i=0; i<size_packet; i++){
         packet_write[i] = i;
