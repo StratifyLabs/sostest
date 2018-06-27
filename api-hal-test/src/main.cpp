@@ -3,6 +3,7 @@
 #include <sapi/sys.hpp>
 #include <sapi/test.hpp>
 
+#include "AdcTest.hpp"
 #include "CoreTest.hpp"
 #include "FifoTest.hpp"
 
@@ -45,6 +46,12 @@ int main(int argc, char * argv[]){
     o_flags = decode_cli(cli, o_execute_flags);
 
     Test::initialize(cli.name(), cli.version());
+
+    if( o_flags & ADC_TEST_FLAG ){
+        AdcTest test;
+        test.execute(o_execute_flags);
+    }
+
 
     if( o_flags & CORE_TEST_FLAG ){
         CoreTest test;
@@ -89,7 +96,6 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-fifo") ){ o_flags |= FIFO_TEST_FLAG; }
 
     return o_flags;
-
 }
 
 
