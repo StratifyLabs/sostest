@@ -8,6 +8,7 @@
 #include "MutexTest.hpp"
 #include "MqTest.hpp"
 #include "SysTest.hpp"
+#include "SignalTest.hpp"
 
 //update flags
 enum {
@@ -65,6 +66,11 @@ int main(int argc, char * argv[]){
         SysTest test;
         test.execute(o_execute_flags);
     }
+    if( o_flags & SIGNAL_TEST_FLAG){
+        SignalTest test;
+        test.execute(o_execute_flags);
+    }
+
     Test::finalize();
     return 0;
 }
@@ -126,7 +132,7 @@ void show_usage(const Cli & cli){
     printf("    -mutex          execute test for sys/mutex \n");
     printf("    -sched          execute test for sys/sched \n");
 //    printf("    -sem         execute test \n");
-//    printf("    -signal           execute test \n");
+    printf("    -signal           execute test \n");
     printf("    -sys            execute test for sys/sys \n");
     printf("    -thread         execute test for sys/thread \n");
 //    printf("    -trace           execute test \n");

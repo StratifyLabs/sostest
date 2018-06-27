@@ -1,6 +1,6 @@
 #ifndef MQTEST_HPP
 #define MQTEST_HPP
-
+#include <sapi/sys.hpp>
 #include <sapi/test.hpp>
 
 class MqTest : public Test {
