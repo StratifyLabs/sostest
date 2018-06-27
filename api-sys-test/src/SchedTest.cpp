@@ -140,6 +140,9 @@ bool SchedTest::execute_class_api_case(){
     return result;
 }
 /* @brief stress test for sys Sched
+ *
+ * not tested on
+ * @warning set sheduller with OTHER param
  */
 bool SchedTest::execute_class_stress_case(){
     bool result = true;
@@ -148,12 +151,14 @@ bool SchedTest::execute_class_stress_case(){
     int priority_get;
     int fifo_priority_min,fifo_priority_max;
     int rr_priority_min,rr_priority_max;
+    int other_priority_min,other_priority_max;
     int rr_interval;
     rr_priority_max = Sched::get_priority_max(Sched::RR);
     fifo_priority_max = Sched::get_priority_max(Sched::FIFO);
     rr_priority_min = Sched::get_priority_min(Sched::RR);
     fifo_priority_min = Sched::get_priority_min(Sched::FIFO);
-
+    other_priority_min = Sched::get_priority_min(Sched::OTHER);
+    other_priority_max = Sched::get_priority_max(Sched::OTHER);
     const u16 itteration_number = 1000;
     for(u16 i=0; i < itteration_number; i++){
         //get proccess id
@@ -163,44 +168,143 @@ bool SchedTest::execute_class_stress_case(){
         if(procces_id <= 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
-
+            break;
         }
         if (Sched::set_scheduler(procces_id, Sched::FIFO, priority_set)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
+            break;
         }
         Sched::yield();
         priority_get = Sched::get_priority(procces_id);
         if((priority_get!=priority_set)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
+            break;
         }
         rr_interval = Sched::get_rr_interval(procces_id);
         if(rr_interval <= 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
+            break;
         }
         priority_set = i % rr_priority_max;
         priority_set = priority_set < rr_priority_min?rr_priority_min:priority_set;
         if(procces_id <= 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
-
+            break;
         }
         if (Sched::set_scheduler(procces_id, Sched::RR, priority_set)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
+            break;
         }
         Sched::yield();
         priority_get = Sched::get_priority(procces_id);
         if((priority_get!=priority_set)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
+            break;
         }
         rr_interval = Sched::get_rr_interval(procces_id);
         if(rr_interval <= 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
+            break;
+        }
+        priority_set = i % other_priority_max;
+        priority_set = priority_set < other_priority_min?other_priority_min:priority_set;
+        if(procces_id <= 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if (Sched::set_scheduler(procces_id, Sched::OTHER, priority_set)){
+            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+            result = false;
+            break;
+        }
+        Sched::yield();
+        priority_get = Sched::get_priority(procces_id);
+        if((priority_get!=priority_set)){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        rr_interval = Sched::get_rr_interval(procces_id);
+        if(rr_interval <= 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+    }
+    return result;
+}
+/* @brief performance test for sys Sched
+ * not tested on
+ * @warning set sheduller with OTHER param
+ */
+bool SchedTest::execute_class_performance_case(){
+    bool result = true;
+    pid_t procces_id;
+    int priority_set;
+    int fifo_priority_min,fifo_priority_max;
+    int rr_priority_min,rr_priority_max;
+    int other_priority_min,other_priority_max;
+    int rr_interval;
+    const u16 itteration_number = 1000;
+    rr_priority_max = Sched::get_priority_max(Sched::RR);
+    fifo_priority_max = Sched::get_priority_max(Sched::FIFO);
+    rr_priority_min = Sched::get_priority_min(Sched::RR);
+    fifo_priority_min = Sched::get_priority_min(Sched::FIFO);
+    other_priority_min = Sched::get_priority_min(Sched::OTHER);
+    other_priority_max = Sched::get_priority_max(Sched::OTHER);
+
+    for(u16 i=0; i < itteration_number; i++){
+        //get proccess id
+        procces_id = Sched::get_pid();
+        priority_set = i % fifo_priority_max;
+        priority_set = priority_set < fifo_priority_min?fifo_priority_min:priority_set;
+        if (Sched::set_scheduler(procces_id, Sched::FIFO, priority_set)){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        Sched::yield();
+        rr_interval = Sched::get_rr_interval(procces_id);
+        if(rr_interval <= 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        priority_set = i % rr_priority_max;
+        priority_set = priority_set < rr_priority_min?rr_priority_min:priority_set;
+        if (Sched::set_scheduler(procces_id, Sched::RR, priority_set)){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        Sched::yield();
+        rr_interval = Sched::get_rr_interval(procces_id);
+        if(rr_interval <= 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        priority_set = i % other_priority_max;
+        priority_set = priority_set < other_priority_min?other_priority_min:priority_set;
+        if (Sched::set_scheduler(procces_id, Sched::OTHER, priority_set)){
+            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+            result = false;
+            break;
+        }
+        Sched::yield();
+        rr_interval = Sched::get_rr_interval(procces_id);
+        if(rr_interval <= 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
         }
     }
     return result;

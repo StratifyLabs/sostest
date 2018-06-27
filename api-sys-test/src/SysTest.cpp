@@ -61,12 +61,10 @@ bool SysTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    print_case_message("version %s",version.str());
     if(Sys::get_kernel_version(version)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    print_case_message("kernel version %s",version.str());
     if(board.open()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
@@ -74,41 +72,29 @@ bool SysTest::execute_class_api_case(){
     if(board.get_board_config(config)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("config %s",config.sys_version);
     }
     if(board.get_info(sys_info)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("sys_info %s",sys_info.name);
     }
     if(board.get_23_info(sys_23_info)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("sys_23_info %s",sys_23_info.name);
     }
     if(board.get_26_info(sys_26_info)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("sys_26_info %s",sys_26_info.name);
     }
     sys_taskattr_t task_attr;
     if(board.get_taskattr(task_attr)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("task_attr %s",task_attr.name);
     }
     int current_task;
     current_task = board.current_task();
     if(current_task<=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("current task %d",current_task);
     }
     current_task+=1;
     board.set_current_task(current_task);
@@ -120,8 +106,6 @@ bool SysTest::execute_class_api_case(){
     if(board.get_id(sys_id)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
-    }else{
-        print_case_message("sys_id %s",sys_id.id);
     }
     return result;
 }
