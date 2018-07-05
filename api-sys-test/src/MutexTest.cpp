@@ -37,7 +37,7 @@ bool MutexTest::execute_class_api_case(){
     enum Sched::policy uno_policy,dos_policy;
     uno_policy = Sched::RR;dos_policy = Sched::FIFO;
     int uno_priority,dos_priority;
-    uno_priority =1, dos_priority = 1;
+    uno_priority =1; dos_priority = 1;
     MutexAttr mutex_attr;
     if(!execute_api_mutex_attr_case(&mutex_attr)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
