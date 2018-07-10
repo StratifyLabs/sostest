@@ -19,8 +19,12 @@ SysTest::SysTest() : Test("sys::Test"){
  * reclaim_ram,
  * ,powerdown,hibernate,request,reset,
  * redirect_stdout,redirect_stdin,redirect_stderr,
- * not tested on
  *
+ * not tested on
+ * Sys::open return non zero value
+ * Sys:;get_23_info return non zero value
+ * Sys::get_26_info return non zero value
+ * Sys::get_taskattr return non zero value
  */
 bool SysTest::execute_class_api_case(){
     bool result;
@@ -50,7 +54,7 @@ bool SysTest::execute_class_api_case(){
         result = false;
     }
     for (u32 i =0;i<buff_size;i++){
-       temp_buff[i] = i;
+       temp_buff[i] = (u8)i;
     }
     Sys::assign_zero_sum32(temp_buff,buff_size);
     if(!Sys::verify_zero_sum32(temp_buff,buff_size)){

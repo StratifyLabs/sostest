@@ -1,10 +1,9 @@
-#include <sapi/sys.hpp>
 #include <sapi/chrono.hpp>
 #include "MqTest.hpp"
-char mq_name_thread[] = "dialog";
-char mq_name_thread_answer[] = "dialog_answer";
+static char mq_name_thread[] = "dialog";
+static char mq_name_thread_answer[] = "dialog_answer";
 
-char message_buff[64] = "clean";
+static char message_buff[64] = "clean";
 const char message_thread_1[] = "bon jour";
 const char message_thread_2[] = "ola";
 const char message_thread_3[] = "verra";
@@ -26,11 +25,10 @@ MqTest::MqTest():Test("sys::Mq"){
  * MqAttr(),MqAttr(long f, long m, long s),
  * flags(),curmsgs(),maxmsg(),msgsize(),
  * set_flags(long v),set_curmsgs(long v),set_maxmsg(long v),set_msgsize(long v)
- *
+ * send(),receive()
  * not writed test
- * send()
  * ,close(),is_open(),notify(),,
- * set_attr(),receive()
+ * set_attr()
  * unlink(),msg_prio(),
  * @todo more api test for size and flags
  * @todo more stress test for size prio and flags
@@ -142,8 +140,8 @@ bool MqTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    const char message_uno[] = "uno";
-    u8 len_mess;
+    char message_uno[] = "uno";
+    int len_mess;
     clock_time = Clock::get_time();
     clock_time_add.set(0,10*1000*1000);
     clock_time +=clock_time_add;
@@ -152,7 +150,7 @@ bool MqTest::execute_class_api_case(){
         clock_time = Clock::get_time();
         clock_time +=clock_time_add;
         timeout = clock_time.timespec();
-        len_mess = mq.receive_timed((char*)message_uno,sizeof(message_uno),timeout);
+        len_mess = mq.receive_timed(message_uno,sizeof(message_uno),timeout);
         if(len_mess != sizeof(message_uno)){
             print_case_message("Failed %s:%d:%d", __PRETTY_FUNCTION__, __LINE__,len_mess );
             result = false;
@@ -174,7 +172,7 @@ bool MqTest::execute_api_simply_case(){
     Mq mq;
     long attr_flag,attr_mq_maxmsg,attr_msgsize,attr_curmsgs;
     int mq_oflag;
-    u8 len_mess;
+    int len_mess;
     attr_flag = MqAttr::RDWR;
     mq_oflag = O_RDWR;
     mode_t mode = 666;
@@ -277,7 +275,7 @@ bool MqTest::execute_class_stress_case(){
     mode_t mode = 666;
     Thread uno_thread;
     u32 itterate = 100;
-    u8 len_mess;
+    int len_mess;
     attr_flag = MqAttr::RDWR;
     attr_mq_maxmsg = 20;
     attr_msgsize = 16;
@@ -340,8 +338,9 @@ static void * thread_1(void * args){
     Mq mq;
     Mq mq_answer;
     int mq_oflag = O_RDWR;
-    u8 len_mess;
+    int len_mess;
     mode_t mode = 666;
+    (void) args;
     if (mq_answer.create(mq_name_thread_answer,mq_oflag,mode,MqAttr::RDWR\
                          ,20,16)>=0){
         if(mq.open(mq_name_thread,mq_oflag)>=0){
