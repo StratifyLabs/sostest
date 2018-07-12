@@ -5,6 +5,7 @@
 #include <sapi/hal.hpp>
 #include "SysTest.hpp"
 static void rand_string_value(u16 size,String & string);
+static u32 get_id(u32 pid);
 SysTest::SysTest() : Test("sys::Test"){
 
 }
@@ -22,9 +23,6 @@ SysTest::SysTest() : Test("sys::Test"){
  *
  * not tested on
  * Sys::open return non zero value
- * Sys:;get_23_info return non zero value
- * Sys::get_26_info return non zero value
- * Sys::get_taskattr return non zero value
  */
 bool SysTest::execute_class_api_case(){
     bool result;
@@ -34,22 +32,20 @@ bool SysTest::execute_class_api_case(){
     u8 temp_buff[buff_size];
     sos_board_config_t config;
     sys_info_t sys_info;
-    sys_23_info_t sys_23_info;
-    sys_26_info_t sys_26_info;
     Sys board;
     //start fake
-    if(Sys::launch("/app/flash/fake",0,"orphan",0,Sys::LAUNCH_RAM_SIZE_DEFAULT,0,0)>=0){
+    if(Sys::launch("/app/flash/fake",nullptr,"orphan",0,Sys::LAUNCH_RAM_SIZE_DEFAULT,nullptr,nullptr)>=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     //start preinstalled app launchslave
-    if(Sys::launch("/app/flash/launchslave",0,"task_id",0,Sys::LAUNCH_RAM_SIZE_DEFAULT,0,0)<0){
+    if(Sys::launch("/app/flash/launchslave",nullptr,"task_id",0,Sys::LAUNCH_RAM_SIZE_DEFAULT,nullptr,nullptr)<0){
         print_case_message("need to install launchslave app");
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     Timer::wait_microseconds(40000);
-    if(Sys::free_ram("/app/flash/launchslave",0)!=0){
+    if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -69,7 +65,7 @@ bool SysTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(board.open()!=0){
+    if(board.open()<0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -81,22 +77,9 @@ bool SysTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(board.get_23_info(sys_23_info)!=0){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(board.get_26_info(sys_26_info)!=0){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    sys_taskattr_t task_attr;
-    if(board.get_taskattr(task_attr)!=0){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
     int current_task;
     current_task = board.current_task();
-    if(current_task<=0){
+    if(current_task<0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -134,7 +117,7 @@ bool SysTest::execute_class_stress_case(){
         rand_string_value(sizeof(arg_buff),temp_str);
         ram_size = rand() & 0xfff;
         pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_FLASH, ram_size ,0,0);
+                          Sys::LAUNCH_OPTIONS_FLASH, ram_size ,nullptr,nullptr);
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -142,13 +125,13 @@ bool SysTest::execute_class_stress_case(){
         }
         //print_case_message("LAUNCH_OPTIONS_FLASH %d",pid);
         Timer::wait_microseconds(40000);
-        if(Sys::free_ram("/app/flash/launchslave",0)!=0){
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
         }
         pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_ROOT, ram_size ,0,0);
+                          Sys::LAUNCH_OPTIONS_ROOT, ram_size ,nullptr,nullptr);
         if(pid<0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -156,13 +139,13 @@ bool SysTest::execute_class_stress_case(){
         }
         //print_case_message("LAUNCH_OPTIONS_ROOT %d",pid);
         Timer::wait_microseconds(40000);
-        if(Sys::free_ram("/app/flash/launchslave",0)!=0){
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
         }
         pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_ORPHAN, ram_size ,0,0);
+                          Sys::LAUNCH_OPTIONS_ORPHAN, ram_size ,nullptr,nullptr);
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -170,13 +153,13 @@ bool SysTest::execute_class_stress_case(){
         }
         //print_case_message("LAUNCH_OPTIONS_ORPHAN %d",pid);
         Timer::wait_microseconds(40000);
-        if(Sys::free_ram("/app/flash/launchslave",0)!=0){
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
         }
         pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_UNIQUE_NAMES, ram_size ,0,0);
+                          Sys::LAUNCH_OPTIONS_UNIQUE_NAMES, ram_size ,nullptr,nullptr);
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -184,7 +167,7 @@ bool SysTest::execute_class_stress_case(){
         }
         //print_case_message("LAUNCH_OPTIONS_UNIQUE_NAMES %d",pid);
         Timer::wait_microseconds(40000);
-        if(Sys::free_ram("/app/flash/launchslave",0)!=0){
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
@@ -203,13 +186,108 @@ bool SysTest::execute_class_stress_case(){
 bool SysTest::execute_class_performance_case(){
     bool result;
     result = true;
+    result = true;
+    char exec_path[512];
+    char arg_buff[] = "task";
+    String temp_str;
+    Task task_test;
+    TaskInfo  task_info_test;
+    const u32 itterate_num = 64;
+    u16 ram_size;
+    int pid;
+    u32 id;
+    for(u32 i=0;i<itterate_num;i++){
+        //launch apps
+        //start preinstalled app launchslave
+        ram_size = 512;
+        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
+                          Sys::LAUNCH_OPTIONS_FLASH, ram_size ,nullptr,nullptr);
+        if(pid < 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        id = get_id(pid);
+        task_test.set_id(id);
+        task_info_test = task_test.get_info(id);
+        Timer::wait_microseconds(5000);
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
+                          Sys::LAUNCH_OPTIONS_ROOT, ram_size ,nullptr,nullptr);
+        if(pid<0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        id = get_id(pid);
+        task_test.set_id(id);
+        task_info_test = task_test.get_info(id);
+        Timer::wait_microseconds(5000);
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
+                          Sys::LAUNCH_OPTIONS_ORPHAN, ram_size ,nullptr,nullptr);
+        if(pid < 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        id = get_id(pid);
+        task_test.set_id(id);
+        task_info_test = task_test.get_info(id);
+        Timer::wait_microseconds(5000);
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
+                          Sys::LAUNCH_OPTIONS_UNIQUE_NAMES, ram_size ,nullptr,nullptr);
+        id = get_id(pid);
+        task_test.set_id(id);
+        task_info_test = task_test.get_info(id);
 
+        if(pid < 0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        Timer::wait_microseconds(5000);
+        if(Sys::free_ram("/app/flash/launchslave",nullptr)!=0){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        //stop apps
+    }
     return result;
-
 }
 static void rand_string_value(u16 size,String & string){
     string.free();
     for (u16 i =0;i<size;i++){
-        string.append(((u8)rand()&0xff));
+        u8 value;
+        value = (u8)rand();
+        value &=0x7f;
+        value = (value < 0x20) ? (value | 0x20):value;
+        string.append(value);
     }
+}
+static u32 get_id(u32 pid){
+    Task task_test;
+    TaskInfo  task_info_test;
+    for(u8 i = 255;i;i--){
+        task_test.get_next(task_info_test);
+        if (task_info_test.pid() == pid){
+            return task_info_test.id();
+        }
+
+    }
+    return 0;
 }

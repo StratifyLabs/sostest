@@ -1,4 +1,5 @@
 #include <sapi/sys.hpp>
+#include <sapi/var.hpp>
 #include "ThreadTest.hpp"
 static void * thread_4(void * args);
 static int count_4 = 0;
@@ -6,6 +7,7 @@ static u32 wait_time_quatro = 4000;
 int ThreadTest::count_1 = 0;
 int ThreadTest::count_2 = 0;
 int ThreadTest::count_3 = 0;
+static bool tread_result = true;
 static enum Sched::policy test_get_policy(int value);
 static enum Sched::policy test_get_policy(int value){
     switch (value){
@@ -678,14 +680,43 @@ bool ThreadTest::execute_class_stress_case(){
         quatro_thread.kill(0);
         timer_count.stop();
     }
-
+    if(tread_result == false){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
     return result;
 }
 
 void * ThreadTest::thread_1(u32 wait_time){
+    Queue <u8>u8_queue;
+    Queue <u32>u32_queue;
+    Queue <double>double_queue;
     count_1++;
     Timer::wait_microseconds(wait_time);
     count_1++;
+    //add test from queue api_var_test(make it more difficult)
+    for (u32 i = 0;i<500;i++){
+        u8_queue.push(i);
+        u32_queue.push(i);
+        double_queue.push((double)i);
+    }
+    for (u32 i = 0;i<500;i++){
+        if((u8_queue.front()!=(u8)i)||(u32_queue.front()!=i)||(double_queue.front()!=(double)i)){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            tread_result = false;
+            break;
+        }
+        u8_queue.pop();
+        u32_queue.pop();
+        double_queue.pop();
+    }
+    if(!u8_queue.is_empty() || !u32_queue.is_empty() || !double_queue.is_empty()){
+        u8_queue.clear();
+        u32_queue.clear();
+        double_queue.clear();
+        tread_result = false;
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+    }
     return &count_1;
 }
 void * ThreadTest::thread_2(u32 wait_time){
