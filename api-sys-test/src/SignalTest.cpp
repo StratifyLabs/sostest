@@ -1,4 +1,5 @@
 #include <sapi/sys.hpp>
+#include <sapi/var.hpp>
 #include <sapi/chrono.hpp>
 #include "SignalTest.hpp"
 
@@ -12,6 +13,7 @@ static volatile bool wait_for_signal = true;
 static volatile bool wait_for_associated_signal = true;
 static int sig_no_last;
 static int sig_value_last;
+static bool thread_result = true;
 static void common_handler_1(int a);
 static void common_handler_2(int a,siginfo_t * siginfo, void * args);
 static void * signal_thread(void * args);
@@ -173,6 +175,14 @@ bool SignalTest::execute_class_stress_case(){
     wait_for_signal = true;
     timer.start();
     //signo test
+    Thread uno_thread(4096);
+    int signal_thread_priority = 1;
+    enum Sched::policy signal_thread_policy = Sched::RR;
+    if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
+                         signal_thread_policy)==-1){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
     for (int j=0;j<itterate_num;j++){
         for (int i=0;i<itterate_signo_num;i++){
             //this will cause my_handler() to be executed when SIGINT is received
@@ -233,6 +243,38 @@ bool SignalTest::execute_class_stress_case(){
             }
             wait_for_signal = true;
         }
+        //send signal to another thread
+        {
+            SignalHandler handler_2(common_handler_2,Signal::USR2,Signal::USR2);
+            sig_value = rand();
+            u8 rand_value;
+            rand_value = rand()%31;
+            signal_no = get_signal_action(rand_value);
+            Signal signal_send(signal_no,sig_value);
+            if(signal_send.set_handler(handler_2)!=0){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+            }
+            wait_for_associated_signal = true ;
+            while( wait_for_associated_signal == true ){
+                Timer::wait_milliseconds(1);
+                signal_send.queue(uno_thread.get_pid());
+            }
+            if(sig_no_last != signal_no){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+            }
+            if(sig_value_last != sig_value){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+            }
+        }
+    }
+    if(uno_thread.is_running()){
+        while(uno_thread.is_running()){
+            stop_threads = 1;
+            Timer::wait_milliseconds(1);
+        }
     }
     if(signal.create(signal_thread,this,signal_priority,signal_policy)==-1){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -253,8 +295,128 @@ bool SignalTest::execute_class_stress_case(){
  */
 bool SignalTest::execute_class_performance_case(){
     bool result = true;
+    int signal_no,sig_value;
+    SignalHandler handler(common_handler_1);
+    Thread signal(2048);
+    enum Sched::policy signal_policy;
+    pthread_t signal_pthread;
+    pid_t signal_pid;
+    signal_policy = Sched::RR;
+    const int signal_priority = 1;
+    u16 itterate_num = 100;
+    Timer timer;
+    wait_for_signal = true;
+    timer.start();
+    //signo test
+    Thread uno_thread(4096);
+    int signal_thread_priority = 1;
+    enum Sched::policy signal_thread_policy = Sched::RR;
+    if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
+                         signal_thread_policy)==-1){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    for (int j=0;j<itterate_num;j++){
+        //send signal to another thread
+        {
+            SignalHandler handler_2(common_handler_2,Signal::USR2,Signal::USR2);
+            sig_value = j;
+            u8 rand_value;
+            rand_value = j%31;
+            signal_no = get_signal_action(rand_value);
+            Signal signal_send(signal_no,sig_value);
+            if(signal_send.set_handler(handler_2)!=0){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+            }
+            wait_for_associated_signal = true ;
+            while( wait_for_associated_signal == true ){
+                Timer::wait_milliseconds(1);
+                signal_send.queue(uno_thread.get_pid());
+            }
+            if(sig_no_last != signal_no){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+            }
+            if(sig_value_last != sig_value){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+            }
+        }
+    }
+    if(uno_thread.is_running()){
+        while(uno_thread.is_running()){
+            stop_threads = 1;
+            Timer::wait_milliseconds(1);
+        }
+    }
+    if(thread_result == false){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(signal.create(signal_thread,this,signal_priority,signal_policy)==-1){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    sig_value = Signal::ABRT;
+    Signal abort_sig(1,sig_value);
+    signal_pthread = signal.id();
+    signal_pid = signal.get_pid();
+    Timer::wait_microseconds(threads_wait_time);
+    print_case_message("signal_pthread %d,signal_pid %d",signal_pthread,signal_pid);
+//    Signal::send
+ //   abort_sig.send(signal_pthread);
+    print_case_message("timer %d",timer.microseconds());
+    return result;
 
     return result;
+}
+void * SignalTest::thread_1(u32 wait_time){
+    int counter = 0;
+    (void)wait_time;
+    SignalHandler handler_2(common_handler_2);
+    Signal incoming_signal(Signal::USR2,0);
+    incoming_signal.set_handler(common_handler_2);
+    while( !stop_threads ){
+        counter++;
+        Timer::wait_microseconds(threads_wait_time*1000);
+        //add data performance test from api-var-test(make it more difficult)
+        u32 data_size = (rand() & 0xfff) + 1; //12 bits is up to 4096
+        Data data(data_size);
+        if( data.data() == nullptr){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            thread_result = false;
+            break;
+        }
+        char buffer[data_size];
+        memset(buffer, 0xaa, data_size);
+        data.fill(0xaa);
+        if( memcmp(buffer, data.data_const(), data_size) ){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            thread_result = false;
+            break;
+        }
+        memset(buffer, 0x00, data_size);
+        //add clear test
+        data.clear();
+        if( memcmp(buffer, data.data_const(), data_size) ){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            thread_result = false;
+            break;
+        }
+        if (data_size){
+            char* t;
+            t = data.cdata();
+            //change one byte in data
+            t[data_size-1] = 0x0e;
+            if( !memcmp(buffer, data.data_const(), data_size) ){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                thread_result = false;
+                break;
+            }
+        }
+    }
+    return &thread_result;
 }
 static void * signal_thread(void * args){
     int counter = 0;
@@ -264,6 +426,37 @@ static void * signal_thread(void * args){
     while( !stop_threads ){
         counter++;
         Timer::wait_microseconds(threads_wait_time*1000);
+        //add data performance test from api-var-test
+        u32 data_size = (rand() & 0xfff) + 1; //12 bits is up to 4096
+        Data data(data_size);
+        if( data.data() == nullptr ){
+            thread_result = false;
+            break;
+        }
+        char buffer[data_size];
+        memset(buffer, 0xaa, data_size);
+        data.fill(0xaa);
+        if( memcmp(buffer, data.data_const(), data_size) ){
+            thread_result = false;
+            break;
+        }
+        memset(buffer, 0x00, data_size);
+        //add clear test
+        data.clear();
+        if( memcmp(buffer, data.data_const(), data_size) ){
+            thread_result = false;
+            break;
+        }
+        if (data_size){
+            char* t;
+            t = data.cdata();
+            //change one byte in data
+            t[data_size-1] = 0x0e;
+            if( !memcmp(buffer, data.data_const(), data_size) ){
+                thread_result = false;
+                break;
+            }
+        }
     }
     return args;
 }

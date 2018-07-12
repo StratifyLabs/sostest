@@ -2,11 +2,12 @@
 #include <sapi/var.hpp>
 #include "StringTest.hpp"
 int StringTest::recursive_number = 0;
+static void rand_string_value(u16 size,String & string);
 
 StringTest::StringTest() : Test("var::String"){
 
 }
-/*! \details Test  for api a var::String
+/*! \details Test  for api a var::String use "api-var-test -string -api"
  *  assign,find,compare,tolower,toupper operator(==,!=)
  * atoi,substr,inserts,erase
  * @return false if same test failed
@@ -50,24 +51,24 @@ bool StringTest::api_case_assign(){
     bool result = true;
 
     s1.assign("uno");
-    if(s1.data() == 0 || s2.data()==0){
+    if(s1.data() == nullptr || s2.data()==nullptr){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     s1.free();
-    if(s1.data() != 0){
+    if(s1.data() != nullptr){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     s2.assign("123456789",3,5);
     s1 = s2;
-    if(s1.data() == 0){
+    if(s1.data() == nullptr){
         result = false;
     }
     String s3;
     s3 = "string_lenth_15";
     s1.assign(s3.c_str(),s3.length()-3);
-    if(s1.data() == 0){
+    if(s1.data() == nullptr){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -155,7 +156,7 @@ bool StringTest::api_case_find(){
     char s1_char[] = "ASD";
     char s2_char[] = "QWE";
     char s3_char[] = "BNM";
-    char* s4 = NULL ;
+    char* s4 = nullptr ;
     bool result = true;
 
     if ( s.find(s1,0) == s.npos || s.find(s2,0) == s.npos || s.find(s3,0) == s.npos){
@@ -395,7 +396,7 @@ bool StringTest::api_case_special(){
 
     return result;
 }
-/*! \details test "stress" for var::String
+/*! \details test "performance" for var::String
  *  capacity,operator(=,<<,==,!=),atoi,substr,inserts,erase
   * @return false if some test failed
  */
@@ -495,10 +496,114 @@ bool StringTest::execute_class_performance_case(){
 
     return result;
 }
+/*! \details test "stress" for var::String
+ *  capacity,operator(=,<<,==,!=),atoi,substr,inserts,erase
+  * @return false if some test failed
+  * @warning 4251501260:23.2:804A508--CRITICAL--Heap Fault if use rand_string_value(1,temp_string);
+ */
 
 bool StringTest::execute_class_stress_case(){
     bool result = true;
-    for(u16 i = 0;i<1000;i++){
+    u32 i;
+    String t1 = "u";
+    String t2 = "u";
+    String temp_string;
+    //corner test
+    for(i=0; i < 100; i++){
+        if (t1.compare(t2)){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            return false;
+        }
+        rand_string_value(1,temp_string);
+        t1.append(temp_string.at(0));
+        t2.append(temp_string.at(0));
+        if(strncmp(t1.c_str(),t2.c_str(),t1.length())){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            return false;
+        }
+        {
+            String s_sub_1 = t1.substr(t1.len()/2,t1.len()-1);
+            String s_sub_2 = t1.substr(t1.len()/2,t1.len()-1);
+            if (s_sub_1.compare(s_sub_2)){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                return false;
+            }
+        }
+        t1.toupper();
+        t2.toupper();
+        if(strncmp(t1.c_str(),t2.c_str(),t1.length())){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            return false;
+        }
+    }
+    t1.~String();
+    t2.~String();
+    //append char
+    rand_string_value(1,temp_string);
+    String inserts(temp_string.c_str());
+    rand_string_value(1,temp_string);
+    String base(temp_string.c_str());
+    rand_string_value(1,temp_string);
+    String base_c(temp_string.c_str());
+    //base value is const
+    u32 max_insert_value = 0;
+    for (u32 i =0;i<100;i++){
+        base.append("b");
+    }
+    for(u32 j = 1;j<10;j++){
+        rand_string_value(1,temp_string);
+        inserts = temp_string.c_str();
+        for (u32 i =0;i<j;i++){
+            rand_string_value(1,temp_string);
+            inserts.append(temp_string.c_str());
+        }
+        base_c = base;
+        //insert and erase
+        for (u32 i=1;i<base.len();i++){
+            base.insert(i,inserts.c_str());
+            base.erase(i,inserts.len());
+            if(base.compare(base_c.c_str())){
+                max_insert_value = j;
+                result = false;
+                break;
+            }
+        }
+        if(max_insert_value){
+            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, max_insert_value);
+            result = false;
+            break;
+        }
+    }
+    //insert value is const
+    inserts = "a";
+    for (u32 i =0;i<max_insert_value;i++){
+        inserts.append("a");
+    }
+    u32 max_base_value = 0;
+    for(u32 j = 1;j<200;j++){
+        base = "b";
+        for (u32 i =0;i<j;i++){
+            base.append("b");
+        }
+        base_c = base;
+        //insert and erase
+        for (u32 i=1;i<base.len();i++){
+            base.insert(i,inserts.c_str());
+            base.erase(i,inserts.len());
+            if(base.compare(base_c.c_str())){
+                max_base_value = j;
+                result = false;
+                break;
+            }
+        }
+        if(max_base_value){
+            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, max_base_value);
+            result = false;
+            break;
+        }
+    }
+    //recursive test
+    for(u16 i = 0;i<100;i++){
         String data("uno");
         recursive_number = 0;
         if(!execute_recursive(data)){
@@ -528,6 +633,18 @@ bool StringTest::execute_recursive(String data){
         }
     }
     return true;
+}
+
+static void rand_string_value(u16 size,String & string){
+    string.free();
+    string.clear();
+    for (u16 i =0;i<size;i++){
+        u8 value;
+        value = (u8)rand();
+        value &=0x7f;
+        value = (value < 0x20) ? (value | 0x20):value;
+        string.append(value);
+    }
 }
 
 

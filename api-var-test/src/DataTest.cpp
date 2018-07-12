@@ -141,7 +141,7 @@ bool DataTest::execute_class_performance_case(){
         u32 data_size = (rand() & 0xfff) + 1; //12 bits is up to 4096
         Data data(data_size);
         if( data.data() == 0 ){
-            print_case_message("Failed %s:%d (%d, %d)", __PRETTY_FUNCTION__, __LINE__, i, data_size);
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			result = false;
             break;
         }
@@ -152,6 +152,7 @@ bool DataTest::execute_class_performance_case(){
         if( memcmp(buffer, data.data_const(), data_size) ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			result = false;
+            break;
         }
         memset(buffer, 0x00, data_size);
 		//add clear test
@@ -159,6 +160,7 @@ bool DataTest::execute_class_performance_case(){
         if( memcmp(buffer, data.data_const(), data_size) ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			result = false;
+            break;
         }
         if (data_size){
             char* t;
@@ -168,6 +170,7 @@ bool DataTest::execute_class_performance_case(){
             if( !memcmp(buffer, data.data_const(), data_size) ){
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 				result = false;
+                break;
             }
         }
     }
