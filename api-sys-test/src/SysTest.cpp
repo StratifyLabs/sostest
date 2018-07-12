@@ -65,7 +65,7 @@ bool SysTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(board.open()!=0){
+    if(board.open()<0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -79,7 +79,7 @@ bool SysTest::execute_class_api_case(){
     }
     int current_task;
     current_task = board.current_task();
-    if(current_task<=0){
+    if(current_task<0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
