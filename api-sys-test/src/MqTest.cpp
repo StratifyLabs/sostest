@@ -4,17 +4,17 @@ static char mq_name_thread[] = "dialog";
 static char mq_name_thread_answer[] = "dialog_answer";
 
 static char message_buff[64] = "clean";
-const char message_thread_1[] = "bon jour";
-const char message_thread_2[] = "ola";
-const char message_thread_3[] = "verra";
-const char message_thread_4[] = "hasta la vista";
+const char message1_thread[] = "bon jour";
+const char message2_thread[] = "ola";
+const char message3_thread[] = "verra";
+const char message4_thread[] = "hasta la vista";
 
 static u32 count_0 = 0;
 static u32 count_1 = 0;
 static void * thread_1(void * args);
 static Mutex mutex_test;
-
-
+static Mq::flags get_o_flags(int i);
+static void rand_string_value(u16 size,char * string);
 MqTest::MqTest():Test("sys::Mq"){
 
 }
@@ -78,12 +78,14 @@ bool MqTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+
     if(mq_attr_get.flags() != mq_attr.flags()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if(mq_attr_get.curmsgs() != mq_attr.curmsgs()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        print_case_message("curmsgs %llu :%llu",mq_attr.curmsgs(),mq_attr_get.curmsgs());
         result = false;
     }
     if(mq_attr_get.maxmsg() != mq_attr.maxmsg()){
@@ -274,7 +276,87 @@ bool MqTest::execute_class_stress_case(){
     int mq_oflag;
     mode_t mode = 666;
     Thread uno_thread;
-    u32 itterate = 100;
+    int itterate = 1000;
+    int len_mess;
+    attr_flag = MqAttr::RDWR;
+    attr_mq_maxmsg = 20;
+    attr_msgsize = 16;
+    attr_curmsgs = 16;
+
+    mq_attr.set_curmsgs(attr_curmsgs);
+    mq_attr.set_flags(attr_flag);
+    mq_attr.set_maxmsg(attr_mq_maxmsg);
+    mq_attr.set_msgsize(attr_msgsize);
+    mq_oflag = Mq::CREATE;
+    if (mq.create(mq_name_thread,mq_oflag,mode,attr_flag,attr_mq_maxmsg,attr_msgsize)<0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
+    if((uno_thread.create(thread_1,this,1,Sched::RR)==-1)){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    count_0++;
+    Timer::wait_milliseconds(1);
+    if(mq_answer.open(mq_name_thread_answer,mq_oflag)>=0){
+        for (int i =0;i<itterate;i++){
+            if(mq.send(message1_thread,sizeof(message1_thread),0)>0){
+                len_mess = mq_answer.receive(message_buff,sizeof(message2_thread));
+                if((len_mess == sizeof(message2_thread)) && \
+                        (strcmp(message_buff,message2_thread)==0)){
+
+                }else{
+                    print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                    result = false;
+                    break;
+                }
+            }else{
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+                break;
+            }
+        }
+    }else{
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
+    if(mq.send(message3_thread,sizeof(message3_thread),0)>0){
+    }else{
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    len_mess = mq_answer.receive(message_buff,sizeof(message4_thread));
+    if((len_mess == sizeof(message4_thread)) && \
+            (strcmp(message_buff,message4_thread)==0)){
+    }else{
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    for (int i =0;i<itterate;i++){
+        char mq_name_temp[10];
+        mq_oflag = get_o_flags(i);
+        rand_string_value(sizeof(mq_name_temp),mq_name_temp);
+        if (mq.create(mq_name_temp,mq_oflag,mode,attr_flag,attr_mq_maxmsg,attr_msgsize)<0){
+            print_case_message("Failed %s:%d:%d", __PRETTY_FUNCTION__, __LINE__,i);
+            print_case_message("%s",mq_name_temp);
+            result = false;
+            break;
+        }
+        mq.close();
+    }
+    return result;
+}
+bool MqTest::execute_class_performance_case(){
+    bool result = true;
+    MqAttr mq_attr;
+    Mq mq_answer,mq;
+    long attr_flag,attr_mq_maxmsg,attr_msgsize,attr_curmsgs;
+    int mq_oflag;
+    mode_t mode = 666;
+    Thread uno_thread;
+    u32 itterate = 1000;
     int len_mess;
     attr_flag = MqAttr::RDWR;
     attr_mq_maxmsg = 20;
@@ -293,21 +375,19 @@ bool MqTest::execute_class_stress_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    Timer::wait_microseconds(10000);
-    Sched::yield();
-    Timer::wait_microseconds(10000);
     count_0++;
+    Timer::wait_milliseconds(1);
     if(mq_answer.open(mq_name_thread_answer,mq_oflag)>=0){
-        print_case_message("open answer");
         for (u32 i =0;i<itterate;i++){
-            if(mq.send(message_thread_1,sizeof(message_thread_1),0)>0){
-                print_case_message("sent");
-                Sched::yield();
-                Timer::wait_microseconds(5000);
-                len_mess = mq_answer.receive(message_buff,sizeof(message_thread_2));
-                if((len_mess == sizeof(message_thread_2)) && \
-                        (strcmp(message_buff,message_thread_2)==0)){
-                    print_case_message("receive answer");
+            if(mq.send(message1_thread,sizeof(message1_thread),0)>0){
+                len_mess = mq_answer.receive(message_buff,sizeof(message2_thread));
+                if((len_mess == sizeof(message2_thread)) && \
+                        (strcmp(message_buff,message2_thread)==0)){
+
+                }else{
+                    print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                    result = false;
+                    break;
                 }
             }else{
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -320,17 +400,18 @@ bool MqTest::execute_class_stress_case(){
         result = false;
     }
 
-    if(mq.send(message_thread_3,sizeof(message_thread_3),0)>0){
-        Timer::wait_microseconds(10000);
+    if(mq.send(message3_thread,sizeof(message3_thread),0)>0){
     }else{
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-
-    return result;
-}
-bool MqTest::execute_class_performance_case(){
-    bool result = true;
+    len_mess = mq_answer.receive(message_buff,sizeof(message4_thread));
+    if((len_mess == sizeof(message4_thread)) && \
+            (strcmp(message_buff,message4_thread)==0)){
+    }else{
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
     return result;
 }
 
@@ -346,13 +427,13 @@ static void * thread_1(void * args){
         if(mq.open(mq_name_thread,mq_oflag)>=0){
             while(1){
                 count_1++;
-                len_mess = mq.receive(message_buff,sizeof(message_thread_1));
-                if((len_mess == sizeof(message_thread_1)) && \
-                        (strcmp(message_buff,message_thread_1)==0)){
-                    mq_answer.send(message_thread_2,sizeof(message_thread_2),0);
-                }else if((len_mess == sizeof(message_thread_3)) &&\
-                         (strcmp(message_buff,message_thread_3)==0)){
-                    mq_answer.send(message_thread_4,sizeof(message_thread_4),0);
+                len_mess = mq.receive(message_buff,sizeof(message1_thread));
+                if((len_mess == sizeof(message1_thread)) && \
+                        (strcmp(message_buff,message1_thread)==0)){
+                    mq_answer.send(message2_thread,sizeof(message2_thread),0);
+                }else if((len_mess == sizeof(message3_thread)) &&\
+                         (strcmp(message_buff,message3_thread)==0)){
+                    mq_answer.send(message4_thread,sizeof(message4_thread),0);
                     break;
                 }
             }
@@ -360,4 +441,25 @@ static void * thread_1(void * args){
     }
 
     return &count_1;
+}
+Mq::flags get_o_flags(int i){
+    switch (i%3){
+    case 0:
+        return Mq::CREATE;
+    case 1:
+        return Mq::EXCL;
+    case 2:
+        return Mq::EXCLUSIVE;
+    default:
+        return Mq::CREATE;
+    }
+    return Mq::CREATE;
+}
+static void rand_string_value(u16 size,char * string){
+    for (u16 i =0;i<size;i++){
+        u8 value;
+        value = (u8)(rand()%25);
+        value +=97;
+        string[i] = value;
+    }
 }

@@ -1,6 +1,6 @@
 #ifndef THREADTEST_HPP
 #define THREADTEST_HPP
-
+#include <sapi/sys.hpp>
 #include <sapi/test.hpp>
 
 class ThreadTest : public Test {
@@ -36,5 +36,5 @@ private:
     void * thread_2(u32);
     void * thread_3(u32);
 };
-
+enum Sched::policy test_get_policy(int value);
 #endif // THREADTEST_HPP

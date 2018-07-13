@@ -1,4 +1,4 @@
-#include <sapi/sys.hpp>
+
 #include <sapi/var.hpp>
 #include "ThreadTest.hpp"
 static void * thread_4(void * args);
@@ -8,8 +8,8 @@ int ThreadTest::count_1 = 0;
 int ThreadTest::count_2 = 0;
 int ThreadTest::count_3 = 0;
 static bool tread_result = true;
-static enum Sched::policy test_get_policy(int value);
-static enum Sched::policy test_get_policy(int value){
+
+enum Sched::policy test_get_policy(int value){
     switch (value){
     case (0):
         return Sched::OTHER;
@@ -478,10 +478,10 @@ bool ThreadTest::execute_class_stress_case(){
             break;
         }
 
-        uno_thread.wait(0, 10);
-        dos_thread.wait(0, 10);
-        tres_thread.wait(0, 10);
-        quatro_thread.wait(0, 10);
+        uno_thread.wait(nullptr, 10);
+        dos_thread.wait(nullptr, 10);
+        tres_thread.wait(nullptr, 10);
+        quatro_thread.wait(nullptr, 10);
         timer_count.stop();
     }
     //FIFO sheduler
@@ -507,7 +507,7 @@ bool ThreadTest::execute_class_stress_case(){
         if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
                 (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
                 (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
+                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)==-1)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
@@ -573,7 +573,7 @@ bool ThreadTest::execute_class_stress_case(){
         if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
                 (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
                 (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
+                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)==-1)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
@@ -638,7 +638,7 @@ bool ThreadTest::execute_class_stress_case(){
         if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
                 (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
                 (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
+                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)==-1)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
