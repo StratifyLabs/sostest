@@ -22,7 +22,7 @@ SysTest::SysTest() : Test("sys::Test"){
  * redirect_stdout,redirect_stdin,redirect_stderr,
  *
  * not tested on
- * Sys::open return non zero value
+ *
  */
 bool SysTest::execute_class_api_case(){
     bool result;
@@ -273,9 +273,8 @@ static void rand_string_value(u16 size,String & string){
     string.free();
     for (u16 i =0;i<size;i++){
         u8 value;
-        value = (u8)rand();
-        value &=0x7f;
-        value = (value < 0x20) ? (value | 0x20):value;
+        value = (u8)(rand()%25);
+        value +=97;
         string.append(value);
     }
 }

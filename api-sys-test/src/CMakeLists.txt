@@ -15,4 +15,6 @@ set(SOURCES
 	${SOURCES_PREFIX}/TaskTest.hpp
 	${SOURCES_PREFIX}/SysTest.cpp
 	${SOURCES_PREFIX}/SysTest.hpp
+    ${SOURCES_PREFIX}/CliTest.cpp
+    ${SOURCES_PREFIX}/CliTest.hpp
 	PARENT_SCOPE)

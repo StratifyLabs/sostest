@@ -17,6 +17,7 @@ static bool thread_result = true;
  * is_thread,is_enabled,name,memory_size,heap_size,stack_size,print_header,print
  * Task
  *  Task count_total(),count_free,set_id,id,get_next,get_info,get_attr,print
+ * @warning task_info_test.priority() have zero value
  */
 bool TaskTest::execute_class_api_case(){
     bool result = true;
@@ -108,8 +109,6 @@ bool TaskTest::execute_class_api_case(){
  */
 bool TaskTest::execute_class_stress_case(){
     bool result = true;
-    TaskInfo  task_info_test;
-    Task task_test;
     Thread thread_test;
     u32 id_test;
     u16 itterate = 100;
@@ -122,7 +121,12 @@ bool TaskTest::execute_class_stress_case(){
         result = false;
     }
     for(u16 i=0;i<itterate;i++) {
-        int signal_thread_priority = rand()%30;
+        TaskInfo  task_info_test;
+        Task task_test;
+        int priority_diff;
+        priority_diff = Sched::get_priority_max(Sched::RR) - Sched::get_priority_min(Sched::RR);
+        priority_diff = rand()%priority_diff;
+        int signal_thread_priority = Sched::get_priority_min(Sched::RR) + priority_diff;
         Sched::set_scheduler(uno_thread.get_pid(),Sched::RR,signal_thread_priority);
         task_test.set_id((int)uno_thread.self());
         if(task_test.id() != (int)uno_thread.self()){
@@ -204,10 +208,95 @@ bool TaskTest::execute_class_stress_case(){
 }
 
 /*@brief performance test for sys/Signal use "api-sys-test -task -performance"
+ * @warning delete info priority check
  */
 bool TaskTest::execute_class_performance_case(){
     bool result = true;
-
+    Thread thread_test;
+    u32 id_test;
+    u16 itterate = 1000;
+    Thread uno_thread(4096);
+    int signal_thread_priority = 1;
+    enum Sched::policy signal_thread_policy = Sched::RR;
+    if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
+                         signal_thread_policy)==-1){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    for(u16 i=0;i<itterate;i++) {
+        TaskInfo  task_info_test;
+        Task task_test;
+        task_test.set_id((int)uno_thread.self());
+        if(task_test.id() != (int)uno_thread.self()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        task_info_test = task_test.get_info(task_test.id());
+        if(task_info_test.id() != (int)uno_thread.self()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        id_test = task_info_test.pid();
+        if(!task_info_test.is_active()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if(task_info_test.priority_ceiling()<task_info_test.priority()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if(task_info_test.is_thread()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if(!task_info_test.is_enabled()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if(!task_info_test.is_enabled()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if( memcmp(task_info_test.name(), "api-sys-test", strlen(task_info_test.name())) != 0 ){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if(!task_info_test.memory_size()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if(!task_info_test.heap_size()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if(!task_info_test.stack_size()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        if((task_test.count_total()<task_test.count_free()) || (!task_test.count_total())){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+        task_test.get_next(task_info_test);
+        task_info_test = task_test.get_info(task_test.id());
+        if(id_test == task_info_test.id()){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            result = false;
+            break;
+        }
+    }
     return result;
 }
 void * TaskTest::thread_1(u32 wait_time){

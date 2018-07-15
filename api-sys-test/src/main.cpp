@@ -10,6 +10,7 @@
 #include "SysTest.hpp"
 #include "SignalTest.hpp"
 #include "TaskTest.hpp"
+#include "CliTest.hpp"
 
 //update flags
 enum {
@@ -78,6 +79,11 @@ int main(int argc, char * argv[]){
         test.execute(o_execute_flags);
     }
 
+    if( o_flags & CLI_TEST_FLAG){
+        CliTest test;
+        test.execute(o_execute_flags);
+    }
+
     Test::finalize();
     return 0;
 }
@@ -131,7 +137,7 @@ void show_usage(const Cli & cli){
 //    printf("    -aio           execute test \n");
 //    printf("    -appfs          execute test\n");
 //    printf("    -assets         execute test\n");
-//    printf("    -cli          execute test \n");
+    printf("    -cli          execute test \n");
 //    printf("    -dir         execute test \n");
 //    printf("    -file           execute test \n");
 //    printf("    -file_info          execute test \n");
@@ -140,7 +146,7 @@ void show_usage(const Cli & cli){
     printf("    -mutex          execute test for sys/mutex \n");
     printf("    -sched          execute test for sys/sched \n");
 //    printf("    -sem         execute test \n");
-    printf("    -signal           execute test \n");
+    printf("    -signal         execute test for sys/signal\n");
     printf("    -sys            execute test for sys/sys \n");
     printf("    -task           execute test for sys/task \n");
     printf("    -thread         execute test for sys/thread \n");

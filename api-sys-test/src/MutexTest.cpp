@@ -1,6 +1,7 @@
 #include <sapi/sys.hpp>
 #include <sapi/chrono.hpp>
 #include "MutexTest.hpp"
+#include "ThreadTest.hpp"
 static volatile u32 count_0 = 0;
 static volatile u32 count_1 = 0;
 static volatile u32 count_2 = 0;
@@ -144,12 +145,12 @@ bool MutexTest::execute_api_mutex_attr_case(MutexAttr * mutex_attr){
  */
 bool MutexTest::execute_class_stress_case(){
     bool result = true;
-    const u32 itteration = 100;
+    const u32 itteration = 200;
     Thread uno_thread(2048),dos_thread(2048);
     enum Sched::policy uno_policy,dos_policy;
     uno_policy = Sched::FIFO;dos_policy = Sched::FIFO;
     int uno_priority,dos_priority;
-    uno_priority = 1, dos_priority = 2;
+    uno_priority = 3; dos_priority = 3;
     MutexAttr mutex_attr;
     if(!execute_api_mutex_attr_case(&mutex_attr)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -165,9 +166,87 @@ bool MutexTest::execute_class_stress_case(){
         result = false;
     }
     count_0 = 1;
-
     stop_threads = false;
-
+    if((uno_thread.create(thread_1,this,uno_priority,uno_policy) < 0) ){
+        print_case_message("Failed %s:%d (%d)", __PRETTY_FUNCTION__, __LINE__, uno_thread.error_number());
+        result = false;
+    }
+    if( (dos_thread.create(thread_2,this,dos_priority,dos_policy) < 0) ){
+        print_case_message("Failed %s:%d (%d)", __PRETTY_FUNCTION__, __LINE__, dos_thread.error_number());
+        result = false;
+    }
+    if(mutex_test.unlock()<0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    for(u8 j=0;j<7;j++){
+        uno_policy = test_get_policy(j%3);dos_policy = test_get_policy((j|0x01)%3);
+        uno_priority = rand()%10; dos_priority = rand()%10;
+        uno_thread.set_priority(uno_priority,uno_policy);
+        dos_thread.set_priority(dos_priority,dos_policy);
+        count_1 =1;
+        count_2 =1;
+        for(u32 i=0;i<itteration;i++){
+            if(mutex_test.lock()<0){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+                break;
+            }else{
+                //print_case_message("itterate %d:%d:%d:%d",count_common,i,count_1,count_2);
+            }
+            Timer::wait_microseconds(wait_time_0);
+            count_0++;
+            if(mutex_test.unlock()<0){
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+                break;
+            }
+            Thread::yield();
+            Timer::wait_microseconds(wait_time_0);
+        }
+        if(count_1<4 || count_2<4){
+            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            print_case_message("count %d:%d:%d",count_0,count_1,count_2);
+            result = false;
+        }
+        print_case_message("count %d:%d",count_1,count_2);
+    }
+    stop_threads = true;
+    uno_thread.wait();
+    dos_thread.wait();
+    return result;
+}
+/*@brief performance test for sys/Mutex use "api-sys-test -mutex -performance"
+ *
+ *
+ * not writed test
+ *  lock_timed
+ * not tested on
+ */
+bool MutexTest::execute_class_performance_case(){
+    bool result = true;
+    const u32 itteration = 200;
+    Thread uno_thread(2048),dos_thread(2048);
+    enum Sched::policy uno_policy,dos_policy;
+    uno_policy = Sched::FIFO;dos_policy = Sched::FIFO;
+    int uno_priority,dos_priority;
+    uno_priority = 3; dos_priority = 3;
+    MutexAttr mutex_attr;
+    if(!execute_api_mutex_attr_case(&mutex_attr)){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    mutex_attr.set_type(MutexAttr::RECURSIVE);
+    mutex_attr.set_protocol(MutexAttr::PRIO_INHERIT_PROTOCOL);
+    mutex_attr.set_pshared(false);
+    mutex_attr.set_prio_ceiling(dos_priority > uno_priority ? dos_priority : uno_priority);
+    mutex_test.set_attr(mutex_attr);
+    if(mutex_test.lock()<0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    count_0 = 1;
+    stop_threads = false;
     if((uno_thread.create(thread_1,this,uno_priority,uno_policy) < 0) ){
         print_case_message("Failed %s:%d (%d)", __PRETTY_FUNCTION__, __LINE__, uno_thread.error_number());
         result = false;
@@ -191,7 +270,6 @@ bool MutexTest::execute_class_stress_case(){
     count_1 =1;
     count_2 =1;
     for(u32 i=0;i<itteration;i++){
-        print_case_message("Lock main %d", i);
         if(mutex_test.lock()<0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -209,35 +287,20 @@ bool MutexTest::execute_class_stress_case(){
         Thread::yield();
         Timer::wait_microseconds(wait_time_0);
     }
-    if(count_1==1 || count_2==1){
+    if(count_1<4 || count_2<4){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         print_case_message("count %d:%d:%d",count_0,count_1,count_2);
         result = false;
     }
-
     stop_threads = true;
-
-    print_case_message("Wait for uno thread");
     uno_thread.wait();
-    print_case_message("Wait for dos thread");
     dos_thread.wait();
-
-    return result;
-}
-/*@brief performance test for sys/Mutex use "api-sys-test -mutex -performance"
- *
- *
- * not writed test
- *  lock_timed
- * not tested on
- */
-bool MutexTest::execute_class_performance_case(){
-    bool result = true;
     return result;
 }
 
 static void * thread_1(void * args){
     mutex_test.lock();
+    (void)args;
     if(count_0==0){
         count_1 = 0;
         mutex_test.unlock();
@@ -250,7 +313,7 @@ static void * thread_1(void * args){
     while( !stop_threads ){
         mutex_test.lock();
         Timer::wait_microseconds(wait_time_1);
-        count_2++;
+        count_1++;
         mutex_test.unlock();
         Timer::wait_microseconds(wait_time_1);
     }
