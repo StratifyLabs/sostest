@@ -25,8 +25,9 @@ bool TaskTest::execute_class_api_case(){
     Task task_test;
     Thread thread_test;
     u32 id_test;
-    int prio_test =10;
-    Sched::set_scheduler(Sched::get_pid(),Sched::RR,prio_test);
+    Sched::policy policy = Sched::RR;
+    int prio_test = Sched::get_priority_min(policy);
+    Sched::set_scheduler(Sched::get_pid(),policy,prio_test);
     task_test.set_id((int)Thread::self());
     if(task_test.id() != (int)Thread::self()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -113,8 +114,8 @@ bool TaskTest::execute_class_stress_case(){
     u32 id_test;
     u16 itterate = 100;
     Thread uno_thread(4096);
-    int signal_thread_priority = rand()%30;
     enum Sched::policy signal_thread_policy = Sched::RR;
+    int signal_thread_priority = Sched::get_priority_min(signal_thread_policy);
     if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
                          signal_thread_policy)==-1){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -124,10 +125,11 @@ bool TaskTest::execute_class_stress_case(){
         TaskInfo  task_info_test;
         Task task_test;
         int priority_diff;
-        priority_diff = Sched::get_priority_max(Sched::RR) - Sched::get_priority_min(Sched::RR);
+        priority_diff = Sched::get_priority_max(signal_thread_policy) - Sched::get_priority_min(signal_thread_policy);
         priority_diff = rand()%priority_diff;
-        int signal_thread_priority = Sched::get_priority_min(Sched::RR) + priority_diff;
-        Sched::set_scheduler(uno_thread.get_pid(),Sched::RR,signal_thread_priority);
+        //int signal_thread_priority = Sched::get_priority_min(signal_thread_policy) + priority_diff;
+        int signal_thread_priority = Sched::get_priority_min(signal_thread_policy);
+        Sched::set_scheduler(uno_thread.get_pid(),signal_thread_policy,signal_thread_priority);
         task_test.set_id((int)uno_thread.self());
         if(task_test.id() != (int)uno_thread.self()){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -140,7 +142,7 @@ bool TaskTest::execute_class_stress_case(){
             result = false;
             break;
         }
-        id_test = task_info_test.pid();
+        id_test = task_info_test.id();
         if(!task_info_test.is_active()){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -148,6 +150,7 @@ bool TaskTest::execute_class_stress_case(){
         }
         if(task_info_test.priority()!=signal_thread_priority){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+            print_case_message("prio %d:%d", task_info_test.priority(), signal_thread_priority);
             result = false;
             break;
         }
@@ -216,8 +219,8 @@ bool TaskTest::execute_class_performance_case(){
     u32 id_test;
     u16 itterate = 1000;
     Thread uno_thread(4096);
-    int signal_thread_priority = 1;
     enum Sched::policy signal_thread_policy = Sched::RR;
+    int signal_thread_priority = Sched::get_priority_min(signal_thread_policy);
     if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
                          signal_thread_policy)==-1){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
