@@ -406,7 +406,7 @@ bool StringTest::execute_class_performance_case(){
     String t1 = "u";
     String t2 = "u";
 
-    for(i=0; i < 1000; i++){
+    for(i=0; i < 500; i++){
         if (t1.compare(t2)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             return false;
@@ -636,7 +636,6 @@ bool StringTest::execute_recursive(String data){
 }
 
 static void rand_string_value(u16 size,String & string){
-    string.free();
     string.clear();
     for (u16 i =0;i<size;i++){
         u8 value;

@@ -270,7 +270,7 @@ bool SysTest::execute_class_performance_case(){
     return result;
 }
 static void rand_string_value(u16 size,String & string){
-    string.free();
+    string.clear();
     for (u16 i =0;i<size;i++){
         u8 value;
         value = (u8)(rand()%25);
