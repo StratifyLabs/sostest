@@ -8,21 +8,21 @@ FileInfoTest::FileInfoTest() : Test("sys::FileInfo"){
 }
 /*@brief api test for sys/FileInfo use "api-sys-test -file_info -api"
  */
-bool FileInfo::execute_class_api_case(){
+bool FileInfoTest::execute_class_api_case(){
     bool result = true;
     return result;
 }
 
 /*@brief stress test for sys/FileInfo use "api-sys-test -file_info -stress"
  */
-bool FileInfo::execute_class_stress_case(){
+bool FileInfoTest::execute_class_stress_case(){
     bool result = true;
     return result;
 }
 
 /*@brief performance test for sys/FileInfo use "api-sys-test -file_info -performance"
  */
-bool FileInfo::execute_class_performance_case(){
+bool FileInfoTest::execute_class_performance_case(){
     bool result = true;
     return result;
 }
