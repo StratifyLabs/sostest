@@ -11,7 +11,13 @@
 #include "SignalTest.hpp"
 #include "TaskTest.hpp"
 #include "CliTest.hpp"
-
+#include "MessengerTest.hpp"
+#include "TraceTest.hpp"
+#include "AppfsTest.hpp"
+#include "DirTest.hpp"
+#include "FileTest.hpp"
+#include "FileInfoTest.hpp"
+#include "AioTest.hpp"
 //update flags
 enum {
     //Test::API PERFORMANCE and STRESS are the first flags
@@ -83,6 +89,18 @@ int main(int argc, char * argv[]){
         CliTest test;
         test.execute(o_execute_flags);
     }
+    if( o_flags & MESSENGER_TEST_FLAG){
+        MessengerTest test;
+        test.execute(o_execute_flags);
+    }
+    if( o_flags & TRACE_TEST_FLAG){
+        TraceTest test;
+        test.execute(o_execute_flags);
+    }
+    if( o_flags & APPFS_TEST_FLAG){
+        AppfsTest test;
+        test.execute(o_execute_flags);
+    }
 
     Test::finalize();
     return 0;
@@ -135,13 +153,13 @@ void show_usage(const Cli & cli){
     printf("    -additional     execute additional tests (if any)\n");
     printf("    -test_all       execute test for all objects\n");
 //    printf("    -aio           execute test \n");
-//    printf("    -appfs          execute test\n");
+    printf("    -appfs          execute test for sys/appfs \n");
 //    printf("    -assets         execute test\n");
-    printf("    -cli          execute test \n");
+    printf("    -cli            execute test \n");
 //    printf("    -dir         execute test \n");
 //    printf("    -file           execute test \n");
-//    printf("    -file_info          execute test \n");
-//    printf("    -messenger           execute test \n");
+    printf("    -file_info      execute test for sys/FileInfo \n");
+    printf("    -messenger      execute test for sys/messenger\n");
     printf("    -mq             execute test for sys/mq \n");
     printf("    -mutex          execute test for sys/mutex \n");
     printf("    -sched          execute test for sys/sched \n");
@@ -150,7 +168,7 @@ void show_usage(const Cli & cli){
     printf("    -sys            execute test for sys/sys \n");
     printf("    -task           execute test for sys/task \n");
     printf("    -thread         execute test for sys/thread \n");
-//    printf("    -trace           execute test \n");
+    printf("    -trace          execute test for sys/trace \n");
     printf("    -v              options to show the version\n");
 }
 

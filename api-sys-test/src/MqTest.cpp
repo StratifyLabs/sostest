@@ -35,9 +35,10 @@ MqTest::MqTest():Test("sys::Mq"){
  * not tested on
  * @bug crashes out(suspend) if open() use before create() and with out mq_attr
  * @warning change mq_attr after close mq
- * @warning receive_timed crashes out(susoend) if use incorrect abs_time
+ * @warning receive_timed crashes out(suspend) if use incorrect abs_time
  * @warning Mq class dont have O_RDWR
  * @warning stress test suspended
+ * @warning set_attr not supported
  */
 bool MqTest::execute_class_api_case(){
     bool result = true;
@@ -62,23 +63,42 @@ bool MqTest::execute_class_api_case(){
     attr_flag = MqAttr::RDWR;
     attr_mq_maxmsg = 10;
     attr_msgsize = 10;
-    attr_curmsgs = 10;
+    attr_curmsgs = 0;
     mq_attr.set_curmsgs(attr_curmsgs);
     mq_attr.set_flags(attr_flag);
     mq_attr.set_maxmsg(attr_mq_maxmsg);
     mq_attr.set_msgsize(attr_msgsize);
     mq_oflag = O_RDWR;
+    if(mq_attr.flags() != attr_flag){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq_attr.curmsgs() != attr_curmsgs){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        print_case_message("curmsgs %llu :%llu",mq_attr.curmsgs(),mq_attr_get.curmsgs());
+        result = false;
+    }
+    if(mq_attr.maxmsg() != attr_mq_maxmsg){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq_attr.msgsize() != attr_msgsize){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
     if (mq.create(mq_name_uno,mq_oflag,mode,attr_flag,attr_mq_maxmsg,attr_msgsize)<0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    mq.set_attr(mq_attr);
+    if(mq.set_attr(mq_attr)!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
     mq_attr_get = mq.get_attr();
     if(mq.get_attr(mq_struct)<0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-
     if(mq_attr_get.flags() != mq_attr.flags()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
@@ -127,7 +147,7 @@ bool MqTest::execute_class_api_case(){
     attr_flag = MqAttr::RDWR;
     attr_mq_maxmsg = 10;
     attr_msgsize = 16;
-    attr_curmsgs = 16;
+    attr_curmsgs = 0;
     mq_attr.set_curmsgs(attr_curmsgs);
     mq_attr.set_flags(attr_flag);
     mq_attr.set_maxmsg(attr_mq_maxmsg);
@@ -180,7 +200,7 @@ bool MqTest::execute_api_simply_case(){
     mode_t mode = 666;
     attr_mq_maxmsg = 16;
     attr_msgsize = 16;
-    attr_curmsgs = 16;
+    attr_curmsgs = 0;
     char mq_name_uno[] = "simply";
     const char message_uno[] = "uno";
     const char message_dos[] = "bon jour";
@@ -276,6 +296,9 @@ bool MqTest::execute_class_stress_case(){
     int mq_oflag;
     mode_t mode = 666;
     Thread uno_thread;
+    ClockTime clock_time,clock_time_add;
+    struct timespec *timeout;
+
     int itterate = 1000;
     int len_mess;
     attr_flag = MqAttr::RDWR;
@@ -317,6 +340,29 @@ bool MqTest::execute_class_stress_case(){
                 break;
             }
         }
+        clock_time = Clock::get_time();
+        clock_time_add.set(0,10*1000*1000);
+        clock_time +=clock_time_add;
+        timeout = clock_time.timespec();
+
+        for (int i =0;i<itterate;i++){
+            if(mq.timedsend(message1_thread,sizeof(message1_thread),0,timeout)>0){
+                len_mess = mq_answer.receive(message_buff,sizeof(message2_thread));
+                if((len_mess == sizeof(message2_thread)) && \
+                        (strcmp(message_buff,message2_thread)==0)){
+
+                }else{
+                    print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                    result = false;
+                    break;
+                }
+            }else{
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+                break;
+            }
+        }
+
     }else{
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
@@ -334,17 +380,22 @@ bool MqTest::execute_class_stress_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+    mq.close();
     for (int i =0;i<itterate;i++){
-        char mq_name_temp[10];
+        char mq_name_temp[10] = "abcdefghf";
         mq_oflag = get_o_flags(i);
-        rand_string_value(sizeof(mq_name_temp),mq_name_temp);
+        rand_string_value(sizeof(mq_name_temp)-1,mq_name_temp);
         if (mq.create(mq_name_temp,mq_oflag,mode,attr_flag,attr_mq_maxmsg,attr_msgsize)<0){
             print_case_message("Failed %s:%d:%d", __PRETTY_FUNCTION__, __LINE__,i);
             print_case_message("%s",mq_name_temp);
             result = false;
             break;
         }
-        mq.close();
+        if(mq.close()!=0){
+            print_case_message("Failed %s:%d:%d", __PRETTY_FUNCTION__, __LINE__,i);
+            result = false;
+            break;
+        }
     }
     return result;
 }
@@ -356,12 +407,12 @@ bool MqTest::execute_class_performance_case(){
     int mq_oflag;
     mode_t mode = 666;
     Thread uno_thread;
-    u32 itterate = 1000;
+    u32 itterate = 100;
     int len_mess;
     attr_flag = MqAttr::RDWR;
     attr_mq_maxmsg = 20;
     attr_msgsize = 16;
-    attr_curmsgs = 16;
+    attr_curmsgs = 0;
     mq_oflag = O_RDWR;
     mq_attr.set_curmsgs(attr_curmsgs);
     mq_attr.set_flags(attr_flag);
@@ -395,6 +446,7 @@ bool MqTest::execute_class_performance_case(){
                 break;
             }
         }
+
     }else{
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
@@ -412,6 +464,7 @@ bool MqTest::execute_class_performance_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
+
     return result;
 }
 
@@ -434,9 +487,11 @@ static void * thread_1(void * args){
                 }else if((len_mess == sizeof(message3_thread)) &&\
                          (strcmp(message_buff,message3_thread)==0)){
                     mq_answer.send(message4_thread,sizeof(message4_thread),0);
+                    Timer::wait_milliseconds(100);
                     break;
                 }
             }
+            mq_answer.close();
         }
     }
 

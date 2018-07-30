@@ -1,12 +1,12 @@
-#ifndef CLITEST_HPP
-#define CLITEST_HPP
+#ifndef DIR_TEST_HPP
+#define DIR_TEST_HPP
 
 #include <sapi/test.hpp>
 
-class CliTest:public Test {
+class DirTest:public Test {
 public:
     u32 wait_time = 4000;/*!<wait time for object thread*/
-    CliTest();
+    DirTest();
 private:
     //api
     bool execute_class_api_case();
@@ -17,4 +17,4 @@ private:
 
 };
 
-#endif // CLITEST_HPP
+#endif // DIR_TEST_HPP
