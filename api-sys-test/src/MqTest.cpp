@@ -181,7 +181,8 @@ bool MqTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-
+    mq.unlink(mq_name_uno);
+    mq.close();
     return result;
 }
 /*  called in MqTest::execute_class_api_case(){
@@ -237,6 +238,14 @@ bool MqTest::execute_api_simply_case(){
             result = false;
         }
     }else{
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq.unlink(mq_name_uno)!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq.close()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -380,7 +389,23 @@ bool MqTest::execute_class_stress_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    mq.close();
+    if(mq.unlink(mq_name_thread)){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq.close()!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq_answer.unlink(mq_name_thread)!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq_answer.close()!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+
     for (int i =0;i<itterate;i++){
         char mq_name_temp[10] = "abcdefghf";
         mq_oflag = get_o_flags(i);
@@ -388,6 +413,11 @@ bool MqTest::execute_class_stress_case(){
         if (mq.create(mq_name_temp,mq_oflag,mode,attr_flag,attr_mq_maxmsg,attr_msgsize)<0){
             print_case_message("Failed %s:%d:%d", __PRETTY_FUNCTION__, __LINE__,i);
             print_case_message("%s",mq_name_temp);
+            result = false;
+            break;
+        }
+        if(mq.unlink(mq_name_temp)!=0){
+            print_case_message("Failed %s:%d:%d", __PRETTY_FUNCTION__, __LINE__,i);
             result = false;
             break;
         }
@@ -464,7 +494,22 @@ bool MqTest::execute_class_performance_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-
+    if(mq.unlink(mq_name_thread)!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq.close()!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq_answer.unlink(mq_name_thread)!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
+    if(mq_answer.close()!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
     return result;
 }
 
@@ -491,7 +536,6 @@ static void * thread_1(void * args){
                     break;
                 }
             }
-            mq_answer.close();
         }
     }
 
