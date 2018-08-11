@@ -53,7 +53,7 @@ bool MqTest::execute_class_api_case(){
     mq_oflag = Mq::CREATE;
     attr_flag = MqAttr::RDWR;
     attr_mq_maxmsg = 10;
-    attr_msgsize = 10;
+    attr_msgsize = 12;
     attr_curmsgs = 0;
     mq_attr.set_curmsgs(attr_curmsgs);
     mq_attr.set_flags(attr_flag);
@@ -139,16 +139,12 @@ bool MqTest::execute_class_api_case(){
     attr_mq_maxmsg = 10;
     attr_msgsize = 16;
     attr_curmsgs = 0;
-    mq_attr.set_curmsgs(attr_curmsgs);
     mq_attr.set_flags(attr_flag);
-    mq_attr.set_maxmsg(attr_mq_maxmsg);
-    mq_attr.set_msgsize(attr_msgsize);
     mq.set_attr(mq_attr);
     mq_attr_get = mq.get_attr();
     mq.get_attr(mq_struct);
-    if(mq_attr_get.flags()!= mq_attr.flags()||\
-       mq_attr_get.curmsgs() != mq_attr.curmsgs()||\
-       mq_attr_get.maxmsg()  != mq_attr.maxmsg()||\
+    if(mq_attr_get.flags()!= mq_attr.flags()||
+       mq_attr_get.maxmsg()  != mq_attr.maxmsg()||
        mq_attr_get.msgsize() != mq_attr.msgsize()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;

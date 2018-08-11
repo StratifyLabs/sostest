@@ -18,7 +18,7 @@ TraceTest::TraceTest() : Test("sys::Trace"){
 bool TraceTest::execute_class_api_case(){
     bool result = true;
     Trace trace_test;
-    String message = "String";
+    String message("String");
     trace_test = message;
     trace_test.trace_message();
     trace_test.trace_warning();

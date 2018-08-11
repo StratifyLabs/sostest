@@ -15,14 +15,14 @@ bool ArrayTest::execute_class_performance_case(){
     bool result = true;
     Array <u8,1000>u8_array;
     Array <u32,500>u32_array;
-    Array <double,350>double_array;
+    Array <float,350>double_array;
     u8 u8_value;
     u32 u32_value;
     double double_value;
     for (u16 j = 0;j< 255;j++){
         u8_value = j;
         u8_array.fill(u8_value);
-        for (u32 i=0;i<u8_array.size();i++){
+        for (u32 i=0;i<u8_array.count();i++){
             if(u8_array.at(i)!=u8_value){
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 result = false;
@@ -31,16 +31,16 @@ bool ArrayTest::execute_class_performance_case(){
         }
         u32_value = j*1737;
         u32_array.fill(u32_value);
-        for (u32 i=0;i<u32_array.size();i++){
+        for (u32 i=0;i<u32_array.count();i++){
             if(u32_array.at(i)!=u32_value){
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 result = false;
                 break;
             }
         }
-        double_value = j&0x01?3.1456*(double)j:-3.1456*(double)j;
+        double_value = j&0x01?3.1456f*(float)j:-3.1456f*(float)j;
         double_array.fill(double_value);
-        for (u32 i=0;i<double_array.size();i++){
+        for (u32 i=0;i<double_array.count();i++){
             if(double_array.at(i)!=double_value){
                 print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                 result = false;
@@ -78,7 +78,7 @@ bool ArrayTest::execute_class_api_case(){
 
     Array <u8,1000>u8_array;
     Array <u32,500>u32_array;
-    Array <double,350>double_array;
+    Array <float,350>double_array;
     Array <String,6>string_array;
     String s1("fill");
     string_array.fill(s1);
@@ -89,7 +89,7 @@ bool ArrayTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    for (u8 i=0;i<6;i++){
+    for (u8 i=0;i<string_array.count();i++){
         String temp_string;
         temp_string = string_array.at(i);
         if(temp_string.compare(s1)){
@@ -99,46 +99,46 @@ bool ArrayTest::execute_class_api_case(){
     }
     u8 u8_value;
     u32 u32_value;
-    double double_value;
+    float double_value;
     u8_value = 255;
     u32_value = 0xffffffff;
-    double_value = -3.1e+48;
+    double_value = -3.1e+20f;
     u8_array.fill(u8_value);
     u32_array.fill(u32_value);
     double_array.fill(double_value);
-    if((u8_array.at(500)!=u8_value)||(u8_array.back()!=u8_value)||(
+    if((u8_array.at(u8_array.count()-1)!=u8_value)||(u8_array.back()!=u8_value)||(
                 u8_array.front()!=u8_value)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if((u32_array.at(250)!=
+    if((u32_array.at(u32_array.count()-1)!=
         u32_value)||(u32_array.back()!=u32_value)||(
                 u32_array.front()!=u32_value)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if((double_array.at(175)!=double_value)||(double_array.back()!=double_value)||(
+    if((double_array.at(double_array.count()-1)!=double_value)||(double_array.back()!=double_value)||(
                 double_array.front()!=double_value)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     u8_value = 0;
     u32_value = 0;
-    double_value = 0.0;
+    double_value = 0.0f;
     u8_array.fill(u8_value);
     u32_array.fill(u32_value);
     double_array.fill(double_value);
-    if((u8_array.at(500)!=u8_value)||(u8_array.back()!=u8_value)||(
+    if((u8_array.at(u8_array.count()-1)!=u8_value)||(u8_array.back()!=u8_value)||(
                 u8_array.front()!=u8_value)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if((u32_array.at(250)!=u32_value)||(u32_array.back()!=u32_value)||(
+    if((u32_array.at(u32_array.count()-1)!=u32_value)||(u32_array.back()!=u32_value)||(
                 u32_array.front()!=u32_value)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if((double_array.at(175)!=double_value)||(double_array.back()!=double_value)||(
+    if((double_array.at(double_array.count()-1)!=double_value)||(double_array.back()!=double_value)||(
                 double_array.front()!=double_value)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;

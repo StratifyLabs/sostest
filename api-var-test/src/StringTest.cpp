@@ -51,7 +51,7 @@ bool StringTest::api_case_assign(){
     bool result = true;
 
     s1.assign("uno");
-    if(s1.data() == nullptr || s2.data()==nullptr){
+    if(s1.data() == nullptr || s2.data() != nullptr){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -87,10 +87,10 @@ bool StringTest::api_case_assign(){
  */
 bool StringTest::api_case_compare(){
     bool result = true;
-    String s1 = "123456789.987654321";
+    String s1("123456789.987654321");
     const char s2[] = "123456789.987654321";
     const char s2_menos[] = "123456789.98765432";
-    String s3 = "123456789.987654321";
+    String s3("123456789.987654321");
     //with char compare
     if (s1.compare(s2)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -130,8 +130,8 @@ bool StringTest::api_case_compare(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    String s_upper_case = "QWERTYUIOPASDFGHJKLZXCVBNM";
-    String s_lower_case = "qwertyuiopasdfghjklzxcvbnm";
+    String s_upper_case("QWERTYUIOPASDFGHJKLZXCVBNM");
+    String s_lower_case("qwertyuiopasdfghjklzxcvbnm");
     s_lower_case.toupper();
     if (s_upper_case.compare(s_lower_case)){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -149,10 +149,10 @@ bool StringTest::api_case_compare(){
   * @return false if some test failed
  */
 bool StringTest::api_case_find(){
-    String s = "QWERTYUIOPASDFGHJKLZXCVBNM";
-    String s1 = "ASD";
-    String s2 = "QWE";
-    String s3 = "BNM";
+    String s("QWERTYUIOPASDFGHJKLZXCVBNM");
+    String s1("ASD");
+    String s2("QWE");
+    String s3("BNM");
     char s1_char[] = "ASD";
     char s2_char[] = "QWE";
     char s3_char[] = "BNM";
@@ -199,8 +199,8 @@ bool StringTest::api_case_find(){
   * @return false if some test failed
  */
 bool StringTest::api_case_special(){
-    String s_upper_case = "QWERTYUIOPASDFGHJKLZXCVBNM";
-    String s_lower_case = "qwertyuiopasdfghjklzxcvbnm";
+    String s_upper_case("QWERTYUIOPASDFGHJKLZXCVBNM");
+    String s_lower_case("qwertyuiopasdfghjklzxcvbnm");
     char s_lower_case_c[] = "qwertyuiopasdfghjklzxcvbnm";
     String s_test;
     u32 capacity;
@@ -223,7 +223,7 @@ bool StringTest::api_case_special(){
         result = false;
     }
     char c_append[] = "end";
-    String s_append = "end";
+    String s_append("end");
     s_upper_case<<c_append;
     s_lower_case<<s_append;
     if(strncmp(s_upper_case.c_str(),s_lower_case.c_str(),s_lower_case.length())){
@@ -241,7 +241,7 @@ bool StringTest::api_case_special(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    String s_int = "47898";
+    String s_int("47898");
     int i = 47898;
     if(s_int.atoi()!=i){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -259,7 +259,7 @@ bool StringTest::api_case_special(){
         result = false;
     }
 
-    String s_float = "3.1";
+    String s_float("3.1");
     float f = 3.1;
     if(s_float.atoff()!=f){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -273,9 +273,9 @@ bool StringTest::api_case_special(){
         result = false;
     }
 
-    String s_inserts = "qwertyuiopasdfghjkl";
-    String s_inserts_con = "qwertyuiopasdfghjkl";
-    String s_inserting = "123";
+    String s_inserts("qwertyuiopasdfghjkl");
+    String s_inserts_con("qwertyuiopasdfghjkl");
+    String s_inserting("123");
     s_inserts.insert(3,s_inserting.c_str());
     if(strncmp(s_inserts.c_str(),"qwe123rtyuiopasdfghjkl",s_inserting.length()+s_inserts.len())){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -287,7 +287,7 @@ bool StringTest::api_case_special(){
         result = false;
     }
     u32 train_len;
-    String s_train("train:;",7);
+    String s_train(ConstString("train:;;"),7);
     train_len = s_train.len();
     String s_wagon(":wagon:");
     for (i=0;i<10;i++){
@@ -334,7 +334,7 @@ bool StringTest::api_case_special(){
     }
     //first
     base1 = base;
-    String base_ABC = "ABC";
+    String base_ABC("ABC");
     base_ABC.append(base.c_str());
     base1.insert(0, "ABC");
     if(base_ABC.compare(base1)){
@@ -403,8 +403,8 @@ bool StringTest::api_case_special(){
 bool StringTest::execute_class_performance_case(){
     bool result = true;
     u32 i;
-    String t1 = "u";
-    String t2 = "u";
+    String t1("u");
+    String t2("u");
 
     for(i=0; i < 500; i++){
         if (t1.compare(t2)){
@@ -505,8 +505,8 @@ bool StringTest::execute_class_performance_case(){
 bool StringTest::execute_class_stress_case(){
     bool result = true;
     u32 i;
-    String t1 = "u";
-    String t2 = "u";
+    String t1("u");
+    String t2("u");
     String temp_string;
     //corner test
     for(i=0; i < 100; i++){

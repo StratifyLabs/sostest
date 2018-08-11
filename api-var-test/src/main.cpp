@@ -26,7 +26,7 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags);
 void show_usage(const Cli & cli);
 
 int main(int argc, char * argv[]){
-    Cli cli(argc, argv);
+    Cli cli(argc, argv, SOS_GIT_HASH);
     cli.set_publisher("Stratify Labs, Inc");
     cli.handle_version();
     u32 o_flags;
@@ -41,7 +41,7 @@ int main(int argc, char * argv[]){
 
     srand(Clock::get_time().nanoseconds());
 
-    Test::initialize(cli.name(), cli.version());
+    Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
 
     if( o_flags & DATA_TEST_FLAG ){
         DataTest test;

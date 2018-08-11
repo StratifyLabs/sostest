@@ -26,7 +26,7 @@ bool AppfsTest::execute_class_api_case(){
     }
     char my_user_data[16];
     File f;
-    String path = "/app/flash/";
+    String path("/app/flash/");
     path.append(file_name);
     f.open(path.c_str(), File::RDONLY); //only the file read only
     f.read(my_user_data, 16); //read 16 bytes of user data
@@ -41,10 +41,10 @@ bool AppfsTest::execute_class_api_case(){
         result = false;
     }
 
-    version = Appfs::get_version(path.c_str());
+    version = Appfs::get_version(path);
     print_case_message("version %u",version);
-    char id[16];
-    if(Appfs::get_id(path.c_str(),id,page_size)!=0){
+
+    if( Appfs::get_id(path).is_empty() ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -57,7 +57,7 @@ static bool make_file_in_flash(char *file_name){
     //populate my_user_data as you please here
     sprintf(my_user_data, "Hello World 1!");
     File f;
-    String path = "/app/flash/";
+    String path("/app/flash/");
     path.append(file_name);
     if(f.access(path.c_str(),File::READ_OK)==0){
 //file exist

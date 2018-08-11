@@ -172,13 +172,13 @@ bool CliTest::execute_class_stress_case(){
     String temp_string,name_string;
     const u8 MAX_NAME_LEN = 128;
     u8 name_len;
-    String arg_path = "path/";
-    String arg_name = "test";
+    String arg_path("path/");
+    String arg_name("test");
     String arg_path_and_name = arg_path;
     arg_path_and_name +=  arg_name;
-    String arg_param1 = "-cli";
-    String arg_param2 = "-API";
-    String arg_param3 = "-Stratify";
+    String arg_param1("-cli");
+    String arg_param2("-API");
+    String arg_param3("-Stratify");
     const u8 STR_INT_NUMBER = 5;
     String arg_param4[STR_INT_NUMBER];
     arg_param4[0] = "1";
@@ -186,7 +186,7 @@ bool CliTest::execute_class_stress_case(){
     arg_param4[2] = "1234567890";
     arg_param4[3] = "9999999999";
     arg_param4[4] = "0999999999";
-    String arg_param5 = "-SoS";
+    String arg_param5("-SoS");
     String arg_param6[STR_INT_NUMBER];
     arg_param6[0] = "0x0e";
     arg_param6[1] = "0x00000000";
@@ -194,11 +194,11 @@ bool CliTest::execute_class_stress_case(){
     arg_param6[3] = "0x1000";
     arg_param6[4] = "0xabcd";
     int hex_value[STR_INT_NUMBER]  = {14,0,65535,4096,43981};
-    String arg_param7 = "-opt_Arg";
-    String arg_param8 = "last.test";
-    String arg_param9 = "-v";
-    String publisher = "Stratify Labs, Inc";
-    String defis = "-";
+    String arg_param7("-opt_Arg");
+    String arg_param8("last.test");
+    String arg_param9("-v");
+    String publisher("Stratify Labs, Inc");
+    String defis("-");
     char* arg_str[10] ;
     for (u16 i=0;i<itterate;i++){
         name_len = pseudo_rnd_u8();//zero will be inluded
