@@ -17,8 +17,8 @@ bool MessengerTest::execute_class_api_case(){
     bool result = true;
     String str_test;
     Son son_test;
-    char device[] = "/dev/pio0";
-    char son_name[] = "/home/uno.son";
+    char device[] = "/dev/fifo";
+    char son_name[] = "/app/ram/uno.son";
     u16 max_messege_size = 16;
     int read_channel,write_channel;
     u16 time_out = 100;
@@ -38,13 +38,18 @@ bool MessengerTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    son_test.create(son_name);
+    int ret;
+    ret = son_test.create(son_name);
+    if(ret != 0){
+        print_case_message("Failed %s:%d:%d", __PRETTY_FUNCTION__, __LINE__,ret);
+        result = false;
+    }
     son_test.open_object("");
     son_test.write("name", "Stratify"); //create a string
     son_test.close_object(); //close root ""
     son_test.close();
     char buffer[32];
-    son_test.open_read("/home/uno.son"); //opens read-only
+    son_test.open_read(son_name); //opens read-only
     son_test.read_str("name", buffer, 32);
     print_case_message("name %s",buffer);
     son_test.close();
@@ -89,46 +94,7 @@ bool MessengerTest::execute_class_performance_case(){
     return result;
 }
 void * MessengerTest::thread_1(u32 wait_time){
-    int counter = 0;
-    u16 test_count ;
     while( !stop_threads ){
-        counter++;
-        Timer::wait_microseconds(wait_time*1000);
-        //add vector stress test from api-var-test(make it more difficult)
-        Vector<int> vector_test;
-        u16 vector_size;
-        if(vector_test.size()!=0){
-            thread_result = false;
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        }
-        test_count = rand()&0x3ff;
-        vector_size = test_count + 1;
-        for (u16 i =0; i<vector_size; i++){
-            vector_test.push_back(i);
-            vector_test.insert(i,vector_size-i);
-            if(vector_test.count()!=(u16)(i*2+2)){
-                print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
-                thread_result = false;
-                break;
-            }
-        }
-        vector_test.shrink_to_fit();
-        for (u16 i = 0; i < vector_size*2; i++){
-            if(i < vector_size){
-                if(vector_test[i]!=(vector_size-i)){
-                    print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
-                    thread_result = false;
-                    break;
-                }
-            }else{
-                if(vector_test[i]!=(i - vector_size)){
-                    print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
-                    thread_result = false;
-                    break;
-                }
-            }
-        }
-        vector_test.free();
     }
     return &thread_result;
 }

@@ -4,10 +4,12 @@ static char mq_name_thread[] = "dialog";
 static char mq_name_thread_answer[] = "dialog_answer";
 
 static char message_buff[64] = "clean";
-const char message1_thread[] = "bon jour";
+const char message1_thread[] = "bon_jour";
 const char message2_thread[] = "ola";
+char message_rand[] = "123456789";
+char message_rand_thread[] = "123456789";
 const char message3_thread[] = "verra";
-const char message4_thread[] = "hasta la vista";
+const char message4_thread[] = "hasta_la_vista";
 
 static u32 count_0 = 0;
 static u32 count_1 = 0;
@@ -19,17 +21,6 @@ MqTest::MqTest():Test("sys::Mq"){
 
 }
 /*@brief api test for sys/Mq use "api-sys-test -mq -api"
- * Mq
- * Mq(),create(),open(),int get_attr(),MqAttr get_attr(),set_attr(),
- * MqAttr
- * MqAttr(),MqAttr(long f, long m, long s),
- * flags(),curmsgs(),maxmsg(),msgsize(),
- * set_flags(long v),set_curmsgs(long v),set_maxmsg(long v),set_msgsize(long v)
- * send(),receive()
- * not writed test
- * ,close(),is_open(),notify(),,
- * set_attr()
- * unlink(),msg_prio(),
  * @todo more api test for size and flags
  * @todo more stress test for size prio and flags
  * not tested on
@@ -334,10 +325,30 @@ bool MqTest::execute_class_stress_case(){
     if(mq_answer.open(mq_name_thread_answer,mq_oflag)>=0){
         for (int i =0;i<itterate;i++){
             if(mq.send(message1_thread,sizeof(message1_thread),0)>0){
-                len_mess = mq_answer.receive(message_buff,sizeof(message2_thread));
+                len_mess = mq_answer.receive(message_buff,sizeof(message_buff));
                 if((len_mess == sizeof(message2_thread)) && \
-                        (strcmp(message_buff,message2_thread)==0)){
+                        (strncmp(message_buff,message2_thread,sizeof(message2_thread))==0)){
 
+                }else{
+                    print_case_message("Failed %s:%d:%s:%s", __PRETTY_FUNCTION__, __LINE__, message2_thread,message_buff);
+                    result = false;
+                    break;
+                }
+            }else{
+                print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+                result = false;
+                break;
+            }
+        }
+        for (int i =0;i<itterate;i++){
+            clock_time = Clock::get_time();
+            clock_time_add.set(0,10*1000*1000);
+            clock_time +=clock_time_add;
+            timeout = clock_time.timespec();
+            if(mq.timedsend(message1_thread,sizeof(message1_thread),0,timeout)>0){
+                len_mess = mq_answer.receive(message_buff,sizeof(message_buff));
+                if((len_mess == sizeof(message2_thread)) && \
+                        (strncmp(message_buff,message2_thread,sizeof(message2_thread))==0)){
                 }else{
                     print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
                     result = false;
@@ -349,16 +360,18 @@ bool MqTest::execute_class_stress_case(){
                 break;
             }
         }
-        clock_time = Clock::get_time();
-        clock_time_add.set(0,10*1000*1000);
-        clock_time +=clock_time_add;
-        timeout = clock_time.timespec();
-
+        //use random messege
+        rand_string_value(sizeof(message_rand),message_rand);
         for (int i =0;i<itterate;i++){
-            if(mq.timedsend(message1_thread,sizeof(message1_thread),0,timeout)>0){
-                len_mess = mq_answer.receive(message_buff,sizeof(message2_thread));
-                if((len_mess == sizeof(message2_thread)) && \
-                        (strcmp(message_buff,message2_thread)==0)){
+            clock_time = Clock::get_time();
+            clock_time_add.set(0,10*1000*1000);
+            clock_time +=clock_time_add;
+            timeout = clock_time.timespec();
+
+            if(mq.timedsend(message_rand,sizeof(message_rand),0,timeout)>0){
+                len_mess = mq_answer.receive(message_buff,sizeof(message_buff));
+                if((len_mess == sizeof(message_rand_thread)) && \
+                        (strncmp(message_buff,message_rand_thread,sizeof(message_rand_thread))==0)){
 
                 }else{
                     print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -525,20 +538,22 @@ static void * thread_1(void * args){
         if(mq.open(mq_name_thread,mq_oflag)>=0){
             while(1){
                 count_1++;
-                len_mess = mq.receive(message_buff,sizeof(message1_thread));
+                len_mess = mq.receive(message_buff,sizeof(message_buff));
                 if((len_mess == sizeof(message1_thread)) && \
-                        (strcmp(message_buff,message1_thread)==0)){
+                        (strncmp(message_buff,message1_thread,sizeof(message1_thread))==0)){
                     mq_answer.send(message2_thread,sizeof(message2_thread),0);
                 }else if((len_mess == sizeof(message3_thread)) &&\
-                         (strcmp(message_buff,message3_thread)==0)){
+                         (strncmp(message_buff,message3_thread,sizeof(message3_thread))==0)){
                     mq_answer.send(message4_thread,sizeof(message4_thread),0);
                     Timer::wait_milliseconds(100);
                     break;
+                }else if(strncmp(message_buff,message_rand,sizeof(message_rand))==0){
+                    rand_string_value(sizeof(message_rand_thread),message_rand_thread);
+                    mq_answer.send(message_rand_thread,sizeof(message_rand_thread),0);
                 }
             }
         }
     }
-
     return &count_1;
 }
 Mq::flags get_o_flags(int i){
