@@ -209,7 +209,6 @@ bool MutexTest::execute_class_stress_case(){
             print_case_message("count %d:%d:%d",count_0,count_1,count_2);
             result = false;
         }
-        print_case_message("count %d:%d",count_1,count_2);
     }
     stop_threads = true;
     uno_thread.wait();

@@ -1,4 +1,4 @@
-
+﻿
 #include <sapi/var.hpp>
 #include "ThreadTest.hpp"
 static void * thread_4(void * args);
@@ -29,7 +29,6 @@ ThreadTest::ThreadTest() : Test("sys::Thread"){
  * yield
  * not writed test
  *  join,wait
- *
  * not tested on
  * "//check after kill"
  * @warning is_valid == true before created threads
@@ -84,7 +83,7 @@ bool ThreadTest::execute_class_api_case(){
         result = false;
     }
 
-    if(uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1){
+    if(uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -102,7 +101,7 @@ bool ThreadTest::execute_class_api_case(){
         result = false;
     }
     //repeat -- should fail before thread is busy
-    if( !(uno_thread.create(handle_thread_1,this,uno_priority+1,uno_policy) < 0) ){
+    if( uno_thread.create(handle_thread_1,this,uno_priority+1,uno_policy) == 0 ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -138,7 +137,7 @@ bool ThreadTest::execute_class_api_case(){
     }
 
     timer_count.start();
-    if(dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1){
+    if(dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -157,7 +156,7 @@ bool ThreadTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1){
+    if(tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -174,7 +173,7 @@ bool ThreadTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(quatro_thread.create(thread_4,this,quatro_priority,quatro_policy)==-1){
+    if(quatro_thread.create(thread_4,this,quatro_priority,quatro_policy)!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -200,10 +199,10 @@ bool ThreadTest::execute_class_api_case(){
     }
     print_case_message("Priority test");
     for(int i=0;i< Sched::get_priority_max(uno_policy);i++){
-        uno_priority= (uno_priority==(Sched::get_priority_max(uno_policy)))?uno_priority:uno_priority+1;
-        dos_priority= (dos_priority==Sched::get_priority_max(dos_policy))?dos_priority:dos_priority+1;
-        tres_priority= (tres_priority==Sched::get_priority_max(tres_policy))?tres_priority:tres_priority+1;
-        quatro_priority= (quatro_priority==Sched::get_priority_max(quatro_policy))?quatro_priority:quatro_priority+1;
+        uno_priority= (uno_priority>=Sched::get_priority_max(uno_policy))?uno_priority:uno_priority+1;
+        dos_priority= (dos_priority>=Sched::get_priority_max(dos_policy))?dos_priority:dos_priority+1;
+        tres_priority= (tres_priority>=Sched::get_priority_max(tres_policy))?Sched::get_priority_max(tres_policy):tres_priority+1;
+        quatro_priority= (quatro_priority>=Sched::get_priority_max(quatro_policy))?Sched::get_priority_max(quatro_policy):quatro_priority+1;
         uno_thread.set_priority(uno_priority);
         dos_thread.set_priority(dos_priority);
         tres_thread.set_priority(tres_priority);
@@ -236,7 +235,7 @@ bool ThreadTest::execute_class_api_case(){
 
     }
 
-    print_case_message("Yield to threads");
+   print_case_message("Yield to threads");
     if(uno_thread.is_running()||dos_thread.is_running()||\
             tres_thread.is_running()||quatro_thread.is_running()){
         Thread::yield();//self proccess
@@ -397,15 +396,16 @@ bool ThreadTest::execute_class_performance_case(){
  */
 bool ThreadTest::execute_class_stress_case(){
     bool result = true;
-    const u32 itterate_num = 512;
+    const int itterate_num = 512;
     Thread uno_thread,dos_thread,tres_thread,quatro_thread;
     //pid_t uno_id,dos_id,tres_id,quatro_id;
     enum Sched::policy uno_policy,dos_policy,tres_policy,quatro_policy;
-    u8 uno_priority=4;
-    u8 dos_priority=4;
-    u8 tres_priority =4;
-    u8 quatro_priority =4;
-    u8 max_prior_RR,max_prior_FIFO,max_prior_OTHER;
+    int uno_priority=4;
+    int dos_priority=4;
+    int tres_priority =4;
+    int quatro_priority =4;
+    int max_prior_RR,max_prior_FIFO,max_prior_OTHER;
+    int min_prior_RR,min_prior_FIFO,min_prior_OTHER;
     //RR sheduler
     uno_policy = Sched::RR;
     dos_policy = Sched::RR;
@@ -415,31 +415,34 @@ bool ThreadTest::execute_class_stress_case(){
     max_prior_RR= Sched::get_priority_max(Sched::RR);
     max_prior_FIFO= Sched::get_priority_max(Sched::FIFO);
     max_prior_OTHER= Sched::get_priority_max(Sched::OTHER);
-    for(u32 i=0;i<itterate_num;i++){
+    min_prior_RR = Sched::get_priority_min(Sched::RR);
+    min_prior_FIFO = Sched::get_priority_min(Sched::FIFO);
+    min_prior_OTHER = Sched::get_priority_min(Sched::OTHER);
+    for(int i=0;i<itterate_num;i++){
         u32 max_time;
         wait_time_quatro = ((u16)rand() & 0x1ff) +200;//used for quatro thread
         wait_time = ((u16)rand() & 0x1ff)+200;//used for thread uno dos tres
         max_time = wait_time>wait_time_quatro?wait_time:wait_time_quatro;//use max value
         timer_count.start();
         count_1=0;count_2=0;count_3=0;count_4=0;
-        uno_priority= (u8)rand() % max_prior_RR;
-        uno_priority= uno_priority==0?1:uno_priority;
-        dos_priority= (u8)rand() % max_prior_RR;
-        dos_priority= dos_priority==0?1:dos_priority;
-        tres_priority= (u8)rand() % max_prior_RR;
-        tres_priority= tres_priority==0?1:tres_priority;
-        quatro_priority= (u8)rand() % max_prior_RR;
-        quatro_priority= quatro_priority==0?1:quatro_priority;
+        uno_priority= rand() % max_prior_RR;
+        uno_priority= uno_priority<min_prior_RR?min_prior_RR:uno_priority;
+        dos_priority= rand() % max_prior_RR;
+        dos_priority= dos_priority<min_prior_RR?min_prior_RR:dos_priority;
+        tres_priority= rand() % max_prior_RR;
+        tres_priority= tres_priority<min_prior_RR?min_prior_RR:tres_priority;
+        quatro_priority= rand() % max_prior_RR;
+        quatro_priority= quatro_priority<min_prior_RR?min_prior_RR:quatro_priority;
 
-        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
-                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
-                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)==-1)){
+        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)!=0)||
+                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)!=0)||
+                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)!=0)||
+                (quatro_thread.create(thread_4,NULL,quatro_priority,quatro_policy)!=0)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-
+        uno_priority= ((i % max_prior_RR)<min_prior_RR)?min_prior_RR:(i % max_prior_RR);
         if( uno_thread.set_priority(uno_priority) < 0 ){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
@@ -450,8 +453,7 @@ bool ThreadTest::execute_class_stress_case(){
             result = false;
             break;
         }
-
-
+        dos_priority= ((i % max_prior_RR)<min_prior_RR)?min_prior_RR:(i % max_prior_RR);
         if( dos_thread.set_priority(dos_priority) < 0 ){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
@@ -489,37 +491,37 @@ bool ThreadTest::execute_class_stress_case(){
     dos_policy = Sched::FIFO;
     tres_policy = Sched::FIFO;
     quatro_policy = Sched::FIFO;
-    for(u32 i=0;i<itterate_num;i++){
+    for(int i=0;i<itterate_num;i++){
         u32 max_time;
-        uno_priority= (u8)rand() % max_prior_FIFO;
-        uno_priority= uno_priority==0?1:uno_priority;
-        dos_priority= (u8)rand() % max_prior_FIFO;
-        dos_priority= dos_priority==0?1:dos_priority;
-        tres_priority= (u8)rand() % max_prior_FIFO;
-        tres_priority= tres_priority==0?1:tres_priority;
-        quatro_priority= (u8)rand() % max_prior_FIFO;
-        quatro_priority= quatro_priority==0?1:quatro_priority;
+        uno_priority= rand() % max_prior_FIFO;
+        uno_priority= uno_priority<max_prior_FIFO?max_prior_FIFO:uno_priority;
+        dos_priority= rand() % max_prior_FIFO;
+        dos_priority= dos_priority<max_prior_FIFO?max_prior_FIFO:dos_priority;
+        tres_priority= rand() % max_prior_FIFO;
+        tres_priority= tres_priority<max_prior_FIFO?max_prior_FIFO:tres_priority;
+        quatro_priority= rand() % max_prior_FIFO;
+        quatro_priority= quatro_priority<max_prior_FIFO?max_prior_FIFO:quatro_priority;
         wait_time_quatro = ((u16)rand() & 0x1ff) +200;//used for quatro thread
         wait_time = ((u16)rand() & 0x1ff)+200;//used for thread uno dos tres
         max_time = wait_time>wait_time_quatro?wait_time:wait_time_quatro;//use max value
         timer_count.start();
         count_1=0;count_2=0;count_3=0;count_4=0;
-        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
-                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
-                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)==-1)){
+        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)!=0)||
+                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)!=0)||
+                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)!=0)||
+                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)!=0)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        uno_priority= ((i % max_prior_RR)==0?1:(i % max_prior_RR));
+        uno_priority= ((i % max_prior_FIFO)<min_prior_FIFO)?min_prior_FIFO:(i % max_prior_FIFO);
         uno_thread.set_priority(uno_priority);
         if (uno_thread.get_priority()!= uno_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        dos_priority= ((i % max_prior_FIFO)==0?1:(i % max_prior_FIFO));
+        dos_priority= ((i % max_prior_FIFO)<min_prior_FIFO)?min_prior_FIFO:(i % max_prior_FIFO);
         dos_thread.set_priority(dos_priority);
         if (dos_thread.get_priority()!= dos_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
@@ -554,38 +556,38 @@ bool ThreadTest::execute_class_stress_case(){
     dos_policy = Sched::RR;
     tres_policy = Sched::FIFO;
     quatro_policy = Sched::RR;
-    for(u32 i=0;i<itterate_num;i++){
+    for(int i=0;i<itterate_num;i++){
         u32 max_time;
-        uno_priority= (u8)rand() % max_prior_FIFO;
-        uno_priority= uno_priority==0?1:uno_priority;
-        dos_priority= (u8)rand() % max_prior_RR;
-        dos_priority= dos_priority==0?1:dos_priority;
-        tres_priority= (u8)rand() % max_prior_FIFO;
-        tres_priority= tres_priority==0?1:tres_priority;
-        quatro_priority= (u8)rand() % max_prior_RR;
-        quatro_priority= quatro_priority==0?1:quatro_priority;
+        uno_priority= rand() % max_prior_FIFO;
+        uno_priority= uno_priority<max_prior_FIFO?max_prior_FIFO:uno_priority;
+        dos_priority= rand() % max_prior_RR;
+        dos_priority= dos_priority<max_prior_RR?max_prior_RR:dos_priority;
+        tres_priority= rand() % max_prior_FIFO;
+        tres_priority= tres_priority<max_prior_FIFO?max_prior_FIFO:tres_priority;
+        quatro_priority= rand() % max_prior_RR;
+        quatro_priority= quatro_priority<max_prior_RR?max_prior_RR:quatro_priority;
 
         wait_time_quatro = ((u16)rand() & 0x1ff) +200;//used for quatro thread
         wait_time = ((u16)rand() & 0x1ff)+200;//used for thread uno dos tres
         max_time = wait_time>wait_time_quatro?wait_time:wait_time_quatro;//use max value
         timer_count.start();
         count_1=0;count_2=0;count_3=0;count_4=0;
-        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
-                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
-                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)==-1)){
+        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)!=0)||
+                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)!=0)||
+                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)!=0)||
+                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)!=0)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        uno_priority= ((i % max_prior_RR)==0?1:(i % max_prior_RR));
+        uno_priority= ((i % max_prior_FIFO)<min_prior_FIFO)?min_prior_FIFO:(i % max_prior_FIFO);
         uno_thread.set_priority(uno_priority);
         if (uno_thread.get_priority()!= uno_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        dos_priority= ((i % max_prior_FIFO)==0?1:(i % max_prior_FIFO));
+        dos_priority= ((i % max_prior_RR)<min_prior_RR)?min_prior_RR:(i % max_prior_RR);
         dos_thread.set_priority(dos_priority);
         if (dos_thread.get_priority()!= dos_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
@@ -620,37 +622,37 @@ bool ThreadTest::execute_class_stress_case(){
     dos_policy = Sched::OTHER;
     tres_policy = Sched::OTHER;
     quatro_policy = Sched::OTHER;
-    for(u32 i=0;i<itterate_num;i++){
+    for(int i=0;i<itterate_num;i++){
         u32 max_time;
-        uno_priority= (u8)rand() % max_prior_OTHER;
-        uno_priority= uno_priority==0?1:uno_priority;
-        dos_priority= (u8)rand() % max_prior_OTHER;
-        dos_priority= dos_priority==0?1:dos_priority;
-        tres_priority= (u8)rand() % max_prior_OTHER;
-        tres_priority= tres_priority==0?1:tres_priority;
-        quatro_priority= (u8)rand() % max_prior_OTHER;
-        quatro_priority= quatro_priority==0?1:quatro_priority;
+        uno_priority= rand() % max_prior_OTHER;
+        uno_priority= uno_priority<max_prior_OTHER?max_prior_OTHER:uno_priority;
+        dos_priority= rand() % max_prior_OTHER;
+        dos_priority= dos_priority<max_prior_OTHER?max_prior_OTHER:dos_priority;
+        tres_priority= rand() % max_prior_OTHER;
+        tres_priority= tres_priority<max_prior_OTHER?max_prior_OTHER:tres_priority;
+        quatro_priority= rand() % max_prior_OTHER;
+        quatro_priority= quatro_priority<max_prior_OTHER?max_prior_OTHER:quatro_priority;
         wait_time_quatro = ((u16)rand() & 0x1ff) +200;//used for quatro thread
         wait_time = ((u16)rand() & 0x1ff)+200;//used for thread uno dos tres
         max_time = wait_time>wait_time_quatro?wait_time:wait_time_quatro;//use max value
         timer_count.start();
         count_1=0;count_2=0;count_3=0;count_4=0;
-        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)==-1)||
-                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)==-1)||
-                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)==-1)||
-                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)==-1)){
+        if((uno_thread.create(handle_thread_1,this,uno_priority,uno_policy)!=0)||
+                (dos_thread.create(handle_thread_2,this,dos_priority,dos_policy)!=0)||
+                (tres_thread.create(handle_thread_3,this,tres_priority,tres_policy)!=0)||
+                (quatro_thread.create(thread_4,nullptr,quatro_priority,quatro_policy)!=0)){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        uno_priority= ((i % max_prior_RR)==0?1:(i % max_prior_RR));
+        uno_priority= ((i % max_prior_OTHER)<min_prior_OTHER)?min_prior_OTHER:(i % max_prior_OTHER);
         uno_thread.set_priority(uno_priority);
         if (uno_thread.get_priority()!= uno_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
             break;
         }
-        dos_priority= ((i % max_prior_FIFO)==0?1:(i % max_prior_FIFO));
+        dos_priority= ((i % max_prior_OTHER)<min_prior_OTHER)?min_prior_OTHER:(i % max_prior_OTHER);
         dos_thread.set_priority(dos_priority);
         if (dos_thread.get_priority()!= dos_priority){
             print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);

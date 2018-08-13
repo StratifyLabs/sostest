@@ -21,15 +21,6 @@ MqTest::MqTest():Test("sys::Mq"){
 
 }
 /*@brief api test for sys/Mq use "api-sys-test -mq -api"
- * @todo more api test for size and flags
- * @todo more stress test for size prio and flags
- * not tested on
- * @bug crashes out(suspend) if open() use before create() and with out mq_attr
- * @warning change mq_attr after close mq
- * @warning receive_timed crashes out(suspend) if use incorrect abs_time
- * @warning Mq class dont have O_RDWR
- * @warning stress test suspended
- * @warning set_attr not supported
  */
 bool MqTest::execute_class_api_case(){
     bool result = true;
