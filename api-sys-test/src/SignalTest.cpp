@@ -176,8 +176,8 @@ bool SignalTest::execute_class_stress_case(){
     timer.start();
     //signo test
     Thread uno_thread(4096);
-    int signal_thread_priority = 1;
     enum Sched::policy signal_thread_policy = Sched::RR;
+    int signal_thread_priority = Sched::get_priority_max(Sched::RR);
     if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
                          signal_thread_policy)==-1){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);

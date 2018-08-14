@@ -1,4 +1,4 @@
-#include <sapi/sys.hpp>
+﻿#include <sapi/sys.hpp>
 #include <sapi/var.hpp>
 #include <sapi/chrono.hpp>
 #include <sapi/fmt.hpp>
@@ -43,7 +43,6 @@ bool AppfsTest::execute_class_api_case(){
 
     version = Appfs::get_version(path);
     print_case_message("version %u",version);
-
     if( Appfs::get_id(path).is_empty() ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
