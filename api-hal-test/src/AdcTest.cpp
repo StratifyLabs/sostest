@@ -14,7 +14,7 @@ bool AdcTest::execute_class_api_case(){
 
     print_case_message("Board has %d ADCs", m_adc_count);
 
-    for(u32 count = 0; count < m_adc_count; count++){
+    for(PeriphObject::port_t count = 0; count < m_adc_count; count++){
         Adc adc(count);
         if( execute_adc_api_case(adc) == false ){
             result = false;

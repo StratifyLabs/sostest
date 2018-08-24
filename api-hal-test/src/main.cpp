@@ -6,7 +6,9 @@
 #include "AdcTest.hpp"
 #include "CoreTest.hpp"
 #include "FifoTest.hpp"
-
+#include "UartTest.hpp"
+#include "SpiTest.hpp"
+void show_usage(const Cli & cli);
 
 //update flags
 enum {
@@ -37,29 +39,37 @@ enum {
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
 
 int main(int argc, char * argv[]){
-    Cli cli(argc, argv);
+    Cli cli(argc, argv, SOS_GIT_HASH);
     cli.set_publisher("Stratify Labs, Inc");
     cli.handle_version();
     u32 o_flags;
     u32 o_execute_flags;
-
     o_flags = decode_cli(cli, o_execute_flags);
+    if( o_flags == 0 ){
+       show_usage(cli);
+       exit(0);
+    }
 
-    Test::initialize(cli.name(), cli.version());
+    Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
 
     if( o_flags & ADC_TEST_FLAG ){
         AdcTest test;
         test.execute(o_execute_flags);
     }
-
-
     if( o_flags & CORE_TEST_FLAG ){
         CoreTest test;
         test.execute(o_execute_flags);
     }
-
     if( o_flags & FIFO_TEST_FLAG ){
         FifoTest test;
+        test.execute(o_execute_flags);
+    }
+    if( o_flags & UART_TEST_FLAG ){
+        UartTest test;
+        test.execute(o_execute_flags);
+    }
+    if( o_flags & SPI_TEST_FLAG ){
+        SpiTest test;
         test.execute(o_execute_flags);
     }
 
@@ -94,9 +104,25 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-dac") ){ o_flags |= DAC_TEST_FLAG; }
     if(cli.is_option("-device") ){ o_flags |= DEVICE_TEST_FLAG; }
     if(cli.is_option("-fifo") ){ o_flags |= FIFO_TEST_FLAG; }
+    if(cli.is_option("-uart") ){ o_flags |= UART_TEST_FLAG; }
+    if(cli.is_option("-spi") ){ o_flags |= SPI_TEST_FLAG; }
 
     return o_flags;
 }
 
+void show_usage(const Cli & cli){
+    printf("\n");
+    printf("usage: %s\n", cli.name());
+    printf("    -all            execute all test types (stress, api, performance) for all objects\n");
+    printf("    -execute_all    execute all test types\n");
+    printf("    -api            execute api test\n");
+    printf("    -stress         execute stress test\n");
+    printf("    -performance    execute performance test\n");
+    printf("    -additional     execute additional tests (if any)\n");
+    printf("    -test_all       execute test for all objects\n");
+    printf("    -adc            execute test for hal/adc \n");
+    printf("    -uart           execute test for hal/uart \n");
+    printf("    -spi            execute test for hal/spi \n");
+}
 
 
