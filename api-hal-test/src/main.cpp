@@ -8,6 +8,8 @@
 #include "FifoTest.hpp"
 #include "UartTest.hpp"
 #include "SpiTest.hpp"
+#include "I2cTest.hpp"
+#include "I2sTest.hpp"
 void show_usage(const Cli & cli);
 
 //update flags
@@ -33,7 +35,8 @@ enum {
     SWITCHBOARD_TEST_FLAG = (1<<22),
     TMR_TEST_FLAG = (1<<23),
     UART_TEST_FLAG = (1<<24),
-    USB_TEST_FLAG = (1<<25)
+    USB_TEST_FLAG = (1<<25),
+    I2S_TEST_FLAG = (1<<26),
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
@@ -49,9 +52,7 @@ int main(int argc, char * argv[]){
        show_usage(cli);
        exit(0);
     }
-
     Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
-
     if( o_flags & ADC_TEST_FLAG ){
         AdcTest test;
         test.execute(o_execute_flags);
@@ -70,6 +71,10 @@ int main(int argc, char * argv[]){
     }
     if( o_flags & SPI_TEST_FLAG ){
         SpiTest test;
+        test.execute(o_execute_flags);
+    }
+    if( o_flags & I2C_TEST_FLAG ){
+        I2CTest test;
         test.execute(o_execute_flags);
     }
 
@@ -106,6 +111,8 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-fifo") ){ o_flags |= FIFO_TEST_FLAG; }
     if(cli.is_option("-uart") ){ o_flags |= UART_TEST_FLAG; }
     if(cli.is_option("-spi") ){ o_flags |= SPI_TEST_FLAG; }
+    if(cli.is_option("-i2c") ){ o_flags |= I2C_TEST_FLAG; }
+    if(cli.is_option("-i2s") ){ o_flags |= I2S_TEST_FLAG; }
 
     return o_flags;
 }
@@ -123,6 +130,10 @@ void show_usage(const Cli & cli){
     printf("    -adc            execute test for hal/adc \n");
     printf("    -uart           execute test for hal/uart \n");
     printf("    -spi            execute test for hal/spi \n");
+    printf("    -fifo           execute test for hal/fifo \n");
+    printf("    -core           execute test for hal/core \n");
+    printf("    -i2c            execute test for hal/i2c \n");
+    printf("    -i2s            execute test for hal/i2s \n");
 }
 
 

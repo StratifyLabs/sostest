@@ -38,7 +38,7 @@ bool UartTest::execute_class_api_case(){
     }
 #endif
     Uart uart_tx(0);
-    if( uart_tx.open(Uart::WRITEONLY|Uart::NONBLOCK) < 0 ){
+    if( uart_tx.open(Uart::RDWR|Uart::NONBLOCK) < 0 ){
         print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
         result = false;
     } else {
@@ -47,8 +47,8 @@ bool UartTest::execute_class_api_case(){
         uart_pin_assignment->rx = mcu_pin(0,10);
 
         UartAttr uart_attr;//not used
-        uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
         uart_tx.init();
+        uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
 #if USE_TWO_UARTS
         while(!byte_recv){
 
@@ -117,10 +117,8 @@ static void * thread_rx(void * args){
         UartPinAssignment uart_pin_assignment;
         uart_pin_assignment->tx = mcu_pin(3,5);
         uart_pin_assignment->rx = mcu_pin(3,6);
-
-        uart_rx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
         uart_rx.init();
-
+        uart_rx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
         while(1){
             char recv_buff[5];
             Timer::wait_milliseconds(100);
@@ -155,8 +153,8 @@ bool UartTest::execute_uart_api_case(Uart & uart){
         uart_pin_assignment->rx = mcu_pin(0,10);
 
         UartAttr uart_attr;//not used
-        uart.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
         uart.init();
+        uart.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
 
         if(uart.put('x')){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
