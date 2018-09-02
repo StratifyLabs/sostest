@@ -10,6 +10,7 @@ CoreTest::CoreTest() : Test("hal::Core"){
 bool CoreTest::execute_class_api_case(){
     bool result = true;
     core_info_t core_info;
+    CoreInfo core_info_class;
     Core core(0);
 
     //first get info

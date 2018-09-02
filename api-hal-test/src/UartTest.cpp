@@ -1,5 +1,6 @@
 #include <sapi/var.hpp>
 #include <sapi/sys.hpp>
+#include <sapi/hal.hpp>
 #include "UartTest.hpp"
 #define USE_TWO_UARTS 0
 #if USE_TWO_UARTS
@@ -8,7 +9,7 @@ static int result = 0;
 static bool byte_recv = false;
 
 #endif
-static char messege_text[] = "hello";
+static char messege_text[] = "hello_two_aio";
 
 UartTest::UartTest() : Test("hal::Uart"){
 
@@ -17,11 +18,8 @@ UartTest::UartTest() : Test("hal::Uart"){
 
 bool UartTest::execute_class_api_case(){
     bool result = true;
-
     get_uart_count();
-
     print_case_message("Board has %d Uarts", m_uart_count);
-
     for(PeriphObject::port_t count = 0; count < m_uart_count; count++){
         Uart uart(count);
         if( execute_uart_api_case(uart) == false ){
@@ -47,7 +45,6 @@ bool UartTest::execute_class_api_case(){
         uart_pin_assignment->rx = mcu_pin(0,10);
 
         UartAttr uart_attr;//not used
-        uart_tx.init();
         uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
 #if USE_TWO_UARTS
         while(!byte_recv){
@@ -56,29 +53,71 @@ bool UartTest::execute_class_api_case(){
                 print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
                 result = false;
             }
-            if(uart_tx.write(text,sizeof(text))!=sizeof(text)){
+            if(uart_tx.write(messege_text,sizeof(messege_text))!=sizeof(messege_text)){
                 print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
                 result = false;
             }
             Timer::wait_milliseconds(100);
         }
 #else
-        char recv_buff[sizeof(messege_text)];
-        Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
-        Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
-        uart_tx.read(aio_r);
-        uart_tx.write(aio_t);
-        while( !aio_r.is_done()){
-            Timer::wait_msec(5); //wait for the operation to complete
+        String message(messege_text);
+        {
+            char recv_buff[message.size()];
+            Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+            Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
+            uart_tx.read(aio_r);    //flush before recved packet
+            uart_tx.write(aio_t);
+            while( !aio_t.is_done()){
+                Timer::wait_msec(5); //wait for the operation to complete
+            }
+            uart_tx.read(aio_r);
+            while( !aio_r.is_done()){
+                Timer::wait_msec(5); //wait for the operation to complete
+            }
+            if(memcmp(messege_text,recv_buff,sizeof(messege_text))){
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+                print_case_message("recv %s %s", recv_buff,messege_text);
+                result = false;
+            }
+            print_case_message("end");//witgout this line next section will't work
         }
-        while( !aio_t.is_done()){
-            Timer::wait_msec(5); //wait for the operation to complete
+        {
+            message.append("12");
+            char recv_buff[message.size()];
+            Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+            aio_r.set_buf(recv_buff,(u32)message.size());
+            uart_tx.write(message.c_str(),message.size());//should be stay untill will write
+            uart_tx.read(aio_r);    //flush before recved packet
+            while( !aio_r.is_done()){
+                Timer::wait_milliseconds(5); //wait for the operation to complete
+            }
+            if(memcmp(message.c_str(),recv_buff,message.size())){
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+                print_case_message("recv %s %s", recv_buff,message.c_str());
+                result = false;
+            }
         }
-        if(memcmp(messege_text,recv_buff,sizeof(messege_text))){
+        {
+/*            message.append("last");
+            char recv_buff[message.size()];
+            Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+            aio_r.set_buf(recv_buff,(u32)message.size());
+            uart_tx.write(message.c_str(),message.size());//should be stay untill will write
+            uart_tx.read(aio_r);    //flush before recved packet
+            while( !aio_r.is_done()){
+                Timer::wait_milliseconds(5); //wait for the operation to complete
+            }
+            if(memcmp(message.c_str(),recv_buff,message.size())){
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+                print_case_message("recv %s %s", recv_buff,message.c_str());
+                result = false;
+            }*/
+        }
+        if( uart_tx.close() < 0 ){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
-            print_case_message("recv %s ", recv_buff);
             result = false;
         }
+
 #endif
     }
 #if USE_TWO_UARTS
@@ -86,10 +125,6 @@ bool UartTest::execute_class_api_case(){
         uno_thread.wait();
     }
 #endif
-    if( uart_tx.close() < 0 ){
-        print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
-        result = false;
-    }
 
     return result;
 }
@@ -144,30 +179,30 @@ bool UartTest::execute_uart_api_case(Uart & uart){
 
     open_case(test_name.str());
 
-    if( uart.open(Uart::RDWR) < 0 ){
+    if( uart.open(Uart::RDWR|Uart::NONBLOCK) < 0 ){
         print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
         result = false;
     } else {
-        UartPinAssignment uart_pin_assignment;
-        uart_pin_assignment->tx = mcu_pin(0,9);
-        uart_pin_assignment->rx = mcu_pin(0,10);
-
-        UartAttr uart_attr;//not used
         uart.init();
-        uart.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
-
-        if(uart.put('x')){
-            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
-            result = false;
+        Core core(0);
+        mcu_board_config_t mcu_board_config;
+        core.get_mcu_board_config(mcu_board_config);
+        if(mcu_board_config.debug_uart_port!=uart.port()){
+            if(uart.put('z')){
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
+                result = false;
+            }
+            if(uart.put('p')){
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
+                result = false;
+            }
         }
         if( uart.close() < 0 ){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
             result = false;
         }
     }
-
     close_case(result);
-
     return result;
 }
 void UartTest::get_uart_count(){
