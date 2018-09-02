@@ -65,7 +65,7 @@ bool UartTest::execute_class_api_case(){
             char recv_buff[message.size()];
             Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
             Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
-            uart_tx.read(aio_r);    //flush before recved packet
+            uart_tx.flush();    //flush before recved packet
             uart_tx.write(aio_t);
             while( !aio_t.is_done()){
                 Timer::wait_msec(5); //wait for the operation to complete
@@ -79,12 +79,30 @@ bool UartTest::execute_class_api_case(){
                 print_case_message("recv %s %s", recv_buff,messege_text);
                 result = false;
             }
-            print_case_message("end");//witgout this line next section will't work
         }
+        {
+            char recv_buff[message.size()];
+            Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+            Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
+            uart_tx.write(aio_t);
+            while( !aio_t.is_done()){
+                Timer::wait_msec(5); //wait for the operation to complete
+            }
+            uart_tx.read(aio_r);
+            while( !aio_r.is_done()){
+                Timer::wait_msec(5); //wait for the operation to complete
+            }
+            if(memcmp(messege_text,recv_buff,sizeof(messege_text))){
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+                print_case_message("recv %s %s", recv_buff,messege_text);
+                result = false;
+            }
+        }
+
         {
             message.append("12");
             char recv_buff[message.size()];
-            Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+            Aio aio_r(recv_buff, message.size()); //aio uses buf as it's data
             aio_r.set_buf(recv_buff,(u32)message.size());
             uart_tx.write(message.c_str(),message.size());//should be stay untill will write
             uart_tx.read(aio_r);    //flush before recved packet
@@ -98,9 +116,9 @@ bool UartTest::execute_class_api_case(){
             }
         }
         {
-/*            message.append("last");
+            message.append("last");
             char recv_buff[message.size()];
-            Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+            Aio aio_r(recv_buff, message.size()); //aio uses buf as it's data
             aio_r.set_buf(recv_buff,(u32)message.size());
             uart_tx.write(message.c_str(),message.size());//should be stay untill will write
             uart_tx.read(aio_r);    //flush before recved packet
@@ -111,7 +129,7 @@ bool UartTest::execute_class_api_case(){
                 print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
                 print_case_message("recv %s %s", recv_buff,message.c_str());
                 result = false;
-            }*/
+            }
         }
         if( uart_tx.close() < 0 ){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
