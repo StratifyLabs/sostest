@@ -11,4 +11,9 @@ set(SOURCES
 	${SOURCES_PREFIX}/UartTest.hpp
 	${SOURCES_PREFIX}/SpiTest.cpp
 	${SOURCES_PREFIX}/SpiTest.hpp
+	${SOURCES_PREFIX}/I2CTest.cpp
+	${SOURCES_PREFIX}/I2CTest.hpp
+    ${SOURCES_PREFIX}/I2STest.cpp
+    ${SOURCES_PREFIX}/I2STest.hpp
+
 	PARENT_SCOPE)

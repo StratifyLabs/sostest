@@ -1,6 +1,6 @@
 #ifndef FIFO_TEST_HPP
 #define FIFO_TEST_HPP
-
+#include <sapi/hal.hpp>
 #include <sapi/test.hpp>
 
 class FifoTest : public Test {

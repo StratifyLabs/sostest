@@ -1,6 +1,7 @@
 #ifndef CORETEST_HPP
 #define CORETEST_HPP
-
+#include <sapi/hal.hpp>
+#include <sapi/var.hpp>
 #include <sapi/test.hpp>
 
 class CoreTest : public Test {
