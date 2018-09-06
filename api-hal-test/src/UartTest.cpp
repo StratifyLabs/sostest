@@ -1,4 +1,4 @@
-#include <sapi/var.hpp>
+﻿#include <sapi/var.hpp>
 #include <sapi/sys.hpp>
 #include <sapi/hal.hpp>
 #include "UartTest.hpp"
@@ -10,7 +10,10 @@ static bool byte_recv = false;
 
 #endif
 static char messege_text[] = "hello_two_aio";
-
+static u32 get_freq(u32 i);
+static u32 get_flags_stop_bit(u32 i);
+static u32 get_flags_parity(u32 i);
+static const u8 MAX_FREQ_TYPES = 12;
 UartTest::UartTest() : Test("hal::Uart"){
 
 }
@@ -45,7 +48,10 @@ bool UartTest::execute_class_api_case(){
         uart_pin_assignment->rx = mcu_pin(0,10);
 
         UartAttr uart_attr;//not used
-        uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment);
+        if(uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment)!=0){
+            print_case_message("Failed %s %d", __FILE__, __LINE__);
+            result = false;
+        }
 #if USE_TWO_UARTS
         while(!byte_recv){
 
@@ -131,6 +137,11 @@ bool UartTest::execute_class_api_case(){
                 result = false;
             }
         }
+        //set another attr
+        if(uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment)!=0){
+            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+            result = false;
+		}
         if( uart_tx.close() < 0 ){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
             result = false;
@@ -150,12 +161,135 @@ bool UartTest::execute_class_api_case(){
 
 bool UartTest::execute_class_performance_case(){
     bool result = true;
+    u32 itterate_num = 120;
+    Uart uart_tx(0);
+    if( uart_tx.open(Uart::RDWR|Uart::NONBLOCK) < 0 ){
+        print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+        result = false;
+    } else {
+        UartPinAssignment uart_pin_assignment;
+        uart_pin_assignment->tx = mcu_pin(0,9);
+        uart_pin_assignment->rx = mcu_pin(0,10);
+        UartAttr uart_attr;//not used
+        uart_tx.set_attr(UART_FLAG_SET_LINE_CODING|UART_FLAG_IS_PARITY_EVEN,115200,9,uart_pin_assignment);
+        for (u32 i =0;i<itterate_num;i++){
+            String message(messege_text);
+            {
+                Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
+                uart_tx.flush();    //flush before recved packet
+                uart_tx.write(aio_t);
+                while( !aio_t.is_done()){
+                    Timer::wait_msec(5); //wait for the operation to complete
+                }
+            }
+        }
+        if( uart_tx.close() < 0 ){
+            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+            result = false;
+        }
+    }
 
     return result;
 }
 
 bool UartTest::execute_class_stress_case(){
     bool result = true;
+    u32 itterate_num = 120;
+    const u32 MAX_DATA_LEN_IN_U32 = 64;
+    Uart uart_tx(0);
+    if( uart_tx.open(Uart::RDWR|Uart::NONBLOCK) < 0 ){
+        print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+        result = false;
+    } else {
+        UartPinAssignment uart_pin_assignment;
+        uart_pin_assignment->tx = mcu_pin(0,9);
+        uart_pin_assignment->rx = mcu_pin(0,10);
+
+        UartAttr uart_attr;//not used
+        for (u32 i =0;i<itterate_num;i++){
+            char recv_buff[sizeof(messege_text)];
+            u32 freq,flags,width;
+            flags = UART_FLAG_SET_LINE_CODING;
+            flags |= get_flags_parity(i);
+            flags |= get_flags_stop_bit(i);
+            if(i%3){
+                width = 9;
+            }else{
+                width = 8;
+            }
+            freq = get_freq(i%MAX_FREQ_TYPES);
+            if(uart_tx.set_attr(flags,freq,width,uart_pin_assignment)!=0){
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+                result = false;
+                break;
+            }
+            String message(messege_text);
+            {
+                memset(recv_buff,0,message.size());
+                Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+                Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
+                uart_tx.flush();    //flush before recved packet
+                uart_tx.write(aio_t);
+                while( !aio_t.is_done()){
+                    Timer::wait_msec(5); //wait for the operation to complete
+                }
+                uart_tx.read(aio_r);
+                while( !aio_r.is_done()){
+                    Timer::wait_msec(5); //wait for the operation to complete
+                }
+                if(memcmp(messege_text,recv_buff,sizeof(messege_text))){
+                    print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+                    print_case_message("recv %s : %s", recv_buff,messege_text);
+                    result = false;
+                    break;
+                }
+            }
+        }
+        if(uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment)!=0){
+            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+            result = false;
+        }
+        const u32 max_data_len = sizeof(u32)*MAX_DATA_LEN_IN_U32;
+        char recv_buff[max_data_len];
+        for (u32 i =sizeof(u32);i<max_data_len;i+=sizeof(u32)){
+            int data_len = i;
+            Data send_data;
+            send_data.alloc(data_len);
+            memset(recv_buff,0,data_len);
+            u8 rand_value =(rand()&0xff);
+            rand_value = rand_value > 0?rand_value:rand_value+1;
+            send_data.fill(rand_value);
+            Sys::assign_zero_sum32(send_data.cdata(), data_len);
+            Aio aio_r(recv_buff, data_len); //aio uses buf as it's data
+            Aio aio_t(send_data.cdata(), data_len); //aio uses buf as it's data
+            uart_tx.flush();    //flush before recved packet
+            uart_tx.write(aio_t);
+            while( !aio_t.is_done()){
+                Timer::wait_msec(5); //wait for the operation to complete
+            }
+            uart_tx.read(aio_r);
+            while( !aio_r.is_done()){
+                Timer::wait_msec(5); //wait for the operation to complete
+            }
+            if (!Sys::verify_zero_sum32 (recv_buff, data_len)){
+                print_case_message("Failed %s %d: %d", __FILE__, __LINE__, data_len);
+                print_case_message("recv %s : %s", recv_buff,messege_text);
+                result = false;
+                break;
+            }
+        }
+        //set unavailable pin
+        uart_pin_assignment->tx = mcu_pin(3,5);
+        uart_pin_assignment->rx = mcu_pin(3,6);
+        if(uart_tx.set_attr(UART_FLAG_SET_LINE_CODING,115200,8,uart_pin_assignment)==0){
+            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+            result = false;
+        }
+        if( uart_tx.close() < 0 ){
+            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart_tx.port());
+            result = false;
+        }
+    }
     return result;
 }
 #if USE_TWO_UARTS
@@ -203,13 +337,17 @@ bool UartTest::execute_uart_api_case(Uart & uart){
     } else {
         uart.init();
         Core core(0);
+        core_info_t core_info;
+        core.open();
+        core.get_info(core_info);
         mcu_board_config_t mcu_board_config;
         core.get_mcu_board_config(mcu_board_config);
         if(mcu_board_config.debug_uart_port!=uart.port()){
             if(uart.put('z')){
-                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
+                print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, mcu_board_config.debug_uart_port);
                 result = false;
             }
+
             if(uart.put('p')){
                 print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
                 result = false;
@@ -241,5 +379,84 @@ void UartTest::get_uart_count(){
 
     m_uart_count = uart_count;
 }
-
-
+u32 get_freq(u32 i){
+    u32 freq = 115200;
+    switch(i){
+    case(0):
+        freq = 1200;
+        break;
+    case(1):
+        freq = 2400;
+        break;
+    case(2):
+        freq = 4800;
+        break;
+    case(3):
+        freq = 9600;
+        break;
+    case(5):
+        freq = 14400;
+        break;
+    case(6):
+        freq = 19200;
+        break;
+    case(7):
+        freq = 28800;
+        break;
+    case(8):
+        freq = 38400;
+        break;
+    case(9):
+        freq = 56000;
+        break;
+    case(10):
+        freq = 76800;
+        break;
+    case(11):
+        freq = 115200;
+        break;
+    default:
+        freq = 115200;
+        break;
+    }
+    return freq;
+}
+u32 get_flags_stop_bit(u32 i){
+    u32 flags;
+    flags = 0;
+    switch (i%4){
+        case(0):
+        flags |= UART_FLAG_IS_STOP1;
+        break;
+        case(1):
+        flags |= UART_FLAG_IS_STOP2;
+        break;
+        case(2):
+        flags |= UART_FLAG_IS_STOP0_5;
+        break;
+        case(3):
+        flags |= UART_FLAG_IS_STOP1_5;
+        break;
+        default:
+        flags |= UART_FLAG_IS_STOP1;
+    }
+    return flags;
+}
+u32 get_flags_parity(u32 i){
+    u32 flags;
+    flags = 0;
+    switch (i%3){
+        case(0):
+        flags |= UART_FLAG_IS_PARITY_NONE;
+        break;
+        case(1):
+        flags |= UART_FLAG_IS_PARITY_ODD;
+        break;
+        case(2):
+        flags |= UART_FLAG_IS_PARITY_EVEN;
+        break;
+        default:
+        flags |= UART_FLAG_IS_PARITY_NONE;
+    }
+    return flags;
+}
