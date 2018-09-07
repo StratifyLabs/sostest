@@ -12,7 +12,7 @@ static bool byte_recv = false;
 static char messege_text[] = "hello_two_aio";
 static u32 get_freq(u32 i);
 static u32 get_flags_stop_bit(u32 i);
-static u32 get_flags_parity(u32 i);
+static u32 get_parity(u32 i);
 static const u8 MAX_FREQ_TYPES = 12;
 UartTest::UartTest() : Test("hal::Uart"){
 
@@ -210,7 +210,7 @@ bool UartTest::execute_class_stress_case(){
             char recv_buff[sizeof(messege_text)];
             u32 freq,flags,width;
             flags = UART_FLAG_SET_LINE_CODING;
-            flags |= get_flags_parity(i);
+            flags |= get_parity(i);
             flags |= get_flags_stop_bit(i);
             if(i%3){
                 width = 9;
@@ -442,7 +442,7 @@ u32 get_flags_stop_bit(u32 i){
     }
     return flags;
 }
-u32 get_flags_parity(u32 i){
+u32 get_parity(u32 i){
     u32 flags;
     flags = 0;
     switch (i%3){

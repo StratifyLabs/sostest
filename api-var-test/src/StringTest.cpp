@@ -11,6 +11,7 @@ StringTest::StringTest() : Test("var::String"){
  *  assign,find,compare,tolower,toupper operator(==,!=)
  * atoi,substr,inserts,erase
  * @return false if same test failed
+ * @todo add get_delimited_data
  */
 
 bool StringTest::execute_class_api_case(){
