@@ -616,7 +616,7 @@ bool StringTest::execute_class_stress_case(){
 
 bool StringTest::execute_recursive(String data){
     recursive_number++;
-    if (data.calc_size() < 150){
+    if (data.length() < 150){
         String data_new = data;
         data_new.append("uno");
         if(!execute_recursive(data_new)){

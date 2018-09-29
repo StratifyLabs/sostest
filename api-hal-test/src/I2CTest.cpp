@@ -112,7 +112,7 @@ bool I2CTest::execute_class_api_case(){
         char recv_buff[sizeof(messege_text)];
         while(1){
             i2c_master.write(messege_text,2);
-            Timer::wait_msec(50); //wait for the operation to complete
+			Timer::wait_milliseconds(50); //wait for the operation to complete
         }
         Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
         Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
@@ -121,10 +121,10 @@ bool I2CTest::execute_class_api_case(){
         i2c_master.write(aio_t);
 
         while( !aio_r.is_done()){
-            Timer::wait_msec(5); //wait for the operation to complete
+			Timer::wait_milliseconds(5); //wait for the operation to complete
         }
         while( !aio_t.is_done()){
-            Timer::wait_msec(5); //wait for the operation to complete
+			Timer::wait_milliseconds(5); //wait for the operation to complete
         }
         if(memcmp(messege_text,recv_buff,sizeof(messege_text))){
             print_case_message("Failed %s %d:", __FILE__, __LINE__);

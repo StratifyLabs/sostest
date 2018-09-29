@@ -120,14 +120,11 @@ bool RingTest::execute_class_api_case(){
             break;
         }
     }
-    if(ring1.calc_free()!=0 || ring1.calc_size() != ring1.size()){
+    if( ring1.calc_free()!=0 ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(ring1.calc_free()!=0 || ring1.calc_size() != ring1.size()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+
     //read
     for (u16 i=0; i < ring1.size()/size_packet;i++){
         memset(packet_read, 0, size_packet);
@@ -207,11 +204,7 @@ bool RingTest::execute_class_api_case(){
             break;
         }
     }
-    if(ring1.calc_free()!=0 || ring1.calc_size() != ring1.size()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(ring1.calc_free()!=0 || ring1.calc_size() != ring1.size()){
+    if(ring1.calc_free()!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -245,17 +238,17 @@ bool RingTest::execute_class_api_case(){
         packet_write_overflow[i] = i;
     }
     writed_data_size = ring1.write(packet_write_overflow,size_packet_overflow);
-    if(writed_data_size != ring1.calc_size()){
+    if(writed_data_size != ring1.size()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     writed_data_size = ring1.read(packet_read_overflow,size_packet_overflow);
-    if(writed_data_size != ring1.calc_size()){
-        print_case_message("read data size %lu", writed_data_size, ring1.calc_size());
+    if(writed_data_size != ring1.size()){
+        print_case_message("read data size %lu", writed_data_size, ring1.size());
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(memcmp(packet_read_overflow, packet_write_overflow, ring1.calc_size())){
+    if(memcmp(packet_read_overflow, packet_write_overflow, ring1.size())){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
