@@ -56,3 +56,7 @@ The output can be run using the following command (in the cmake_link directory).
 ```
 ../build_release_link/api-inet-test
 ```
+
+### Building on Windows
+
+When building on Windows, use the PowerShell program rather than the command prompt. The `cmake ..` line above needs to be `cmake -G "MinGW Makefiles" ..`.
