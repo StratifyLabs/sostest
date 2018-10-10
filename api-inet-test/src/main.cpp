@@ -65,7 +65,6 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 		return o_flags;
 	}
 
-
 	if(cli.is_option("-execute_all") ){ execute_flags |= Test::EXECUTE_ALL; }
 	if(cli.is_option("-api") ){ execute_flags |= Test::EXECUTE_API; }
 	if(cli.is_option("-stress") ){ execute_flags |= Test::EXECUTE_STRESS; }
@@ -93,6 +92,11 @@ void show_usage(const Cli & cli){
 	printf("    -additional     execute additional test.\n");
 
 	printf("    -test_all       execute test for all object.\n");
+	printf("    -socket         execute the socket test.\n");
+	printf("    -secure_socket  execute the secure socket test using mbed TLS.\n");
+	printf("    -http_clinet    execute the http client test.\n");
+
+
 }
 
 

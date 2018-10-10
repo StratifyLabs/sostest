@@ -43,5 +43,4 @@ elseif( ${SOS_BUILD_CONFIG} STREQUAL link )
 	endif()
 	set(SOS_APP_TYPE release)
 	include(${SOS_TOOLCHAIN_CMAKE_PATH}/sos-app.cmake)
-
 endif()
