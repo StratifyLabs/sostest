@@ -7,9 +7,9 @@
 class MicroTimeTest : public Test
 {
 public:
-    MicroTimeTest();
+	MicroTimeTest();
 
-    bool execute_class_api_case();
+	bool execute_class_api_case();
 };
 
 #endif // MICROTIMETEST_HPP
