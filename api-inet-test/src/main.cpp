@@ -32,7 +32,7 @@ int main(int argc, char * argv[]){
 		exit(0);
 	}
 
-	Test::initialize(cli.name(), cli.version());
+	Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
 
 	if( o_flags & SOCKET_TEST_FLAG ){
 		SocketTest test;
