@@ -1,10 +1,11 @@
 #include <sapi/inet.hpp>
 #include <sapi/var.hpp>
+#include <sapi/sys.hpp>
+#include <sapi/chrono.hpp>
+
 #include "SocketTest.hpp"
 
-SocketTest::SocketTest() : Test("SocketTest"){
-
-}
+SocketTest::SocketTest() : Test("SocketTest"){}
 
 
 bool SocketTest::execute_class_api_case(){
@@ -24,11 +25,69 @@ bool SocketTest::execute_class_api_case(){
 
 bool SocketTest::execute_socket_case(){
 
+	//start the listener
+	Thread thread;
+
+	if( thread.create(listen_on_localhost_thread_function, this) < 0 ){
+		print_case_failed("Failed to create listener thread");
+		return case_result();
+	}
+
+	Timer::wait_milliseconds(1000);
+
 	Vector<SocketAddressInfo> list = SocketAddressInfo().fetch_node("localhost");
 
 	if( list.count() == 0 ){
 		print_case_failed("Failed to fetch node");
 		return case_result();
+	}
+
+	Socket local_host_socket;
+	//SocketAddress localhost_address(SocketAddressIpv4(0, 8080));
+	SocketAddress localhost_address(list.at(0), 8080);
+
+	if( local_host_socket.create(localhost_address) < 0){
+		print_case_failed("Failed to create client socket");
+		return case_result();
+	}
+
+	if( local_host_socket.connect(localhost_address) < 0 ){
+		print_case_failed("Failed to connect to socket");
+		return case_result();
+	}
+
+	String test("Testing");
+	Data reply(256);
+
+	if( local_host_socket.write(test) < 0 ){
+		print_case_failed("Failed to write client socket (%d, %d)", test.size(), local_host_socket.error_number());
+		perror("failed to write");
+		return case_result();
+	}
+
+	reply.fill(0);
+	if( local_host_socket.read(reply) < 0 ){
+		print_case_failed("Failed to read client socket");
+		return case_result();
+	}
+
+	print_case_message("read '%s' from socket", reply.to_char());
+
+	if( test != reply.to_char() ){
+		print_case_failed("did not get an echo on localhost");
+	}
+
+	local_host_socket.close();
+
+	return case_result();
+}
+
+void * SocketTest::listen_on_localhost(){
+	Vector<SocketAddressInfo> list = SocketAddressInfo().fetch_node("localhost");
+
+	if( list.count() == 0 ){
+		print_case_failed("Failed to fetch node");
+		return 0;
 	}
 
 	Socket local_host_listen_socket;
@@ -37,7 +96,7 @@ bool SocketTest::execute_socket_case(){
 	print_case_message("create socket at %s", localhost_address.address_to_string().str());
 	if( local_host_listen_socket.create(localhost_address) < 0 ){
 		print_case_failed("failed to create socket");
-		return case_result();
+		return 0;
 	}
 
 	//listen on port 80 of localhost
@@ -49,39 +108,29 @@ bool SocketTest::execute_socket_case(){
 	}
 
 	//connect to port 80 of localhost
-	perror("Pre bind-error");
-	if( local_host_listen_socket.bind(localhost_address) < 0 ){
+	if( local_host_listen_socket.bind_and_listen(localhost_address) < 0 ){
 		print_case_failed("Failed to bind to localhost (%d)", local_host_listen_socket.error_number());
-		perror("failed to bind");
-		return case_result();
+		return 0;
 	}
 
 
-	if( local_host_listen_socket.listen() < 0 ){
-		print_case_failed("Failed to list on localhost");
-		return case_result();
-	}
-
-	print_case_message("Listening on localhost:%d", local_host_listen_socket.address().port());
+	print_case_message("Listening on localhost:%d", localhost_address.port());
 	//now accept -- this will block until a request arrives
-	Socket local_host_session_socket = local_host_listen_socket.accept();
+	SocketAddress accepted_address;
+	Socket local_host_session_socket = local_host_listen_socket.accept(accepted_address);
 
-	Data incoming(1024);
-	int bytes_received = local_host_session_socket.read(incoming);
+	Data incoming(256);
+	local_host_session_socket.read(incoming);
+	local_host_session_socket.write(incoming);
 
-	String reply;
-	reply = "Hello\n";
-	if( bytes_received > 0 ){
-		local_host_session_socket.write(reply);
-	}
+	local_host_session_socket.close();
 
 	if( local_host_listen_socket.close() < 0 ){
 		print_case_failed("failed to close socket");
-		return case_result();
+		return 0;
 	}
 
-
-	return case_result();
+	return 0;
 }
 
 

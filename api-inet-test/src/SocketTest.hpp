@@ -12,6 +12,13 @@ public:
 private:
 	bool execute_socket_address_info_case();
 	bool execute_socket_case();
+
+	static void * listen_on_localhost_thread_function(void * args){
+		return ((SocketTest*)args)->listen_on_localhost();
+	}
+
+	void * listen_on_localhost();
+
 };
 
 #endif // SOCKETTEST_HPP
