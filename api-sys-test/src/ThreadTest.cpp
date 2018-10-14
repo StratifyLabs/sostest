@@ -449,18 +449,18 @@ bool ThreadTest::execute_class_stress_case(){
             break;
         }
         if (uno_thread.get_priority()!= uno_priority){
-            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+				print_case_message("Failed in cycle %s:%d:%d (%d!=%d)", __PRETTY_FUNCTION__, __LINE__, i, uno_thread.get_priority(), uno_priority);
             result = false;
             break;
         }
         dos_priority= ((i % max_prior_RR)<min_prior_RR)?min_prior_RR:(i % max_prior_RR);
         if( dos_thread.set_priority(dos_priority) < 0 ){
-            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+				print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
             result = false;
         }
 
         if (dos_thread.get_priority()!= dos_priority){
-            print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
+				print_case_message("Failed in cycle %s:%d:%d (%d, %d)", __PRETTY_FUNCTION__, __LINE__, i, dos_thread.get_priority(), dos_priority);
             result = false;
             break;
         }

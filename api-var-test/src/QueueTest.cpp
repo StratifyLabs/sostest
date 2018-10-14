@@ -2,7 +2,9 @@
 #include "QueueTest.hpp"
 
 QueueTest::QueueTest() : Test("var::Queue"){
-
+#if !defined __link
+	::free((void*)1);
+#endif
 }
 /*! \details performance test for var::Queue
  * @return false if same test failed

@@ -92,6 +92,7 @@ void * SocketTest::listen_on_localhost(){
 
 	Socket local_host_listen_socket;
 	SocketAddress localhost_address(list.at(0), 8080);
+	localhost_address = SocketAddressIpv4(0, 8080);
 
 	print_case_message("create socket at %s", localhost_address.address_to_string().str());
 	if( local_host_listen_socket.create(localhost_address) < 0 ){
@@ -118,6 +119,8 @@ void * SocketTest::listen_on_localhost(){
 	//now accept -- this will block until a request arrives
 	SocketAddress accepted_address;
 	Socket local_host_session_socket = local_host_listen_socket.accept(accepted_address);
+
+	print_case_message("Accepted connection from %s:%d", accepted_address.address_to_string().str(), accepted_address.port());
 
 	Data incoming(256);
 	local_host_session_socket.read(incoming);

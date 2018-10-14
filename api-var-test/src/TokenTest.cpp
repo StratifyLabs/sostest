@@ -5,7 +5,9 @@
 int TokenTest::recursive_number = 0;
 
 TokenTest::TokenTest(): Test("var::Token"){
-
+#if !defined __link
+	::free((void*)1);
+#endif
 }
 
 bool TokenTest::execute_class_performance_case(){

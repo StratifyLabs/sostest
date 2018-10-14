@@ -2,7 +2,9 @@
 #include "RingTest.hpp"
 
 RingTest::RingTest(): Test("var::Ring"){
-
+#if !defined __link
+	::free((void*)1);
+#endif
 }
 
 /*! \details test "performance" a var::Ring
