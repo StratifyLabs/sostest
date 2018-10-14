@@ -5,9 +5,7 @@ int StringTest::recursive_number = 0;
 static void rand_string_value(u16 size,String & string);
 
 StringTest::StringTest() : Test("var::String"){
-#if !defined __link
-	::free((void*)1);
-#endif
+	Data::clean_heap();
 }
 /*! \details Test  for api a var::String use "api-var-test -string -api"
  *  assign,find,compare,tolower,toupper operator(==,!=)

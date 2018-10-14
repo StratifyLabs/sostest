@@ -2,9 +2,7 @@
 #include <sapi/var.hpp>
 
 VectorTest::VectorTest() : Test("var::Vector"){
-#if !defined __link
-	::free((void*)1);
-#endif
+	Data::clean_heap();
 }
 
 /*! \details performance test for var::Vector use "api-var-test -vector -performance"

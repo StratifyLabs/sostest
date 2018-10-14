@@ -5,9 +5,7 @@ int DataTest::recursive_number = 0;
 
 DataTest::DataTest() : Test("var::Data"){
 	recursive_number = 0;
-#if !defined __link
-	::free((void*)1);
-#endif
+	Data::clean_heap();
 }
 
 
