@@ -1,5 +1,6 @@
 #include <sapi/sys.hpp>
 #include <sapi/chrono.hpp>
+#include <sapi/var.hpp>
 #include "MutexTest.hpp"
 #include "ThreadTest.hpp"
 static volatile u32 count_0 = 0;
@@ -14,9 +15,8 @@ static int uno_id,dos_id;
 static Mutex mutex_test;
 static volatile bool stop_threads = false;
 
-MutexTest::MutexTest():Test("sys::Mutex")
-{
-
+MutexTest::MutexTest():Test("sys::Mutex"){
+	Data::reclaim_heap_space();
 }
 /*@brief api test for sys/Mutex use "api-sys-test -mutex -api"
  * Mutex

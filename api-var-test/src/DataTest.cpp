@@ -5,7 +5,7 @@ int DataTest::recursive_number = 0;
 
 DataTest::DataTest() : Test("var::Data"){
 	recursive_number = 0;
-	Data::clean_heap();
+	Data::reclaim_heap_space();
 }
 
 

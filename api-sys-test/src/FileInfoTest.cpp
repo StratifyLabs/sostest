@@ -4,7 +4,7 @@
 #include <sapi/fmt.hpp>
 #include "FileInfoTest.hpp"
 FileInfoTest::FileInfoTest() : Test("sys::FileInfo"){
-
+	Data::reclaim_heap_space();
 }
 /*@brief api test for sys/FileInfo use "api-sys-test -file_info -api"
  */

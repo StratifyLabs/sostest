@@ -1,4 +1,5 @@
 #include <sapi/chrono.hpp>
+#include <sapi/var.hpp>
 #include "MqTest.hpp"
 static char mq_name_thread[] = "dialog";
 static char mq_name_thread_answer[] = "dialog_answer";
@@ -18,7 +19,7 @@ static Mutex mutex_test;
 static Mq::flags get_o_flags(int i);
 static void rand_string_value(u16 size,char * string);
 MqTest::MqTest():Test("sys::Mq"){
-
+	Data::reclaim_heap_space();
 }
 /*@brief api test for sys/Mq use "api-sys-test -mq -api"
  */

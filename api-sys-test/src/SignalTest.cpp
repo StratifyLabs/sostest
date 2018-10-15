@@ -7,7 +7,7 @@
 static volatile bool stop_threads = false;
 static const u32 threads_wait_time = 1000;
 SignalTest::SignalTest() : Test("sys::Signal"){
-
+	Data::reclaim_heap_space();
 }
 static volatile bool wait_for_signal = true;
 static volatile bool wait_for_associated_signal = true;

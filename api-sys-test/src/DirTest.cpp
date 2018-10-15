@@ -4,7 +4,7 @@
 #include <sapi/fmt.hpp>
 #include "DirTest.hpp"
 DirTest::DirTest() : Test("sys::Dir"){
-
+	Data::reclaim_heap_space();
 }
 /*@brief api test for sys/dir use "api-sys-test -dir -api"
  */

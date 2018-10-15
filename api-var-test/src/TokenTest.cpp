@@ -5,7 +5,7 @@
 int TokenTest::recursive_number = 0;
 
 TokenTest::TokenTest(): Test("var::Token"){
-	Data::clean_heap();
+	Data::reclaim_heap_space();
 }
 
 bool TokenTest::execute_class_performance_case(){

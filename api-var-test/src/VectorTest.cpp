@@ -2,7 +2,7 @@
 #include <sapi/var.hpp>
 
 VectorTest::VectorTest() : Test("var::Vector"){
-	Data::clean_heap();
+	Data::reclaim_heap_space();
 }
 
 /*! \details performance test for var::Vector use "api-var-test -vector -performance"

@@ -2,7 +2,7 @@
 #include "RingTest.hpp"
 
 RingTest::RingTest(): Test("var::Ring"){
-	Data::clean_heap();
+	Data::reclaim_heap_space();
 }
 
 /*! \details test "performance" a var::Ring

@@ -2,7 +2,7 @@
 #include "QueueTest.hpp"
 
 QueueTest::QueueTest() : Test("var::Queue"){
-	Data::clean_heap();
+	Data::reclaim_heap_space();
 }
 /*! \details performance test for var::Queue
  * @return false if same test failed

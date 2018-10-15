@@ -1,9 +1,9 @@
 #include <sapi/sys.hpp>
+#include <sapi/var.hpp>
 
 #include "SchedTest.hpp"
-SchedTest::SchedTest():Test("sys::Sched")
-{
-
+SchedTest::SchedTest():Test("sys::Sched"){
+	Data::reclaim_heap_space();
 }
 /*@brief test api for sched
  * RR and FIFO policy

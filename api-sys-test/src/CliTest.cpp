@@ -3,7 +3,7 @@
 #include <sapi/chrono.hpp>
 #include "CliTest.hpp"
 CliTest::CliTest() : Test("sys::Cli"){
-
+	Data::reclaim_heap_space();
 }
 static void rand_string_value(u16 size,String & string);
 u8 pseudo_rnd_u8() ;

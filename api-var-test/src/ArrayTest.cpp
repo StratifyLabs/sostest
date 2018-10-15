@@ -5,7 +5,7 @@ int ArrayTest::recursive_number = 0;
 
 ArrayTest::ArrayTest(): Test("var::Array"){
 	recursive_number = 0;
-	Data::clean_heap();
+	Data::reclaim_heap_space();
 }
 
 /*! \details test "performance" a var::Array
