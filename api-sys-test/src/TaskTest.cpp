@@ -3,7 +3,7 @@
 #include <sapi/chrono.hpp>
 #include "TaskTest.hpp"
 TaskTest::TaskTest() : Test("sys::Task"){
-
+	Data::reclaim_heap_space();
 }
 static volatile bool stop_threads = false;
 static bool thread_result = true;

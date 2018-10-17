@@ -6,10 +6,10 @@
 class TimeTest : public Test
 {
 public:
-    TimeTest();
+	TimeTest();
 
-    bool execute_class_api_case();
-    bool execute_class_stress_case();
+	bool execute_class_api_case();
+	bool execute_class_stress_case();
 };
 
 #endif // TIMETEST_HPP

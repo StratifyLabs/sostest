@@ -7,7 +7,7 @@
 static void rand_string_value(u16 size,String & string);
 static u32 get_id(u32 pid);
 SysTest::SysTest() : Test("sys::Test"){
-
+	Data::reclaim_heap_space();
 }
 /*@brief api test for sys/Sys use "api-sys-test -sys -api"
  * Sys

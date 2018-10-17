@@ -6,7 +6,7 @@
 AppfsTest::AppfsTest() : Test("sys::Appfs"){
 
 }
-static bool make_file_in_flash(char *file_name);
+static bool make_file_in_flash(const ConstString &	file_name);
 static void rand_string_value(u16 size,String & string);
 static u8 pseudo_rnd_u8() ;
 static const u16 page_size = 32;
@@ -16,89 +16,61 @@ static const u16 page_size = 32;
  * Appfs::create != 0
  */
 bool AppfsTest::execute_class_api_case(){
-    bool result = true;
-    char file_name[] = "my_data_1";
-    appfs_info_t info;
-    u16 version;
-    if(!make_file_in_flash(file_name)){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    char my_user_data[16];
-    File f;
-    String path("/app/flash/");
-    path.append(file_name);
-    f.open(path.c_str(), File::RDONLY); //only the file read only
-    f.read(my_user_data, 16); //read 16 bytes of user data
-    f.close();  //free resources
-    print_case_message("data %s",my_user_data);
-    if(Appfs::get_info(path.c_str(),info)!=0){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
-    if(Appfs::get_info(file_name,info)!=0){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+	int result;
+	ConstString file_name = "my_data_1";
+	appfs_info_t info;
 
-    version = Appfs::get_version(path);
-    print_case_message("version %u",version);
-    if( Appfs::get_id(path).is_empty() ){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+	String my_user_data;
+	my_user_data << "Hello World 1";
+	String my_user_data_read_back;
 
-    return result;
+	my_user_data_read_back.set_capacity(my_user_data.size());
+
+
+	if( (result = Appfs::create(file_name, my_user_data)) < 0 ){
+		print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+		return case_result();
+	}
+
+
+	//read back the file that was created
+	File f;
+	String path("/app/flash/");
+	path << file_name;
+
+	if( f.open(path, File::RDONLY) < 0 ){
+		print_case_failed("Failed to read appfs file at %s", path.to_char());
+	} else {
+		print_case_message("Read %d bytes", f.read(my_user_data_read_back)); //read 16 bytes of user data
+		if( my_user_data != my_user_data_read_back ){
+			print_case_failed("Failed %s:%d (%s, %s)", __PRETTY_FUNCTION__, __LINE__, my_user_data.str(), my_user_data_read_back.str());
+		}
+		f.close();  //free resources
+	}
+
+	Appfs::get_info(path,info);
+	if( errno != ENOEXEC ){
+		print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+	}
+
+	Appfs::get_info(file_name,info);
+	if( errno != ENOENT ){
+		print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+	}
+
+	return case_result();
 }
-static bool make_file_in_flash(char *file_name){
-    bool result = true;
-    char my_user_data[16];
-    //populate my_user_data as you please here
-    sprintf(my_user_data, "Hello World 1!");
-    File f;
-    String path("/app/flash/");
-    path.append(file_name);
-    if(f.access(path.c_str(),File::READ_OK)==0){
-//file exist
-    }else{
-        if(Appfs::create(file_name, my_user_data, page_size)!=0){ //creates /app/flash/my_data as read only data
-            result = false;
-        }
-    }
-    return result;
-}
-
 
 /*@brief stress test for sys/appfs use "api-sys-test -appfs -stress"
  */
 bool AppfsTest::execute_class_stress_case(){
-    bool result = true;
-    return result;
+	bool result = true;
+	return result;
 }
 
 /*@brief performance test for sys/appfs use "api-sys-test -appfs -performance"
  */
 bool AppfsTest::execute_class_performance_case(){
-    bool result = true;
-    return result;
-}
-
-static void rand_string_value(u16 size,String & string){
-    string.clear();
-    for (u16 i =0;i<size;i++){
-        u8 value;
-        value = (u8)(rand()%25);
-        value +=97;
-        string.append(value);
-    }
-}
-#define BIT(n) (1<<n)
-#define POLINOM_8BIT(ps_rnd) (((ps_rnd & BIT(7)) >> 7)^((ps_rnd & BIT(3)) >> 3)^((ps_rnd & BIT(2)) >> 2)^((ps_rnd & BIT(1)) >> 1)^1)
-static u8 pseudo_rnd_u8() {
-    u16 bit;
-    static u16 ps_rnd = 1;
-    bit = POLINOM_8BIT(ps_rnd);
-    ps_rnd = ((ps_rnd << 1) + bit);
-    ps_rnd &= 0xFF;
-    return ps_rnd;
+	bool result = true;
+	return result;
 }

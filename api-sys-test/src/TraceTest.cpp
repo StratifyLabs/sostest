@@ -4,7 +4,7 @@
 #include <sapi/fmt.hpp>
 #include "TraceTest.hpp"
 TraceTest::TraceTest() : Test("sys::Trace"){
-
+	Data::reclaim_heap_space();
 }
 /*@brief api test for sys/trace use "api-sys-test -trace -api"
  * 	Trace& operator=(const char * a)

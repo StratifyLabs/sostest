@@ -6,20 +6,20 @@
 
 class DataTest : public Test {
 public:
-    DataTest();
+	DataTest();
 
 
 private:
 
-    bool execute_class_api_case();
-    bool execute_class_performance_case();
-    bool execute_class_stress_case();
+	bool execute_class_api_case();
+	bool execute_class_performance_case();
+	bool execute_class_stress_case();
 
-    //API testing methods
-    bool execute_fill();
-    bool execute_alloc();
-    bool execute_recursive(Data data);
-    static int recursive_number;
+	//API testing methods
+	bool execute_fill();
+	bool execute_alloc();
+	bool execute_recursive(Data data);
+	static int recursive_number;
 };
 
 #endif // DATATEST_HPP

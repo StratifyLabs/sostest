@@ -4,7 +4,7 @@
 #include <sapi/fmt.hpp>
 #include "AioTest.hpp"
 AioTest::AioTest() : Test("sys::Aio"){
-
+	Data::reclaim_heap_space();
 }
 /*@brief api test for sys/aio use "api-sys-test -aio -api"
  */

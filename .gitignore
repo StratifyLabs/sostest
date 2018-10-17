@@ -1,3 +1,4 @@
 
 */cmake_*
 *.user
+*/build_release_link/*

@@ -1,4 +1,4 @@
-#include <sapi/var.hpp>
+﻿#include <sapi/var.hpp>
 #include <sapi/sys.hpp>
 #include "I2CTest.hpp"
 I2CTest::I2CTest() : Test("hal::I2C"){
@@ -134,6 +134,62 @@ bool I2CTest::execute_class_api_case(){
             result = false;
         }
     }
+
+/*    if( i2c_master.open(I2C::RDWR|I2C::NONBLOCK) < 0 ){
+        print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, i2c_master.port());
+        result = false;
+    } else {
+        i2c_slave.open(I2C::RDWR|I2C::NONBLOCK);
+
+        i2c_attr.set_scl(i2c2_scl);
+        i2c_attr.set_sda(i2c2_sda);
+        i2c_attr.set_slave_addr(slave_address_8);
+        i2c_attr.set_flags(I2C_FLAG_SET_MASTER);
+        i2c_attr.set_freq(100000);
+
+        i2c_master.set_attr(i2c_attr);
+        i2c_attr.set_flags(I2C_FLAG_SET_SLAVE);
+        i2c_attr.set_freq(100000);
+        i2c_attr.set_scl(i2c3_scl);
+        i2c_attr.set_sda(i2c3_sda);
+        i2c_attr.set_slave_addr(slave_address_8);
+        i2c_slave.set_attr(i2c_attr);
+            //char text[] = "hello_two";
+        char messege_text[] = "i2c_test";
+        char recv_buff[sizeof(messege_text)];
+        while(1){
+            i2c_master.write(messege_text,2);
+			Timer::wait_milliseconds(50); //wait for the operation to complete
+        }
+        Aio aio_r(recv_buff, sizeof(messege_text)); //aio uses buf as it's data
+        Aio aio_t(messege_text, sizeof(messege_text)); //aio uses buf as it's data
+        i2c_slave.read(aio_r);
+        i2c_master.prepare(slave_address_8, I2C::FLAG_PREPARE_DATA);
+        i2c_master.write(aio_t);
+
+        while( !aio_r.is_done()){
+			Timer::wait_milliseconds(5); //wait for the operation to complete
+        }
+        while( !aio_t.is_done()){
+			Timer::wait_milliseconds(5); //wait for the operation to complete
+        }
+        if(memcmp(messege_text,recv_buff,sizeof(messege_text))){
+            print_case_message("Failed %s %d:", __FILE__, __LINE__);
+            print_case_message("recv %s ", recv_buff);
+            result = false;
+        }
+        Timer::wait_milliseconds(100);
+        if( i2c_master.close() < 0 ){
+            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, i2c_master.port());
+            result = false;
+        }
+        if( i2c_slave.close() < 0 ){
+            print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, i2c_master.port());
+            result = false;
+        }
+
+    }*/
+
     return result;
 }
 

@@ -4,7 +4,7 @@
 #include <sapi/fmt.hpp>
 #include "MessengerTest.hpp"
 MessengerTest::MessengerTest() : Test("sys::Messenger"){
-
+	Data::reclaim_heap_space();
 }
 static void rand_string_value(u16 size,String & string);
 static u8 pseudo_rnd_u8() ;

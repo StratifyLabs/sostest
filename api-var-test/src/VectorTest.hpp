@@ -5,13 +5,13 @@
 
 class VectorTest : public Test {
 public:
-    VectorTest();
+	VectorTest();
 
 private:
-    //cases
-    bool execute_class_api_case();
-    bool execute_class_performance_case();
-    bool execute_class_stress_case();
+	//cases
+	bool execute_class_api_case();
+	bool execute_class_performance_case();
+	bool execute_class_stress_case();
 };
 
 #endif // VECTORTEST_HPP

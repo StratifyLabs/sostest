@@ -2,6 +2,7 @@
 #define THREADTEST_HPP
 #include <sapi/sys.hpp>
 #include <sapi/test.hpp>
+#include <sapi/chrono.hpp>
 
 class ThreadTest : public Test {
 public:
@@ -12,7 +13,7 @@ private:
     static int count_1;
     static int count_2;
     static int count_3;
-    u32 wait_time = 4000;
+	 u32 wait_time = 500000;
 
     bool execute_class_api_case();
     //stress
@@ -31,6 +32,9 @@ private:
         ThreadTest * object = (ThreadTest*)args;
         return object->thread_3(object->wait_time);
     }
+
+	 Timer m_thread_2_timer;
+	 int m_thread_2_errno;
 
     void * thread_1(u32);
     void * thread_2(u32);

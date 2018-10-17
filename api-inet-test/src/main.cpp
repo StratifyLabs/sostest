@@ -1,18 +1,18 @@
+#include <stdint.h>
 #include <stdio.h>
 
 #include <sapi/sys.hpp>
 #include <sapi/test.hpp>
 
-#include "TimerTest.hpp"
-#include "MicroTimeTest.hpp"
-#include "TimeTest.hpp"
+#include "SocketTest.hpp"
 
 //update flags
 enum {
 	//Test flags occupy lower bit values
-	MICRO_TIME_TEST_FLAG = (1<<5),
-	TIMER_TEST_FLAG = (1<<6),
-	TIME_TEST_FLAG = (1<<7)
+	SOCKET_TEST_FLAG = (1<<5),
+	SECURE_SOCKET_TEST_FLAG = (1<<6),
+	HTTP_CLIENT_TEST_FLAG = (1<<7),
+	HTTP_SERVER_TEST_FLAG = (1<<8)
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
@@ -32,20 +32,20 @@ int main(int argc, char * argv[]){
 		exit(0);
 	}
 
-	Test::initialize(cli.name(), cli.version());
+	Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
 
-	if( o_flags & TIMER_TEST_FLAG ){
-		TimerTest test;
+	if( o_flags & SOCKET_TEST_FLAG ){
+		SocketTest test;
 		test.execute(o_execute_flags);
 	}
 
-	if( o_flags & MICRO_TIME_TEST_FLAG ){
-		MicroTimeTest test;
+	if( o_flags & SECURE_SOCKET_TEST_FLAG ){
+		SocketTest test;
 		test.execute(o_execute_flags);
 	}
 
-	if( o_flags & TIME_TEST_FLAG ){
-		TimeTest test;
+	if( o_flags & HTTP_CLIENT_TEST_FLAG ){
+		SocketTest test;
 		test.execute(o_execute_flags);
 	}
 
@@ -65,7 +65,6 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 		return o_flags;
 	}
 
-
 	if(cli.is_option("-execute_all") ){ execute_flags |= Test::EXECUTE_ALL; }
 	if(cli.is_option("-api") ){ execute_flags |= Test::EXECUTE_API; }
 	if(cli.is_option("-stress") ){ execute_flags |= Test::EXECUTE_STRESS; }
@@ -74,9 +73,9 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 
 	//update switches
 	if(cli.is_option("-test_all") ){ o_flags = 0xffffffff; }
-	if(cli.is_option("-micro_time") ){ o_flags |= MICRO_TIME_TEST_FLAG; }
-	if(cli.is_option("-timer") ){ o_flags |= TIMER_TEST_FLAG; }
-	if(cli.is_option("-time") ){ o_flags |= TIME_TEST_FLAG; }
+	if(cli.is_option("-socket") ){ o_flags |= SOCKET_TEST_FLAG; }
+	if(cli.is_option("-secure_socket") ){ o_flags |= SECURE_SOCKET_TEST_FLAG; }
+	if(cli.is_option("-http_client") ){ o_flags |= HTTP_CLIENT_TEST_FLAG; }
 
 	return o_flags;
 
@@ -93,9 +92,11 @@ void show_usage(const Cli & cli){
 	printf("    -additional     execute additional test.\n");
 
 	printf("    -test_all       execute test for all object.\n");
-	printf("    -micro_time     execute test for chrono/MicroTime.\n");
-	printf("    -timer          execute test for chrono/Timer.\n");
-	printf("    -time           execute test for sys/Time.\n");
+	printf("    -socket         execute the socket test.\n");
+	printf("    -secure_socket  execute the secure socket test using mbed TLS.\n");
+	printf("    -http_clinet    execute the http client test.\n");
+
+
 }
 
 

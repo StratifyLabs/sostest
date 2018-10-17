@@ -7,10 +7,10 @@
 class TimerTest : public Test
 {
 public:
-    TimerTest();
+	TimerTest();
 
-    bool execute_class_api_case();
-    bool execute_class_stress_case();
+	bool execute_class_api_case();
+	bool execute_class_stress_case();
 };
 
 #endif // MICROTIMERTEST_HPP
