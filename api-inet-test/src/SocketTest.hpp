@@ -8,8 +8,9 @@ public:
 	SocketTest();
 
 	bool execute_class_api_case();
-
+    bool udp_server_listening;
 private:
+    bool execute_socket_property_case();
 	bool execute_socket_address_info_case();
 	bool execute_socket_case();
 
