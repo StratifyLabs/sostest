@@ -1,4 +1,4 @@
-#include "TimeTest.hpp"
+﻿#include "TimeTest.hpp"
 #include "sapi/chrono.hpp"
 #include "ctime"
 #include <sapi/hal.hpp>
@@ -18,7 +18,10 @@ bool TimeTest::execute_class_api_case(){
 	tm time_tm_uno,time_tm_dos;
 	u8 const time_delay_sec =1;
 	Device rtc;
-	rtc.open("/dev/rtc", O_RDWR);
+    if(rtc.open("/dev/rtc", O_RDWR)!=0){
+        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = false;
+    }
 	rtc_attr_t attr;
 	attr.o_flags = RTC_FLAG_ENABLE;
 	rtc.ioctl(I_RTC_SETATTR, &attr);
@@ -36,7 +39,6 @@ bool TimeTest::execute_class_api_case(){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-
 	now.set_value(1526990058);
 	struct tm time_struct;
 	time_t m_time = 1526990058;
