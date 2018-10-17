@@ -344,7 +344,7 @@ bool ThreadTest::execute_class_api_case(){
  */
 bool ThreadTest::execute_class_performance_case(){
 	bool result = true;
-	const u32 itterate_num = 1024;
+	const u32 itterate_num = 16;
 	Thread uno_thread(4096),dos_thread(2048),tres_thread(2048),quatro_thread(2048);
 	//pid_t uno_id,dos_id,tres_id,quatro_id;
 	enum Sched::policy policy;
@@ -414,8 +414,9 @@ bool ThreadTest::execute_class_stress_case(){
 	int dos_priority=4;
 	int tres_priority =4;
 	int quatro_priority =4;
-	int max_prior_RR,max_prior_FIFO,max_prior_OTHER;
-	int min_prior_RR,min_prior_FIFO,min_prior_OTHER;
+	int max_prior_RR, max_prior_FIFO, max_prior_OTHER;
+	int min_prior_RR, min_prior_FIFO, min_prior_OTHER;
+
 	//RR sheduler
 	uno_policy = Sched::RR;
 	dos_policy = Sched::RR;
@@ -423,11 +424,14 @@ bool ThreadTest::execute_class_stress_case(){
 	quatro_policy = Sched::RR;
 	Timer timer_count;
 	max_prior_RR= Sched::get_priority_max(Sched::RR);
+	max_prior_RR= 20;
 	max_prior_FIFO= Sched::get_priority_max(Sched::FIFO);
+	max_prior_FIFO= 20;
 	max_prior_OTHER= Sched::get_priority_max(Sched::OTHER);
 	min_prior_RR = Sched::get_priority_min(Sched::RR);
 	min_prior_FIFO = Sched::get_priority_min(Sched::FIFO);
 	min_prior_OTHER = Sched::get_priority_min(Sched::OTHER);
+	print_case_message("vary policy and priority");
 	for(int i=0;i<itterate_num;i++){
 		u32 max_time;
 		wait_time_quatro = ((u16)rand() & 0x1ff) + 5000;//used for quatro thread
@@ -504,6 +508,7 @@ bool ThreadTest::execute_class_stress_case(){
 	dos_policy = Sched::FIFO;
 	tres_policy = Sched::FIFO;
 	quatro_policy = Sched::FIFO;
+	print_case_message("test fifo policy");
 	for(int i=0;i<itterate_num;i++){
 		u32 max_time;
 		uno_priority= rand() % max_prior_FIFO;
@@ -569,6 +574,7 @@ bool ThreadTest::execute_class_stress_case(){
 	dos_policy = Sched::RR;
 	tres_policy = Sched::FIFO;
 	quatro_policy = Sched::RR;
+	print_case_message("test fifo/RR policy");
 	for(int i=0;i<itterate_num;i++){
 		u32 max_time;
 		uno_priority= rand() % max_prior_FIFO;
@@ -635,16 +641,13 @@ bool ThreadTest::execute_class_stress_case(){
 	dos_policy = Sched::OTHER;
 	tres_policy = Sched::OTHER;
 	quatro_policy = Sched::OTHER;
+	print_case_message("test other policy");
 	for(int i=0;i<itterate_num;i++){
 		u32 max_time;
-		uno_priority= rand() % max_prior_OTHER;
-		uno_priority= uno_priority<max_prior_OTHER?max_prior_OTHER:uno_priority;
-		dos_priority= rand() % max_prior_OTHER;
-		dos_priority= dos_priority<max_prior_OTHER?max_prior_OTHER:dos_priority;
-		tres_priority= rand() % max_prior_OTHER;
-		tres_priority= tres_priority<max_prior_OTHER?max_prior_OTHER:tres_priority;
-		quatro_priority= rand() % max_prior_OTHER;
-		quatro_priority= quatro_priority<max_prior_OTHER?max_prior_OTHER:quatro_priority;
+		uno_priority = 0;
+		dos_priority = 0;
+		tres_priority = 0;
+		quatro_priority = 0;
 		wait_time_quatro = ((u16)rand() & 0x1ff) +5000;//used for quatro thread
 		wait_time = ((u16)rand() & 0x1ff)+5000;//used for thread uno dos tres
 		max_time = wait_time>wait_time_quatro?wait_time:wait_time_quatro;//use max value
@@ -658,14 +661,12 @@ bool ThreadTest::execute_class_stress_case(){
 			result = false;
 			break;
 		}
-		uno_priority= ((i % max_prior_OTHER)<min_prior_OTHER)?min_prior_OTHER:(i % max_prior_OTHER);
 		uno_thread.set_priority(uno_priority);
 		if (uno_thread.get_priority()!= uno_priority){
 			print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
 			result = false;
 			break;
 		}
-		dos_priority= ((i % max_prior_OTHER)<min_prior_OTHER)?min_prior_OTHER:(i % max_prior_OTHER);
 		dos_thread.set_priority(dos_priority);
 		if (dos_thread.get_priority()!= dos_priority){
 			print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
