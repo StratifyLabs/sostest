@@ -19,7 +19,10 @@ bool SocketTest::execute_class_api_case(){
 		print_case_failed("socket case failed");
 		return case_result();
 	}
-
+    if(!execute_socket_case_udp()){
+        print_case_failed("udp socket case failed");
+        return case_result();
+    }
 	return case_result();
 }
 /*@brief start thread for listen and connect to them if needed
@@ -80,7 +83,10 @@ bool SocketTest::execute_socket_case(){
 
 	local_host_socket.close();
 /*  end tcp connection  */
-    /*if( thread.is_running() ){*///need to use on embedded
+#if !defined __link
+    if( thread.is_running() ){//need to use on embedded
+
+#endif
     {
 /*      start udp connection handing
  *      use two sockets for write and read message
@@ -125,7 +131,7 @@ bool SocketTest::execute_socket_case(){
             print_case_failed("Failed to connect to socket");
             return case_result();
         }
-
+        Timer::wait_milliseconds(100);
         int len_writed;
         len_writed = local_host_socket_udp_client.write(test);
         if( len_writed < 0 ){
@@ -156,9 +162,12 @@ bool SocketTest::execute_socket_case(){
 
         local_host_socket_udp_server.close();
     }
-    /*}else{    //need to use on embedded
+#if !defined __link
+    }else{
         print_case_failed("thread is stoped");
-    }*/
+    }
+#endif
+
 /*  end udp connection handing    */
 
 	return case_result();
@@ -239,16 +248,6 @@ void * SocketTest::listen_on_localhost(){
             return 0;
         }
 
-        //listen on port 80 of localhost
-    /*    local_host_listen_udp_socket_server.clear_error_number();
-        local_host_listen_udp_socket_client.clear_error_number();
-        local_host_listen_udp_socket_server << SocketOption().reuse_address() << SocketOption().reuse_port();
-        local_host_listen_udp_socket_client << SocketOption().reuse_address() << SocketOption().reuse_port();
-    */
-        if( local_host_listen_udp_socket_server.error_number() != 0 ){
-            print_case_failed("failed to set socket options (%d)", local_host_listen_udp_socket_server.error_number());
-        }
-        //connect to port 80 of localhost
         if( local_host_listen_udp_socket_server.bind_and_listen(localhost_udp_address_server) < 0 ){
             print_case_failed("Failed to bind to localhost (%d)", local_host_listen_udp_socket_server.error_number());
             return 0;
@@ -261,8 +260,7 @@ void * SocketTest::listen_on_localhost(){
             print_case_failed("failed to close socket");
             return 0;
         }
-        Timer::wait_milliseconds(500);
-
+        Timer::wait_milliseconds(100);
         if( local_host_listen_udp_socket_client.create(localhost_udp_address_client) < 0 ){
             print_case_failed("failed to create socket");
             return 0;
@@ -295,7 +293,7 @@ bool SocketTest::execute_socket_address_info_case(){
 	SocketAddressInfo address_info;
     result = true;
 	print_case_message("get list from stratifylabs.co");
-	Vector<SocketAddressInfo> list = address_info.fetch_node("stratifylabs.co");
+    Vector<SocketAddressInfo> list = address_info.fetch_node("stratifylabs.co");
 
 	print_case_message("got %d entries", list.count());
 	for(u32 i=0; i < list.count(); i++){
@@ -382,8 +380,154 @@ bool SocketTest::execute_socket_address_info_case(){
 
     return result;
 }
-bool SocketTest::execute_socket_property_case(){
+bool SocketTest::execute_socket_option_case(){
     bool result;
     result = true;
     return result;
+}
+#define case_listen_port 5004
+#define thread_listen_port 5005
+
+#define case_listen_port_str "5004"
+#define thread_listen_port_str "5005"
+/* @brief usp socket case
+ * listen port - 5004
+ * conection to port - 5005
+ * */
+bool SocketTest::execute_socket_case_udp(){
+    /*      start udp connection handing
+     *      use two sockets for write and read message
+    */
+    Thread thread;
+    if( thread.create(listen_on_localhost_thread_function_udp, this) < 0 ){
+        print_case_failed("Failed to create listener thread");
+        return case_result();
+    }
+
+    SocketAddressInfo address_info(SocketAddressInfo::FAMILY_INET,SocketAddressInfo::TYPE_DGRAM,\
+                                   SocketAddressInfo::PROTOCOL_UDP,AI_PASSIVE);
+    Vector<SocketAddressInfo> list = address_info.fetch("localhost",thread_listen_port_str);
+    if(list.size()<=0){
+        return case_result();
+    }
+    Socket local_host_socket_udp_server;
+    Socket local_host_socket_udp_client;
+    //address connect to
+    SocketAddress localhost_udp_address_client(list.at(0), thread_listen_port);
+    list.free();
+    list.clear();
+    list = address_info.fetch("localhost",case_listen_port_str);
+    if(list.size()<=0){
+        return case_result();
+    }
+
+    //address for listening
+    SocketAddress localhost_udp_address_server(list.at(0), case_listen_port);
+    if(local_host_socket_udp_client.create(localhost_udp_address_client)!=0){
+        print_case_failed("create error socket");
+        return case_result();
+    }
+    if(local_host_socket_udp_server.create(localhost_udp_address_server)!=0){
+        print_case_failed("create error socket");
+        return case_result();
+    }
+    String test("Testing");
+    Data reply(256);
+    int len_writed;
+    String address_string = localhost_udp_address_client.address_to_string();
+    Timer::wait_milliseconds(100);
+    len_writed = local_host_socket_udp_client.write_to(test.c_str(),test.len(),localhost_udp_address_client);
+    if( len_writed != (int)test.len() ){
+        print_case_failed("Failed to write client socket %d",len_writed);
+        return case_result();
+    }
+    reply.fill(0);
+    if( local_host_socket_udp_server.bind_and_listen(localhost_udp_address_server) < 0 ){
+        print_case_failed("Failed to bind to localhost (%d)");
+        return 0;
+    }
+    int len;
+    struct sockaddr ai_addr;
+    socklen_t ai_addrlen;
+    ai_addrlen = sizeof(sockaddr_in);
+    len = local_host_socket_udp_server.read_from(reply.data(),reply.size(),&ai_addr,&ai_addrlen);
+    //len = local_host_socket_udp_server.read(reply.data(),reply.size());
+    if( len < 0 ){
+        print_case_failed("Failed to read client socket %d",len);
+        return case_result();
+    }
+    print_case_message("read '%s' from udp socket ", reply.to_char());
+    if( test != reply.to_char() ){
+        print_case_failed("did not get an echo on localhost");
+    }
+    local_host_socket_udp_client.close();
+    local_host_socket_udp_server.close();
+    return case_result();
+}
+/* @brief make udp socket and listen on
+ * listen port - 5005
+ * connecting to port - 5004
+ * ip_address - local host
+ * */
+void * SocketTest::listen_on_localhost_udp(){
+    /*      start udp connection handing
+     *      use two sockets for write and read message
+    */
+    udp_server_listening = 0 ;
+    SocketAddressInfo address_info(SocketAddressInfo::FAMILY_INET,SocketAddressInfo::TYPE_DGRAM,\
+                                   SocketAddressInfo::PROTOCOL_UDP,AI_PASSIVE);
+    Vector<SocketAddressInfo> list = address_info.fetch("localhost",case_listen_port_str);
+    if(list.size()<=0){
+        print_case_message("list error thread");
+        return 0;
+    }
+    Socket local_host_socket_udp_server;
+    Socket local_host_socket_udp_client;
+    //address connect to
+    SocketAddress localhost_udp_address_client(list.at(0), case_listen_port);
+    list.free();
+    list.clear();
+    list = address_info.fetch("localhost",thread_listen_port_str);
+    if(list.size()<=0){
+        print_case_message("list error thread");
+        return 0;
+    }
+    //address for listening
+    SocketAddress localhost_udp_address_server(list.at(0), thread_listen_port);
+    if(local_host_socket_udp_client.create(localhost_udp_address_client)!=0){
+        print_case_failed("create error socket");
+        return 0;
+    }
+    if(local_host_socket_udp_server.create(localhost_udp_address_server)!=0){
+        print_case_failed("create error socket");
+        return 0;
+    }
+    if( local_host_socket_udp_server.bind_and_listen(localhost_udp_address_server) < 0 ){
+        print_case_failed("Failed to bind to localhost (%d)");
+        return 0;
+    }
+
+        String test("Testing");
+    Data reply(256);
+    int len_hand;
+    struct sockaddr ai_addr;
+    socklen_t ai_addrlen;
+    ai_addrlen = sizeof(sockaddr_in);
+    len_hand = local_host_socket_udp_server.read_from(reply.data(),reply.size(),&ai_addr,&ai_addrlen);
+    //len_hand = local_host_socket_udp_server.read(reply.data(),reply.size());
+    if( len_hand < 0 ){
+        print_case_failed("Failed to read client socket %d",len_hand);
+        return 0;
+    }
+    //client was port to connect
+    String address_string = localhost_udp_address_client.address_to_string();
+    Timer::wait_milliseconds(100);
+    len_hand = local_host_socket_udp_client.write_to(reply.data(),len_hand,localhost_udp_address_client);
+    if(len_hand  < 0 ){
+        print_case_failed("Failed to write client socket ");
+        return 0;
+    }
+    local_host_socket_udp_client.close();
+    local_host_socket_udp_server.close();
+    return 0;
 }
