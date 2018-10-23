@@ -436,7 +436,7 @@ bool SocketTest::execute_socket_case_udp(){
     int len_writed;
     String address_string = localhost_udp_address_client.address_to_string();
     Timer::wait_milliseconds(100);
-    len_writed = local_host_socket_udp_client.write_to(test.c_str(),test.len(),localhost_udp_address_client);
+	 len_writed = local_host_socket_udp_client.write(test.c_str(),test.len(),localhost_udp_address_client);
     if( len_writed != (int)test.len() ){
         print_case_failed("Failed to write client socket %d",len_writed);
         return case_result();
@@ -450,7 +450,7 @@ bool SocketTest::execute_socket_case_udp(){
     struct sockaddr ai_addr;
     socklen_t ai_addrlen;
     ai_addrlen = sizeof(sockaddr_in);
-    len = local_host_socket_udp_server.read_from(reply.data(),reply.size(),&ai_addr,&ai_addrlen);
+	 len = local_host_socket_udp_server.read(reply.data(),reply.size(),&ai_addr,&ai_addrlen);
     //len = local_host_socket_udp_server.read(reply.data(),reply.size());
     if( len < 0 ){
         print_case_failed("Failed to read client socket %d",len);
@@ -513,7 +513,7 @@ void * SocketTest::listen_on_localhost_udp(){
     struct sockaddr ai_addr;
     socklen_t ai_addrlen;
     ai_addrlen = sizeof(sockaddr_in);
-    len_hand = local_host_socket_udp_server.read_from(reply.data(),reply.size(),&ai_addr,&ai_addrlen);
+	 len_hand = local_host_socket_udp_server.read(reply.data(),reply.size(),&ai_addr,&ai_addrlen);
     //len_hand = local_host_socket_udp_server.read(reply.data(),reply.size());
     if( len_hand < 0 ){
         print_case_failed("Failed to read client socket %d",len_hand);
@@ -522,7 +522,7 @@ void * SocketTest::listen_on_localhost_udp(){
     //client was port to connect
     String address_string = localhost_udp_address_client.address_to_string();
     Timer::wait_milliseconds(100);
-    len_hand = local_host_socket_udp_client.write_to(reply.data(),len_hand,localhost_udp_address_client);
+	 len_hand = local_host_socket_udp_client.write(reply.data(),len_hand,localhost_udp_address_client);
     if(len_hand  < 0 ){
         print_case_failed("Failed to write client socket ");
         return 0;
