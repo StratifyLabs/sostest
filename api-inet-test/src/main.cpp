@@ -5,6 +5,7 @@
 #include <sapi/test.hpp>
 
 #include "SocketTest.hpp"
+#include "SecureSocketTest.hpp"
 
 //update flags
 enum {
@@ -40,7 +41,7 @@ int main(int argc, char * argv[]){
 	}
 
 	if( o_flags & SECURE_SOCKET_TEST_FLAG ){
-		SocketTest test;
+		SecureSocketTest test;
 		test.execute(o_execute_flags);
 	}
 
