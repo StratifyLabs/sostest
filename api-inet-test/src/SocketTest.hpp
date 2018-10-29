@@ -26,10 +26,14 @@ private:
     static void * listen_on_localhost_thread_function_ping_pong(void * args){
         return ((SocketTest*)args)->listen_on_localhost_ping_pong();
     }
+    static void * listen_on_localhost_thread_function_ping_pong_udp(void * args){
+        return ((SocketTest*)args)->listen_on_localhost_ping_pong_udp();
+    }
 
 	void * listen_on_localhost();
     void * listen_on_localhost_udp();
     void * listen_on_localhost_ping_pong();
+    void * listen_on_localhost_ping_pong_udp();
 };
 
 #endif // SOCKETTEST_HPP
