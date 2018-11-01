@@ -13,6 +13,7 @@ public:
 private:
     bool execute_socket_option_case();
 	bool execute_socket_address_info_case();
+    bool execute_socket_address_case();
     bool execute_socket_case();
     bool execute_socket_case_udp();
     int family = SocketAddressInfo::FAMILY_INET;//use common for thread use
