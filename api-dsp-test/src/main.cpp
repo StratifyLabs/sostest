@@ -37,7 +37,7 @@ int main(int argc, char * argv[]){
         exit(1);
     }
 
-    Test::initialize(cli.name(), cli.version());
+	 Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
 
     if( (o_flags & SIGNAL_TEST_FLAG) && (o_flags & Q15_TEST_FLAG) ){
         SignalQ15Test test;

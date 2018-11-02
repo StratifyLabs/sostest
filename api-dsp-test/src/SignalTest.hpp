@@ -13,25 +13,24 @@ public:
         bool result = true;
         u32 i;
 
+		  print_case_message("create signal types");
         SignalType data(32);
         SignalType data1;
         SignalType data2;
 
-        if( data.request_arm_dsp_api() < 0 ){
-            print_case_message("ARM DSP API is not available from the kernel");
-            return false;
-        } else {
-            if( data.arm_dsp_api_q31() == 0 ){
-                print_case_message("ARM DSP Q31 API is not available: abort");
-                return false;
-            }
-        }
+		  print_case_message("check for api");
+		  if( data.is_api_available() == false ){
+			  print_case_failed("Api is not available");
+			  return case_result();
+		  }
 
+		  print_case_message("check count");
         if( data.count() != 32 ){
             result = false;
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         }
 
+		  print_case_message("fill values");
         for(i=0; i < data.count(); i++){
             if( i % 2 ){
                 data[i] = 10;
@@ -139,20 +138,12 @@ public:
     SignalQ15Test() : SignalTest("dsp::SignalQ15"){
 
     }
-
-    bool is_api_available(){
-        return SignalQ15::arm_dsp_api_q15() != 0;
-    }
 };
 
 class SignalQ31Test : public SignalTest<SignalQ31> {
 public:
     SignalQ31Test() : SignalTest("dsp::SignalQ31"){
 
-    }
-
-    bool is_api_available(){
-        return SignalQ31::arm_dsp_api_q31() != 0;
     }
 };
 
@@ -162,9 +153,6 @@ public:
 
     }
 
-    bool is_api_available(){
-        return SignalQ31::arm_dsp_api_f32() != 0;
-    }
 };
 
 

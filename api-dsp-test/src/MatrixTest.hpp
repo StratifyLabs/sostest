@@ -47,16 +47,12 @@ public:
 
 class MatrixQ31Test : public MatrixTest<SignalQ31> {
 public:
-    MatrixQ31Test() : MatrixTest("dsp::MatrixQ31"){
-
-    }
+    MatrixQ31Test() : MatrixTest("dsp::MatrixQ31"){}
 };
 
 class MatrixF32Test : public MatrixTest<SignalF32> {
 public:
-    MatrixF32Test() : MatrixTest("dsp::MatrixF32"){
-
-    }
+    MatrixF32Test() : MatrixTest("dsp::MatrixF32"){}
 };
 
 #endif // SIGNALTEST_HPP
