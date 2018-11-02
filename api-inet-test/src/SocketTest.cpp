@@ -7,13 +7,16 @@
 #define MAX_PACKET_SIZE 1512
 SocketTest::SocketTest() : Test("SocketTest"){}
 static void rand_string_value(u16 size,String & string);
-
 bool SocketTest::execute_class_api_case(){
-
 	if( !execute_socket_address_info_case() ){
 		print_case_failed("socket address info case failed");
 		return case_result();
 	}
+    if( !execute_socket_address_case() ){
+        print_case_failed("socket address info case failed");
+        return case_result();
+    }
+
     family = SocketAddressInfo::FAMILY_NONE;
     if(!execute_socket_case()){
         print_case_failed("socket case failed");
@@ -263,7 +266,6 @@ void * SocketTest::listen_on_localhost(){
         list.free();
         list.clear();   //need to use before?
         list = address_info.fetch_node("localhost");
-        //
         u16 udp_port_client = 5003;
         u16 udp_port_server = 5002;
         SocketAddress localhost_udp_address_client(list.at(0), udp_port_client);
@@ -408,6 +410,123 @@ bool SocketTest::execute_socket_address_info_case(){
     }
     return result;
 }
+/*@brief test socket address section (getaddrinfo)
+ * use:
+ *
+ * */
+bool SocketTest::execute_socket_address_case(){
+    bool result;
+    uint16_t port = 8080;
+    in_addr_t IP_ADDRESS = 0;
+    result = true;
+    SocketAddressInfo address_info_ipv6(SocketAddressInfo::FAMILY_INET6,SocketAddressInfo::TYPE_STREAM,\
+                                   SocketAddressInfo::PROTOCOL_TCP,0);
+    SocketAddressInfo address_info_ipv4(SocketAddressInfo::FAMILY_INET,SocketAddressInfo::TYPE_STREAM,\
+                                   SocketAddressInfo::PROTOCOL_TCP,0);
+
+    SocketAddressIpv4 ipv4_addrees(IP_ADDRESS, port);
+    sockaddr_in ipv4_in;
+    sockaddr_in6 ipv6_in;
+
+    ipv4_in.sin_addr.s_addr = IP_ADDRESS;
+    ipv4_in.sin_port = port;
+    for(u8 i = 0;i<16;i++){
+        ipv6_in.sin6_addr.s6_addr[i] = IP_ADDRESS;
+    }
+    ipv6_in.sin6_port = port;
+    SocketAddress socket_address_zero;
+    SocketAddress socket_address_uno(ipv4_addrees);
+    SocketAddress socket_address_info_ipv4(address_info_ipv4,port);
+    SocketAddress socket_address_info_ipv6(address_info_ipv6,port);
+    SocketAddress socket_address_ipv4(ipv4_in);
+    SocketAddress socket_address_ipv6(ipv6_in);
+    if( socket_address_uno.port()!=port){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv6.port()!=port){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv4.port()!=port){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_ipv4.port()!=port){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+
+    }
+    if(socket_address_ipv6.port()!=port){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    socket_address_zero.set_port(port);
+    if(socket_address_zero.port()!=port){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+
+    if(socket_address_uno.address_ipv4()!=IP_ADDRESS||
+       socket_address_ipv4.address_ipv4()!=IP_ADDRESS){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv4.length() != sizeof(sockaddr_in)){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv6.length() != sizeof(sockaddr_in6)){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    socket_address_zero.set_port(port);
+    if(socket_address_info_ipv6.type()!=SocketAddressInfo::TYPE_STREAM){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv4.type()!=SocketAddressInfo::TYPE_STREAM){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv6.protocol()!=SocketAddressInfo::PROTOCOL_TCP){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv4.protocol()!=SocketAddressInfo::PROTOCOL_TCP){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    socket_address_info_ipv4.set_protocol(SocketAddressInfo::PROTOCOL_UDP);
+    if(socket_address_info_ipv4.protocol()!=SocketAddressInfo::PROTOCOL_UDP){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    socket_address_info_ipv4.set_type(SocketAddressInfo::TYPE_DGRAM);
+    if(socket_address_info_ipv4.type()!=SocketAddressInfo::TYPE_DGRAM){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv4.family()!=SocketAddressInfo::FAMILY_INET){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(socket_address_info_ipv6.family()!=SocketAddressInfo::FAMILY_INET6){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+
+    if(!socket_address_info_ipv4.is_ipv4()){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    if(!socket_address_info_ipv6.is_ipv6()){
+        print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+        result = case_result();
+    }
+    return result;
+}
+
 bool SocketTest::execute_socket_option_case(){
     bool result;
     result = true;
@@ -486,22 +605,53 @@ bool SocketTest::execute_socket_case_udp(){
     }else{
         ai_addrlen = sizeof(sockaddr_in6);
     }
-
+//read one int read(void * buf, int nbyte, struct sockaddr * ai_addr,socklen_t * ai_addrlen) const;
     len = local_host_socket_udp_server.read(reply.data(),reply.size(),&ai_addr,&ai_addrlen);
-    u16 port;
-    port = ai_addr.sa_data[1]<<8 | ai_addr.sa_data[2];
-    print_case_message("case recv from %d.%d.%d.%d:%d ", ai_addr.sa_data[2],ai_addr.sa_data[3],\
-            ai_addr.sa_data[4],ai_addr.sa_data[5],port);
-    Timer::wait_milliseconds(100);
     if( len < 0 ){
         print_case_failed("Failed to read client socket %d",len);
         return case_result();
     }
+
+    u16 port;
+    port = ai_addr.sa_data[1]<<8 | ai_addr.sa_data[2];
+    print_case_message("case recv from %d.%d.%d.%d:%d ", ai_addr.sa_data[2],ai_addr.sa_data[3],\
+            ai_addr.sa_data[4],ai_addr.sa_data[5],port);
     print_case_message("read '%s' from udp socket ", reply.to_char());
     if( test != reply.to_char() ){
         print_case_failed("did not get an echo on localhost");
     }
+//read two    int read(var::Data & data, SocketAddress & address);
+    Data read_data(256);
+    SocketAddress socket_address_two(address_info);
+    socket_address_two.set_protocol(SocketAddressInfo::PROTOCOL_UDP);
+    len = local_host_socket_udp_server.read(read_data,socket_address_two);
+    if( len < 0 ){
+        print_case_failed("Failed to read client socket %d",len);
+        return case_result();
+    }
 
+    String ip_address(socket_address_two.address_to_string());
+    print_case_message("case recv from %s:%d ", ip_address.to_char(),socket_address_two.port());
+    print_case_message("read '%s' from udp socket ", read_data.to_char());
+    test.to_upper();//change value
+    if( test != read_data.to_char() ){
+        print_case_failed("did not get an echo on localhost");
+    }
+//read three    int read(void * buf, int nbyte, SocketAddress & address);
+    SocketAddress socket_address_three(address_info);
+    len = local_host_socket_udp_server.read(reply.data(),reply.size(),socket_address_three);
+    if( len < 0 ){
+        print_case_failed("Failed to read client socket %d",len);
+        return case_result();
+    }
+    ip_address = socket_address_three.address_to_string();
+    print_case_message("case recv from %s:%d ", ip_address.to_char(),socket_address_two.port());
+    print_case_message("read '%s' from udp socket ", reply.to_char());
+    test.to_lower();//value must be changed
+    if( test != reply.to_char() ){
+        print_case_failed("did not get an echo on localhost");
+    }
+    Timer::wait_milliseconds(100);
     local_host_socket_udp_client.close();
     local_host_socket_udp_server.close();
     return case_result();
@@ -566,17 +716,37 @@ void * SocketTest::listen_on_localhost_udp(){
         print_case_failed("Failed to read client socket %d",len_hand);
         return 0;
     }
+    u16 port;
+    port = ai_addr.sa_data[1]<<8 | ai_addr.sa_data[2];
+    print_case_message("thread recv from %d.%d.%d.%d:%d ", ai_addr.sa_data[2],ai_addr.sa_data[3],\
+            ai_addr.sa_data[4],ai_addr.sa_data[5],port);
     //client was port to connect
+    //send one
     Timer::wait_milliseconds(100);
     len_hand = local_host_socket_udp_client.write(reply.data(),len_hand,localhost_udp_address_client);
     if(len_hand  < 0 ){
         print_case_failed("Failed to write client socket ");
         return 0;
     }
-    u16 port;
-    port = ai_addr.sa_data[1]<<8 | ai_addr.sa_data[2];
-    print_case_message("thread recv from %d.%d.%d.%d:%d ", ai_addr.sa_data[2],ai_addr.sa_data[3],\
-            ai_addr.sa_data[4],ai_addr.sa_data[5],port);
+    //send two
+    String send_data(reply.to_char());
+    send_data.to_upper();//change sending data
+    Timer::wait_milliseconds(100);
+    len_hand = local_host_socket_udp_client.write(send_data.to_char(),len_hand,localhost_udp_address_client);
+    if(len_hand  < 0 ){
+        print_case_failed("Failed to write client socket ");
+        return 0;
+    }
+    print_case_message("thread sent packet %s",send_data.to_char());
+    //send three
+    Timer::wait_milliseconds(100);
+    send_data.to_lower();//change data
+    len_hand = local_host_socket_udp_client.write(send_data.to_char(),len_hand,localhost_udp_address_client);
+    if(len_hand  < 0 ){
+        print_case_failed("Failed to write client socket ");
+        return 0;
+    }
+    print_case_message("thread sent packet %s",send_data.to_char());
     local_host_socket_udp_client.close();
     local_host_socket_udp_server.close();
     return 0;
