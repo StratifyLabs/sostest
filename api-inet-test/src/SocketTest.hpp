@@ -16,6 +16,7 @@ private:
     bool execute_socket_address_case();
     bool execute_socket_case();
     bool execute_socket_case_udp();
+    bool execute_socket_case_raw();
     int family = SocketAddressInfo::FAMILY_INET;//use common for thread use
     bool thread_running = true;
 	static void * listen_on_localhost_thread_function(void * args){
