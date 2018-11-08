@@ -1,0 +1,25 @@
+{
+   "creation_date": {
+      "year": 2018,
+      "month": 11,
+      "day": 8,
+      "hour": 3,
+      "minute": 52,
+      "second": 41,
+      "tz": "gmt"
+   },
+   "interactive": "false",
+   "silent": "false",
+   "json": "false",
+   "git_hash": "a438397",
+   "date": {
+      "year": 2018,
+      "month": 11,
+      "day": 8,
+      "hour": 3,
+      "minute": 52,
+      "second": 41,
+      "tz": "gmt"
+   },
+   "version": "0.5"
+}
