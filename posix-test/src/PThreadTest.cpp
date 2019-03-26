@@ -177,7 +177,7 @@ void * PThreadTest::thread1(){
 }
 
 int PThreadTest::get_available_task_count(){
-    Task task;
+	 TaskManager task;
     return task.count_free();
 }
 

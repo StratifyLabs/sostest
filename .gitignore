@@ -2,3 +2,4 @@
 */cmake_*
 *.user
 */build_release_link/*
+*.8-pre1

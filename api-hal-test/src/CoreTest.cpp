@@ -1,4 +1,5 @@
 #include "CoreTest.hpp"
+#include <sapi/sys.hpp>
 static const u32 MIN_OSC_FREQ = 1000;
 static const u32 MAX_OSC_FREQ = 25000000;
 static const u32 MIN_CPU_FREQ = 1000000;

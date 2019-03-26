@@ -104,7 +104,7 @@ int main(int argc, char * argv[]){
 }
 
 void show_usage(const Cli & cli){
-    printf("Usage: %s\n", cli.name());
+	 printf("Usage: %s\n", cli.name().cstring());
     printf("TODO: Show usage\n");
 }
 

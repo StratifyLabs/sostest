@@ -93,7 +93,7 @@ bool I2CTest::execute_class_api_case(){
             i2c_attr.set_sda(i2c1_sda);
             i2c_attr.set_flags(I2C_FLAG_SET_MASTER);
             i2c_attr.set_freq(100000);
-            if(i2c_master.set_attr(i2c_attr)!=0){
+				if(i2c_master.set_attributes(i2c_attr)!=0){
                 print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, i2c_master.port());
                 result = false;
             }
@@ -102,7 +102,7 @@ bool I2CTest::execute_class_api_case(){
             i2c_attr.set_scl(i2c2_scl);
             i2c_attr.set_sda(i2c2_sda);
             i2c_attr.set_slave_addr(slave_address_8);
-            if(i2c_slave.set_attr(i2c_attr)){
+				if(i2c_slave.set_attributes(i2c_attr)){
                 print_case_message("Failed %s %d", __FILE__, __LINE__);
                 result = false;
             }
@@ -240,7 +240,7 @@ bool I2CTest::execute_class_stress_case(){
     if( i2c_slave.open() != 0 ){
         result = false;
     } else {
-        if(i2c_slave.set_attr(i2c_attr_s)){
+		  if(i2c_slave.set_attributes(i2c_attr_s)){
             result = false;
         }
         i2c_info_t i2c_info;

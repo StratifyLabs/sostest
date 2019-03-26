@@ -335,7 +335,7 @@ bool UartTest::execute_uart_api_case(Uart & uart){
         print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, uart.port());
         result = false;
     } else {
-        uart.init();
+		  uart.initialize();
         Core core(0);
         core_info_t core_info;
         core.open();

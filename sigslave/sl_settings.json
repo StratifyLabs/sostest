@@ -1,0 +1,12 @@
+{
+   "description": "The sigslave app is used with the PosixTest suite for testing standard posix functions.",
+   "github": "",
+   "name": "sigslave",
+   "permissions": "public",
+   "publisher": "Stratify Labs, Inc",
+   "tags": "utility",
+   "type": "app",
+   "version": "1.0",
+   "hardwareId": "",
+   "ramSize": 8192
+}

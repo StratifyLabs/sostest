@@ -11,7 +11,6 @@
 #include "SignalTest.hpp"
 #include "TaskTest.hpp"
 #include "CliTest.hpp"
-#include "MessengerTest.hpp"
 #include "TraceTest.hpp"
 #include "AppfsTest.hpp"
 #include "DirTest.hpp"
@@ -89,10 +88,7 @@ int main(int argc, char * argv[]){
         CliTest test;
         test.execute(o_execute_flags);
     }
-    if( o_flags & MESSENGER_TEST_FLAG){
-        MessengerTest test;
-        test.execute(o_execute_flags);
-    }
+
     if( o_flags & TRACE_TEST_FLAG){
         TraceTest test;
         test.execute(o_execute_flags);
@@ -128,7 +124,6 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-dir") ){ o_flags |= DIR_TEST_FLAG; }
     if(cli.is_option("-file") ){ o_flags |= FILE_TEST_FLAG; }
     if(cli.is_option("-file_info") ){ o_flags |= FILE_INFO_TEST_FLAG; }
-    if(cli.is_option("-messenger") ){ o_flags |= MESSENGER_TEST_FLAG; }
     if(cli.is_option("-mq") ){ o_flags |= MQ_TEST_FLAG; }
     if(cli.is_option("-mutex") ){ o_flags |= MUTEX_TEST_FLAG; }
     if(cli.is_option("-sched") ){ o_flags |= SCHED_TEST_FLAG; }
@@ -159,7 +154,6 @@ void show_usage(const Cli & cli){
 //    printf("    -dir         execute test \n");
 //    printf("    -file           execute test \n");
     printf("    -file_info      execute test for sys/FileInfo \n");
-    printf("    -messenger      execute test for sys/messenger\n");
     printf("    -mq             execute test for sys/mq \n");
     printf("    -mutex          execute test for sys/mutex \n");
     printf("    -sched          execute test for sys/sched \n");

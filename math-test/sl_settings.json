@@ -1,0 +1,12 @@
+{
+   "description": "math is a test that is part of the sostest suite.",
+   "github": "",
+   "name": "math-test",
+   "permissions": "public",
+   "publisher": "Stratify Labs, Inc",
+   "tags": "test",
+   "type": "app",
+   "version": "0.5",
+   "hardwareId": "",
+   "ramSize": 0
+}

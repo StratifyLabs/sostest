@@ -1,0 +1,12 @@
+{
+    "description": "api-calc-test is an application that tests the calc namespace classes in the Stratify API.",
+    "github": "",
+    "name": "api-calc-test",
+    "permissions": "public",
+    "publisher": "Stratify Labs, Inc",
+    "tags": "bench",
+    "type": "app",
+    "version": "0.1",
+    "hardwareId": "",
+    "ramSize": 0
+}

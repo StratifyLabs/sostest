@@ -39,23 +39,23 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
         result = false;
     } else {
 
-        adc_info_t info;
+		  AdcInfo info = adc.get_info();
 
-        if( adc.get_info(info) < 0 ){
+		  if( !info.is_valid() ){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, adc.port());
             result = false;
         } else {
-            if( info.o_flags & Adc::SET_CONVERTER ){ print_case_message("Set Converter OK"); }
-            if( info.o_flags & Adc::IS_LEFT_JUSTIFIED ){ print_case_message("Left justified OK"); }
-            if( info.o_flags & Adc::IS_RIGHT_JUSTIFIED ){ print_case_message("Right justified OK"); }
-            if( info.o_flags & Adc::IS_SCAN_MODE ){ print_case_message("Scan Mode OK"); }
-            if( info.o_flags & Adc::IS_GROUP ){ print_case_message("Group OK"); }
-            if( info.o_flags & Adc::IS_TRIGGER_EINT ){
+				if( info.o_flags() & Adc::SET_CONVERTER ){ print_case_message("Set Converter OK"); }
+				if( info.o_flags() & Adc::IS_LEFT_JUSTIFIED ){ print_case_message("Left justified OK"); }
+				if( info.o_flags() & Adc::IS_RIGHT_JUSTIFIED ){ print_case_message("Right justified OK"); }
+				if( info.o_flags() & Adc::IS_SCAN_MODE ){ print_case_message("Scan Mode OK"); }
+				if( info.o_flags() & Adc::IS_GROUP ){ print_case_message("Group OK"); }
+				if( info.o_flags() & Adc::IS_TRIGGER_EINT ){
                 print_case_message("Trigger EINT OK");
-                if( info.o_flags & Adc::IS_TRIGGER_EINT_EDGE_FALLING ){ print_case_message("Trigger EINT Falling OK"); }
-                if( info.o_flags & Adc::IS_TRIGGER_EINT_EDGE_RISING ){ print_case_message("Trigger EINT Rising OK"); }
+					 if( info.o_flags() & Adc::IS_TRIGGER_EINT_EDGE_FALLING ){ print_case_message("Trigger EINT Falling OK"); }
+					 if( info.o_flags() & Adc::IS_TRIGGER_EINT_EDGE_RISING ){ print_case_message("Trigger EINT Rising OK"); }
             }
-            if( info.o_flags & Adc::IS_TRIGGER_TMR ){ print_case_message("Trigger TMR OK"); }
+				if( info.o_flags() & Adc::IS_TRIGGER_TMR ){ print_case_message("Trigger TMR OK"); }
 
 
             adc_attr_t attr;
@@ -69,7 +69,7 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
             attr.channel_count = 1;
             attr.width = 12;
 
-            if( (adc_result = adc.set_attr(attr)) < 0 ){
+				if( (adc_result = adc.set_attributes(attr)) < 0 ){
                 print_case_message("Failed %s %d (%d, %d)", __FILE__, __LINE__, adc_result, adc.error_number());
                 result = false;
             } else {
@@ -82,7 +82,7 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
                 //for(attr.rank = 1; attr.rank <= 4; attr.rank++){
                 attr.rank = 1;
                 print_case_message("Configure channel %d as rank %d", attr.channel, attr.rank);
-                if( (adc_result = adc.set_attr(attr)) < 0 ){
+					 if( (adc_result = adc.set_attributes(attr)) < 0 ){
                     print_case_message("Failed %s %d (%d, %d)", __FILE__, __LINE__, adc_result, adc.error_number());
                     result = false;
                 }
@@ -91,7 +91,7 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
                 attr.rank = 2;
                 attr.channel = 3;
                 print_case_message("Configure channel %d as rank %d", attr.channel, attr.rank);
-                if( adc.set_attr(attr) < 0 ){
+					 if( adc.set_attributes(attr) < 0 ){
                     print_case_message("Failed %s %d (%d, %d)", __FILE__, __LINE__, adc_result, adc.error_number());
                     result = false;
                 }
@@ -99,7 +99,7 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
                 attr.rank = 3;
                 attr.channel = 10;
                 print_case_message("Configure channel %d as rank %d", attr.channel, attr.rank);
-                if( adc.set_attr(attr) < 0 ){
+					 if( adc.set_attributes(attr) < 0 ){
                     print_case_message("Failed %s %d (%d, %d)", __FILE__, __LINE__, adc_result, adc.error_number());
                     result = false;
                 }
@@ -107,7 +107,7 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
                 attr.rank = 4;
                 attr.channel = 3;
                 print_case_message("Configure channel %d as rank %d", attr.channel, attr.rank);
-                if( adc.set_attr(attr) < 0 ){
+					 if( adc.set_attributes(attr) < 0 ){
                     print_case_message("Failed %s %d (%d, %d)", __FILE__, __LINE__, adc_result, adc.error_number());
                     result = false;
                 }
@@ -118,7 +118,7 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
 
                     attr.channel = 3;
                     attr.rank = 2;
-                    adc.set_attr(attr);
+						  adc.set_attributes(attr);
 
                     adc.clear_error_number();
                     adc_result = adc.read(3, samples.data(), samples.count()*2);
@@ -133,7 +133,7 @@ bool AdcTest::execute_adc_api_case(Adc & adc){
 
                     attr.channel = 10;
                     attr.rank = 2;
-                    adc.set_attr(attr);
+						  adc.set_attributes(attr);
 
                     adc.clear_error_number();
                     adc_result = adc.read(10, samples.data(), samples.count()*2);

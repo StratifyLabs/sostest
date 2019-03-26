@@ -22,7 +22,7 @@ static bool thread_result = true;
 bool TaskTest::execute_class_api_case(){
     bool result = true;
     TaskInfo  task_info_test;
-    Task task_test;
+	 TaskManager task_test;
     Thread thread_test;
     u32 id_test;
     Sched::policy policy = Sched::RR;
@@ -34,7 +34,7 @@ bool TaskTest::execute_class_api_case(){
         result = false;
     }
     task_info_test = task_test.get_info(task_test.id());
-    if(task_info_test.id() != (int)Thread::self()){
+	 if(task_info_test.id() != Thread::self()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -66,8 +66,8 @@ bool TaskTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if( memcmp(task_info_test.name(), "api-sys-test", strlen(task_info_test.name())) != 0 ){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+	 if( task_info_test.name() != "api-sys-test" ){
+		  print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     if(!task_info_test.memory_size()){
@@ -123,7 +123,7 @@ bool TaskTest::execute_class_stress_case(){
     }
     for(u16 i=0;i<itterate;i++) {
         TaskInfo  task_info_test;
-        Task task_test;
+		  TaskManager task_test;
         int priority_diff;
         priority_diff = Sched::get_priority_max(signal_thread_policy) - Sched::get_priority_min(signal_thread_policy);
         priority_diff = rand()%priority_diff;
@@ -137,7 +137,7 @@ bool TaskTest::execute_class_stress_case(){
             break;
         }
         task_info_test = task_test.get_info(task_test.id());
-        if(task_info_test.id() != (int)uno_thread.self()){
+		  if(task_info_test.id() != uno_thread.self()){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
@@ -174,7 +174,7 @@ bool TaskTest::execute_class_stress_case(){
             result = false;
             break;
         }
-        if( memcmp(task_info_test.name(), "api-sys-test", strlen(task_info_test.name())) != 0 ){
+		  if( task_info_test.name() != "api-sys-test"){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
@@ -228,7 +228,7 @@ bool TaskTest::execute_class_performance_case(){
     }
     for(u16 i=0;i<itterate;i++) {
         TaskInfo  task_info_test;
-        Task task_test;
+		  TaskManager task_test;
         task_test.set_id((int)uno_thread.self());
         if(task_test.id() != (int)uno_thread.self()){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -236,7 +236,7 @@ bool TaskTest::execute_class_performance_case(){
             break;
         }
         task_info_test = task_test.get_info(task_test.id());
-        if(task_info_test.id() != (int)uno_thread.self()){
+		  if(task_info_test.id() != uno_thread.self()){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;
@@ -267,7 +267,7 @@ bool TaskTest::execute_class_performance_case(){
             result = false;
             break;
         }
-        if( memcmp(task_info_test.name(), "api-sys-test", strlen(task_info_test.name())) != 0 ){
+		  if( task_info_test.name() != "api-sys-test"){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
             break;

@@ -21,8 +21,6 @@ public:
         u32 n_samples;
         u32 n_stages = 1;
 
-        api::DspWorkObject::request_arm_dsp_api();
-
         //change to FIFO style scheduling for more accurate performance comparisons
         Sched::set_scheduler(Sched::get_pid(), Sched::FIFO, 30);
 

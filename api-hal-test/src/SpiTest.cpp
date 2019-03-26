@@ -346,7 +346,7 @@ bool SpiTest::execute_spi_api_case(Spi & spi){
         result = false;
     } else {
 
-        spi.init();
+		  spi.initialize();
         if( spi.close() < 0 ){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, spi.port());
             result = false;

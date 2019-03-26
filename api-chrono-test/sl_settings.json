@@ -1,0 +1,12 @@
+{
+   "description": "api-chrono-test is an application that tests the calc namespace classes in the Stratify API.",
+   "github": "",
+   "name": "api-chrono-test",
+   "permissions": "public",
+   "publisher": "Stratify Labs, Inc",
+   "tags": "test",
+   "type": "app",
+   "version": "0.1",
+   "hardwareId": "",
+   "ramSize": 0
+}

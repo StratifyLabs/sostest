@@ -20,8 +20,6 @@ public:
         //change to FIFO style scheduling for more accurate performance comparisons
         Sched::set_scheduler(Sched::get_pid(), Sched::FIFO, 30);
 
-        api::DspWorkObject::request_arm_dsp_api();
-
         execute_real_fft(32);
         execute_real_fft(64);
         execute_real_fft(128);

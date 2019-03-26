@@ -43,7 +43,14 @@ int launch_test(){
 
 	printf("Test launch() (BAD PATH)...");
 	fflush(stdout);
-	if( launch("1", 0, 0, 0, 0, update_progress, 0) < 0 ){
+	if( launch("1",
+				  0,
+				  0,
+				  0,
+				  0,
+				  update_progress,
+				  0,
+				  0) < 0 ){
 		if ( errno == ENOENT ){
 			printf("passed\n");
 		} else {
@@ -55,7 +62,7 @@ int launch_test(){
 
 	printf("Test launch() (INVALID PATH)...");
 	fflush(stdout);
-	if( launch("/home/NO_PROGRAM", 0, 0, 0, 0, update_progress, 0) < 0 ){
+	if( launch("/home/NO_PROGRAM", 0, 0, 0, 0, update_progress, 0, 0) < 0 ){
 		if ( errno == ENOENT ){
 			printf("passed\n");
 		} else {
@@ -79,7 +86,7 @@ int launch_test(){
 
 	printf("Test launch()...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -97,7 +104,7 @@ int launch_test(){
 
 	printf("Test launch() (relaunch)...");
 	fflush(stdout);
-	if( (pid = launch("/app/ram/launchslave", 0, 0, 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch("/app/ram/launchslave", 0, 0, 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -117,7 +124,7 @@ int launch_test(){
 
 	printf("Test launch() (with options)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "2 3 4 5 6 7", 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "2 3 4 5 6 7", 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -144,7 +151,7 @@ int launch_test(){
 	printf("Test launch() (orphan)...");
 	unlink("/home/orphan.txt");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "orphan", APPFS_FLAG_IS_ORPHAN, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "orphan", APPFS_FLAG_IS_ORPHAN, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -165,7 +172,7 @@ int launch_test(){
 
 	printf("Test launch() (flash)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, APPFS_FLAG_IS_FLASH, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, APPFS_FLAG_IS_FLASH, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -185,7 +192,7 @@ int launch_test(){
 
 	printf("Test launch() (child wait)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "wait", 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "wait", 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -205,7 +212,7 @@ int launch_test(){
 
 	printf("Test launch() (parent wait)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -229,7 +236,7 @@ int launch_test(){
 	printf("Test launch() (SIGCHLD)...");
 	fflush(stdout);
 	sprintf(buffer, "child %d", getpid());
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, buffer, 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, buffer, 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -251,7 +258,7 @@ int launch_test(){
 	printf("Test launch() (SIGCHLD wait)...");
 	fflush(stdout);
 	sprintf(buffer, "child %d", getpid());
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, buffer, 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, buffer, 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	} else {
@@ -274,14 +281,14 @@ int launch_test(){
 
 	printf("Test launch() (two copies)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "1", 0, 0, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, "1", 0, 0, update_progress, 0, 0)) < 0 ){
 		perror("failed to launch");
 		return -1;
 	}
 
 	usleep(50*1000);
 
-	if( (pid_alt = launch(LAUNCH_SLAVE_PATH, exec_path_alt, "2", 0, 0, update_progress, 0)) < 0 ){
+	if( (pid_alt = launch(LAUNCH_SLAVE_PATH, exec_path_alt, "2", 0, 0, update_progress, 0, 0)) < 0 ){
 		wait(&status);
 		unlink(exec_path);
 		perror("failed to launch alt");
@@ -315,7 +322,7 @@ int launch_test(){
 
 	printf("Test launch() (EXCESS RAM)...");
 	fflush(stdout);
-	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, 0, 128*1024, update_progress, 0)) < 0 ){
+	if( (pid = launch(LAUNCH_SLAVE_PATH, exec_path, 0, 0, 128*1024, update_progress, 0, 0)) < 0 ){
 		if( errno == ENOSPC ){
 			printf("passed\n");
 		} else {

@@ -27,6 +27,7 @@ SysTest::SysTest() : Test("sys::Test"){
 bool SysTest::execute_class_api_case(){
     bool result;
     String version;
+	 String exec_destination;
     result = true;
     const u16 buff_size = 50*sizeof(u32);
     u8 temp_buff[buff_size];
@@ -34,12 +35,24 @@ bool SysTest::execute_class_api_case(){
     sys_info_t sys_info;
     Sys board;
     //start fake
-    if(Sys::launch("/app/flash/fake",nullptr,"orphan",0,Sys::LAUNCH_RAM_SIZE_DEFAULT,nullptr,nullptr)>=0){
+	 if(Sys::launch("/app/flash/fake",
+						 "orphan",
+						 exec_destination,
+						 0,
+						 Sys::LAUNCH_RAM_SIZE_DEFAULT,
+						 nullptr,
+						 "")>=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     //start preinstalled app launchslave
-    if(Sys::launch("/app/flash/launchslave",nullptr,"task_id",0,Sys::LAUNCH_RAM_SIZE_DEFAULT,nullptr,nullptr)<0){
+	 if(Sys::launch("/app/flash/launchslave",
+						 "task_id",
+						 exec_destination,
+						 0,
+						 Sys::LAUNCH_RAM_SIZE_DEFAULT,
+						 nullptr,
+						 "") < 0 ){
         print_case_message("need to install launchslave app");
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
@@ -105,9 +118,9 @@ bool SysTest::execute_class_api_case(){
 bool SysTest::execute_class_stress_case(){
     bool result;
     result = true;
-    char exec_path[512];
     char arg_buff[48];
     String temp_str;
+	 String exec_destination;
     const u32 itterate_num = 64;
     u16 ram_size;
     int pid;
@@ -116,8 +129,13 @@ bool SysTest::execute_class_stress_case(){
         //start preinstalled app launchslave
         rand_string_value(sizeof(arg_buff),temp_str);
         ram_size = rand() & 0xfff;
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_FLASH, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff,
+								  exec_destination,
+								  Sys::LAUNCH_OPTIONS_FLASH,
+								  ram_size,
+								  nullptr,
+								  "");
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -130,8 +148,13 @@ bool SysTest::execute_class_stress_case(){
             result = false;
             break;
         }
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_ROOT, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff,
+								  exec_destination,
+								  Sys::LAUNCH_OPTIONS_ROOT,
+								  ram_size,
+								  nullptr,
+								  "");
         if(pid<0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -144,8 +167,13 @@ bool SysTest::execute_class_stress_case(){
             result = false;
             break;
         }
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_ORPHAN, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff,
+								  exec_destination,
+								  Sys::LAUNCH_OPTIONS_ORPHAN,
+								  ram_size,
+								  nullptr,
+								  "");
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -158,8 +186,13 @@ bool SysTest::execute_class_stress_case(){
             result = false;
             break;
         }
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_UNIQUE_NAMES, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff,
+								  exec_destination,
+								  Sys::LAUNCH_OPTIONS_UNIQUE_NAMES,
+								  ram_size,
+								  nullptr,
+								  "");
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -187,10 +220,9 @@ bool SysTest::execute_class_performance_case(){
     bool result;
     result = true;
     result = true;
-    char exec_path[512];
     char arg_buff[] = "task";
-    String temp_str;
-    Task task_test;
+	 TaskManager task_test;
+	 String exec_destination;
     TaskInfo  task_info_test;
     const u32 itterate_num = 64;
     u16 ram_size;
@@ -200,8 +232,10 @@ bool SysTest::execute_class_performance_case(){
         //launch apps
         //start preinstalled app launchslave
         ram_size = 512;
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_FLASH, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff,exec_destination,
+								  Sys::LAUNCH_OPTIONS_FLASH,
+								  ram_size ,nullptr,"");
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -216,8 +250,9 @@ bool SysTest::execute_class_performance_case(){
             result = false;
             break;
         }
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_ROOT, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff,exec_destination,
+								  Sys::LAUNCH_OPTIONS_ROOT, ram_size ,nullptr,"");
         if(pid<0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -232,8 +267,10 @@ bool SysTest::execute_class_performance_case(){
             result = false;
             break;
         }
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_ORPHAN, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff, exec_destination,
+								  Sys::LAUNCH_OPTIONS_ORPHAN, ram_size,
+								  nullptr,"");
         if(pid < 0){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -248,8 +285,10 @@ bool SysTest::execute_class_performance_case(){
             result = false;
             break;
         }
-        pid = Sys::launch("/app/flash/launchslave",exec_path,arg_buff,\
-                          Sys::LAUNCH_OPTIONS_UNIQUE_NAMES, ram_size ,nullptr,nullptr);
+		  pid = Sys::launch("/app/flash/launchslave",
+								  arg_buff,exec_destination,
+								  Sys::LAUNCH_OPTIONS_UNIQUE_NAMES, ram_size,
+								  nullptr,"");
         id = get_id(pid);
         task_test.set_id(id);
         task_info_test = task_test.get_info(id);
@@ -279,7 +318,7 @@ static void rand_string_value(u16 size,String & string){
     }
 }
 static u32 get_id(u32 pid){
-    Task task_test;
+	 TaskManager task_test;
     TaskInfo  task_info_test;
     for(u8 i = 255;i;i--){
         task_test.get_next(task_info_test);

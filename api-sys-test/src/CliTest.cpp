@@ -72,29 +72,27 @@ bool CliTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(strlen(cli_test.version())<2){
+	 if(cli_test.version().length()<2){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
 
 //    cli_test.handle_version();    //suspend if use it
-    u8 name_start = (u8)(sizeof (arg_path) - strlen(cli_test.name())-1);
-    if(memcmp(cli_test.name(),&arg_path[name_start],strlen(cli_test.name()))&&
-            (strlen(cli_test.name())>0)){
+	 u8 name_start = (u8)(sizeof (arg_path) - cli_test.name().length()-1);
+	 if( cli_test.name() != &arg_path[name_start]){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    if(memcmp(cli_test.path(),arg_path,sizeof (arg_path))){
+	 if( cli_test.path() != arg_path ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    temp_string = cli_test.at(0);
-    if(memcmp(temp_string.c_str(),arg_path,sizeof (arg_path))){
+	 if( cli_test.at(0) != arg_path ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     temp_string = cli_test.at(1);
-    if(memcmp(temp_string.c_str(),arg_param1,sizeof (arg_param1))){
+	 if( cli_test.at(1) != arg_param1 ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -109,7 +107,7 @@ bool CliTest::execute_class_api_case(){
         result = false;
     }
     cli_test.set_publisher(publisher);
-    if(memcmp(cli_test.publisher(),publisher,sizeof (publisher))){
+	 if( cli_test.publisher() != publisher ){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -230,44 +228,39 @@ bool CliTest::execute_class_stress_case(){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        if(strlen(cli_test.version())<2){
+		  if(cli_test.version().length()<2){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
     //    cli_test.handle_version();    //suspend if use it
 
-        if(memcmp(cli_test.name(),arg_name.c_str(),strlen(cli_test.name()))&&
-                (strlen(cli_test.name())>0)){
+		  if( cli_test.name() != arg_name ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        if(memcmp(cli_test.path(),arg_path_and_name.c_str(),strlen(cli_test.path()))){
+		  if( cli_test.path() != arg_path_and_name ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             print_case_message("Failed %s:%s", cli_test.path(),arg_path.c_str());
             result = false;
         }
-        temp_string = cli_test.at(0);
-        if(memcmp(temp_string.c_str(),arg_path_and_name.c_str(),strlen(cli_test.path()))){
+		  if(cli_test.at(0) != arg_path_and_name ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        temp_string = cli_test.at(1);
-        if(memcmp(temp_string.c_str(),arg_param1.c_str(),arg_param1.length())){
+		  if(cli_test.at(1) != arg_param1){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        temp_string = cli_test.at(2);
-        if(memcmp(temp_string.c_str(),arg_param2.c_str(),arg_param2.length())){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+		  if(cli_test.at(2) != arg_param2){
+				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        temp_string = cli_test.at(3);
-        if(memcmp(temp_string.c_str(),arg_param3.c_str(),arg_param3.length())){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+		  if(cli_test.at(3) != arg_param3){
+				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
         cli_test.set_publisher(publisher.c_str());
-        if(memcmp(cli_test.publisher(),publisher.c_str(),publisher.length())){
+		  if( cli_test.publisher() != publisher ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
@@ -360,23 +353,21 @@ bool CliTest::execute_class_performance_case(){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        if(strlen(cli_test.version())<2){
+		  if(cli_test.version().length()<2){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
 
-        u8 name_start = (u8)(sizeof (arg_path) - strlen(cli_test.name())-1);
-        if(memcmp(cli_test.name(),&arg_path[name_start],strlen(cli_test.name()))&&
-                (strlen(cli_test.name())>0)){
+		  u8 name_start = (u8)(sizeof (arg_path) - cli_test.name().length()-1);
+		  if( cli_test.name() != &arg_path[name_start]){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        if(memcmp(cli_test.path(),arg_path,sizeof (arg_path))){
+		  if(cli_test.path() != arg_path ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        temp_string = cli_test.at(0);
-        if(memcmp(temp_string.c_str(),arg_path,sizeof (arg_path))){
+		  if(cli_test.at(0) != arg_path){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
@@ -396,7 +387,7 @@ bool CliTest::execute_class_performance_case(){
             result = false;
         }
         cli_test.set_publisher(publisher);
-        if(memcmp(cli_test.publisher(),publisher,sizeof (publisher))){
+		  if( cli_test.publisher() != publisher ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
@@ -412,7 +403,7 @@ bool CliTest::execute_class_performance_case(){
         }
         temp_string = cli_test.at(2);
         temp_string.to_lower();
-        if(!cli_test.is_option(temp_string.c_str())){
+		  if(!cli_test.is_option(temp_string)){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }

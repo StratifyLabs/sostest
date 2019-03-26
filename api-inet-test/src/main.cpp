@@ -6,6 +6,8 @@
 
 #include "SocketTest.hpp"
 #include "SecureSocketTest.hpp"
+#include "HttpClientTest.hpp"
+#include "ToolkitDatabaseObjectTest.hpp"
 
 //update flags
 enum {
@@ -13,7 +15,8 @@ enum {
 	SOCKET_TEST_FLAG = (1<<5),
 	SECURE_SOCKET_TEST_FLAG = (1<<6),
 	HTTP_CLIENT_TEST_FLAG = (1<<7),
-	HTTP_SERVER_TEST_FLAG = (1<<8)
+	HTTP_SERVER_TEST_FLAG = (1<<8),
+	TOOLKIT_DATABASE_OBJECT_TEST_FLAG = (1<<9)
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
@@ -46,7 +49,14 @@ int main(int argc, char * argv[]){
 	}
 
 	if( o_flags & HTTP_CLIENT_TEST_FLAG ){
-		SocketTest test;
+		HttpClientTest test;
+		test.execute(o_execute_flags);
+	}
+
+	if( o_flags & TOOLKIT_DATABASE_OBJECT_TEST_FLAG ){
+		ToolkitDatabaseObjectTest test;
+		String project = cli.get_option("project", "specify the cloud project name");
+		test.set_project( project );
 		test.execute(o_execute_flags);
 	}
 
@@ -66,25 +76,25 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 		return o_flags;
 	}
 
-	if(cli.is_option("-execute_all") ){ execute_flags |= Test::EXECUTE_ALL; }
-	if(cli.is_option("-api") ){ execute_flags |= Test::EXECUTE_API; }
-	if(cli.is_option("-stress") ){ execute_flags |= Test::EXECUTE_STRESS; }
-	if(cli.is_option("-performance") ){ execute_flags |= Test::EXECUTE_PERFORMANCE; }
-	if(cli.is_option("-additional") ){ execute_flags |= Test::EXECUTE_ADDITIONAL; }
+	if(!cli.get_option("execute_all").is_empty()){ execute_flags |= Test::EXECUTE_ALL; }
+	if(!cli.get_option("api").is_empty()){ execute_flags |= Test::EXECUTE_API; }
+	if(!cli.get_option("stress").is_empty()){ execute_flags |= Test::EXECUTE_STRESS; }
+	if(!cli.get_option("performance").is_empty()){ execute_flags |= Test::EXECUTE_PERFORMANCE; }
+	if(!cli.get_option("additional").is_empty()){ execute_flags |= Test::EXECUTE_ADDITIONAL; }
 
 	//update switches
-	if(cli.is_option("-test_all") ){ o_flags = 0xffffffff; }
-	if(cli.is_option("-socket") ){ o_flags |= SOCKET_TEST_FLAG; }
-	if(cli.is_option("-secure_socket") ){ o_flags |= SECURE_SOCKET_TEST_FLAG; }
-	if(cli.is_option("-http_client") ){ o_flags |= HTTP_CLIENT_TEST_FLAG; }
+	if(!cli.get_option("test_all").is_empty()){ o_flags = 0xffffffff; }
+	if(!cli.get_option("socket").is_empty()){ o_flags |= SOCKET_TEST_FLAG; }
+	if(!cli.get_option("secure_socket").is_empty()){ o_flags |= SECURE_SOCKET_TEST_FLAG; }
+	if(!cli.get_option("http_client").is_empty()){ o_flags |= HTTP_CLIENT_TEST_FLAG; }
+	if(!cli.get_option("toolkit_database_object").is_empty()){ o_flags |= TOOLKIT_DATABASE_OBJECT_TEST_FLAG; }
 
 	return o_flags;
-
 }
 
 void show_usage(const Cli & cli){
 	printf("\n");
-	printf("usage: %s\n", cli.name());
+	printf("usage: %s\n", cli.name().cstring());
 	printf("    -all            execute all type of test for all object.\n");
 	printf("    -execute_all    execute all type of test.\n");
 	printf("    -api            execute api test.\n");
@@ -95,7 +105,8 @@ void show_usage(const Cli & cli){
 	printf("    -test_all       execute test for all object.\n");
 	printf("    -socket         execute the socket test.\n");
 	printf("    -secure_socket  execute the secure socket test using mbed TLS.\n");
-	printf("    -http_clinet    execute the http client test.\n");
+	printf("    -http_client    execute the http client test.\n");
+	printf("    -toolkit_database_object    execute the toolkit database object test.\n");
 
 
 }

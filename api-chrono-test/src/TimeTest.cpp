@@ -26,10 +26,10 @@ bool TimeTest::execute_class_api_case(){
 	attr.o_flags = RTC_FLAG_ENABLE;
 	rtc.ioctl(I_RTC_SETATTR, &attr);
 	timer_sh.start();
-	current_time_uno = now.get_time_of_day();
+	current_time_uno = now.get_time_of_day().time();
 	time_tm_uno = now.get_tm();
 	timer_sh.wait_sec(time_delay_sec);
-	current_time_dos = now.get_time_of_day();
+	current_time_dos = now.get_time_of_day().time();
 	time_tm_dos = now.get_tm();
 	if(time_compare(time_tm_uno,time_tm_dos)){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -39,12 +39,12 @@ bool TimeTest::execute_class_api_case(){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	now.set_value(1526990058);
+	now.set_time(1526990058);
 	struct tm time_struct;
 	time_t m_time = 1526990058;
 	gmtime_r(&m_time, &time_struct);
 	now.set_time_of_day();
-	current_time_dos = now.get_time_of_day();
+	current_time_dos = now.get_time_of_day().time();
 	time_tm_dos = now.get_tm();
 	if(time_tm_dos.tm_year != time_struct.tm_year){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -59,7 +59,7 @@ bool TimeTest::execute_class_api_case(){
 		result = false;
 	}
 	timer_sh.wait_sec(time_delay_sec);
-	current_time_dos = now.get_time_of_day();
+	current_time_dos = now.get_time_of_day().time();
 	time_tm_dos = now.get_tm();
 	if(time_tm_dos.tm_year != time_struct.tm_year){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);

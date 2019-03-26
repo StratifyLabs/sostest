@@ -34,16 +34,11 @@ bool RingTest::execute_class_api_case(){
 
 	//overflow allowed
 	const u8 size_packet = 8;
-	u8 packet_write[size_packet];
-	u8 packet_read[size_packet];
 	u8 buffer[size_packet*8];
-	u32 writed_data_size;
 	Ring<u8> ring1(buffer, sizeof(buffer));
 	Ring<u8> ring2(size_packet*16);
 	//fill write buffer for test
-	for (u16 i=0; i<size_packet; i++){
-		packet_write[i] = i;
-	}
+
 	//init control
 	if (!ring1.is_overflow_allowed()){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);

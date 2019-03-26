@@ -17,8 +17,6 @@ public:
         bool result = true;
         Timer t;
 
-        api::DspWorkObject::request_arm_dsp_api();
-
         //change to FIFO style scheduling for more accurate performance comparisons
         Sched::set_scheduler(Sched::get_pid(), Sched::FIFO, 30);
 

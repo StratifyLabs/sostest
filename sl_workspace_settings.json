@@ -1,25 +1,10 @@
 {
-   "creation_date": {
-      "year": 2018,
-      "month": 11,
-      "day": 8,
-      "hour": 3,
-      "minute": 52,
-      "second": 41,
-      "tz": "gmt"
-   },
+   "creationDate": 1553618420,
    "interactive": "false",
    "silent": "false",
    "json": "false",
-   "git_hash": "a438397",
-   "date": {
-      "year": 2018,
-      "month": 11,
-      "day": 8,
-      "hour": 3,
-      "minute": 52,
-      "second": 41,
-      "tz": "gmt"
-   },
-   "version": "0.5"
+   "apiGitHash": "18f54dc",
+   "gitHash": "ecb552b",
+   "apiVersion": "3.8.0b",
+   "version": "0.25"
 }

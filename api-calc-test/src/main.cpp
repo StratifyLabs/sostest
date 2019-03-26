@@ -106,7 +106,7 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 
 void show_usage(const Cli & cli){
     printf("\n");
-    printf("usage: %s\n", cli.name());
+	 printf("usage: %s\n", cli.name().cstring());
     printf("    -all            execute all type of test for all object.\n");
     printf("    -execute_all    execute all type of test.\n");
     printf("    -api            execute api test.\n");

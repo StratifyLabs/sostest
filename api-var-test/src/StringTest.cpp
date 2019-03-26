@@ -68,7 +68,7 @@ bool StringTest::api_case_assign(){
 	}
 	String s3;
 	s3 = "string_lenth_15";
-	s1.assign(s3.c_str(),s3.length()-3);
+	s1.assign(s3.cstring(),s3.length()-3);
 	if(s1.data() == nullptr){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
@@ -123,11 +123,11 @@ bool StringTest::api_case_compare(){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	if (s1.compare(0,s3.len(),s3)){
+	if (s1.compare(0,s3.length(),s3)){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	if (s1.compare(2,s3.len()-2,s3,2,s1.length())){
+	if (s1.compare(2,s3.length()-2,s3,2,s1.length())){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -168,7 +168,7 @@ bool StringTest::api_case_find(){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	if ( s.find("Q",0) == s.npos || s.find("M",s.len()-2) == s.npos || s.find("A",1) == s.npos){
+	if ( s.find("Q",0) == s.npos || s.find("M",s.length()-2) == s.npos || s.find("A",1) == s.npos){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -185,7 +185,7 @@ bool StringTest::api_case_find(){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	if ( s.rfind("Q",0) == s.npos || s.rfind("M",s.len()-2) == s.npos || s.rfind("A",1) == s.npos){
+	if ( s.rfind("Q",0) == s.npos || s.rfind("M",s.length()-2) == s.npos || s.rfind("A",1) == s.npos){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -214,12 +214,12 @@ bool StringTest::api_case_special(){
 		result = false;
 	}
 	s_test = s_lower_case_c;
-	if(strncmp(s_test.c_str(),s_lower_case_c,sizeof(s_lower_case_c))){
+	if(strncmp(s_test.cstring(),s_lower_case_c,sizeof(s_lower_case_c))){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
 	s_upper_case = s_lower_case;
-	if(strncmp(s_upper_case.c_str(),s_lower_case.c_str(),s_lower_case.length())){
+	if(strncmp(s_upper_case.cstring(),s_lower_case.cstring(),s_lower_case.length())){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -227,7 +227,7 @@ bool StringTest::api_case_special(){
 	String s_append("end");
 	s_upper_case<<c_append;
 	s_lower_case<<s_append;
-	if(strncmp(s_upper_case.c_str(),s_lower_case.c_str(),s_lower_case.length())){
+	if(strncmp(s_upper_case.cstring(),s_lower_case.cstring(),s_lower_case.length())){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -269,7 +269,7 @@ bool StringTest::api_case_special(){
 	s_upper_case = s_lower_case;
 	String s_sub_1 = s_upper_case.substr(3,4);
 	String s_sub_2 = s_lower_case.substr(3,4);
-	if(strncmp(s_sub_1.c_str(),s_sub_2.c_str(),s_lower_case.length())){
+	if(strncmp(s_sub_1.cstring(),s_sub_2.cstring(),s_lower_case.length())){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -277,8 +277,8 @@ bool StringTest::api_case_special(){
 	String s_inserts("qwertyuiopasdfghjkl");
 	String s_inserts_con("qwertyuiopasdfghjkl");
 	String s_inserting("123");
-	s_inserts.insert(3,s_inserting.c_str());
-	if(strncmp(s_inserts.c_str(),"qwe123rtyuiopasdfghjkl",s_inserting.length()+s_inserts.len())){
+	s_inserts.insert(3,s_inserting.cstring());
+	if(strncmp(s_inserts.cstring(),"qwe123rtyuiopasdfghjkl",s_inserting.length()+s_inserts.length())){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -289,24 +289,23 @@ bool StringTest::api_case_special(){
 	}
 	u32 train_len;
 	String s_train(ConstString("train:;;"),7);
-	train_len = s_train.len();
+	train_len = s_train.length();
 	String s_wagon(":wagon:");
 	for (i=0;i<10;i++){
-		s_train.insert(s_train.len()-2,s_wagon.c_str());
-		train_len += s_wagon.len();
-		if(s_train.len()!=train_len){
+		s_train.insert(s_train.length()-2,s_wagon.cstring());
+		train_len += s_wagon.length();
+		if(s_train.length()!=train_len){
 			print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
-			print_case_message("failed on stm32f429zi %d != %d",  s_train.len(),train_len);
+			print_case_message("failed on stm32f429zi %d != %d",  s_train.length(),train_len);
 			result = false;
 			break;
 		}
 	}
-	train_len = s_train.len();
+	train_len = s_train.length();
 	for (;i;i--){
-		String temp;
-		s_train.erase(6,s_wagon.len());
-		train_len -= s_wagon.len();
-		if(s_train.len()!=train_len){
+		s_train.erase(6,s_wagon.length());
+		train_len -= s_wagon.length();
+		if(s_train.length()!=train_len){
 			print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
 			result =false;
 			break;
@@ -315,20 +314,20 @@ bool StringTest::api_case_special(){
 	String base("abcdefgfedcba");
 	String base1("abcdefgfedcba");
 	//insert impossible
-	base1.insert(base1.len()+1, "ABC");
-	if(strncmp(base.c_str(),base1.c_str(),base1.len())){
+	base1.insert(base1.length()+1, "ABC");
+	if(strncmp(base.cstring(),base1.cstring(),base1.length())){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
 	base1.insert(5200, "ABC");
-	if(strncmp(base.c_str(),base1.c_str(),base1.len())){
+	if(strncmp(base.cstring(),base1.cstring(),base1.length())){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
 	//last
 	base1 = base;
 	base.append("ABC");
-	base1.insert(base1.len(), "ABC");
+	base1.insert(base1.length(), "ABC");
 	if(base.compare(base1)){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
@@ -336,7 +335,7 @@ bool StringTest::api_case_special(){
 	//first
 	base1 = base;
 	String base_ABC("ABC");
-	base_ABC.append(base.c_str());
+	base_ABC.append(base.cstring());
 	base1.insert(0, "ABC");
 	if(base_ABC.compare(base1)){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -345,11 +344,16 @@ bool StringTest::api_case_special(){
 	//midle
 	String base_midle;
 	base_midle = base;
-	for (u32 j=1;j<base.len()-1;j++){
-		base_midle.insert(j,base_ABC.c_str());
-		base_midle.erase(j,base_ABC.len());
+	for (u32 j=1;j<base.length()-1;j++){
+		base_midle.insert(j,base_ABC.cstring());
+		base_midle.erase(j,base_ABC.length());
 		if(base_midle.compare(base)){
-			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
+			print_case_message("Failed %s:%d %d -> ('%s' != '%s')",
+									 __PRETTY_FUNCTION__,
+									 __LINE__,
+									 j,
+									 base_midle.cstring(),
+									 base.cstring());
 			result = false;
 		}
 	}
@@ -362,20 +366,20 @@ bool StringTest::api_case_special(){
 	for (u32 i =0;i<5;i++){
 		base_inserts.append("a");
 	}
-	base_b.insert(1,base_inserts.c_str());
+	base_b.insert(1,base_inserts.cstring());
 	if(base_b.compare("baaaaaabbbbb")){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	base_b.insert(2,base_inserts.c_str());
-	base_b.erase(2,base_inserts.len());
+	base_b.insert(2,base_inserts.cstring());
+	base_b.erase(2,base_inserts.length());
 	if(base_b.compare("baaaaaabbbbb")){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	for (u32 i=1;i<base_b.len();i++){
-		base_b.insert(i,base_inserts.c_str());
-		base_b.erase(i,base_inserts.len());
+	for (u32 i=1;i<base_b.length();i++){
+		base_b.insert(i,base_inserts.cstring());
+		base_b.erase(i,base_inserts.length());
 		if(base_b.compare("baaaaaabbbbb")){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			result = false;
@@ -385,10 +389,10 @@ bool StringTest::api_case_special(){
 	base_c = base_b;
 	//insert an erase
 
-	for (u32 i=1;i<base_b.len();i++){
-		base_b.insert(i,base_inserts.c_str());
-		base_b.erase(i,base_inserts.len());
-		if(base_b.compare(base_c.c_str())){
+	for (u32 i=1;i<base_b.length();i++){
+		base_b.insert(i,base_inserts.cstring());
+		base_b.erase(i,base_inserts.length());
+		if(base_b.compare(base_c.cstring())){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			result = false;
 		}
@@ -416,12 +420,12 @@ bool StringTest::execute_class_performance_case(){
 		t2.append("d");
 		t1.toupper();
 		t2.toupper();
-		if(strncmp(t1.c_str(),t2.c_str(),t1.length())){
+		if(strncmp(t1.cstring(),t2.cstring(),t1.length())){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			return false;
 		}{
-			String s_sub_1 = t1.substr(t1.len()/2,t1.len()-1);
-			String s_sub_2 = t1.substr(t1.len()/2,t1.len()-1);
+			String s_sub_1 = t1.substr(t1.length()/2,t1.length()-1);
+			String s_sub_2 = t1.substr(t1.length()/2,t1.length()-1);
 			if (s_sub_1.compare(s_sub_2)){
 				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 				return false;
@@ -450,10 +454,10 @@ bool StringTest::execute_class_performance_case(){
 		}
 		base_c = base;
 		//insert and erase
-		for (u32 i=1;i<base.len();i++){
-			base.insert(i,inserts.c_str());
-			base.erase(i,inserts.len());
-			if(base.compare(base_c.c_str())){
+		for (u32 i=1;i<base.length();i++){
+			base.insert(i,inserts.cstring());
+			base.erase(i,inserts.length());
+			if(base.compare(base_c.cstring())){
 				max_insert_value = j;
 				result = false;
 				break;
@@ -478,10 +482,10 @@ bool StringTest::execute_class_performance_case(){
 		}
 		base_c = base;
 		//insert and erase
-		for (u32 i=1;i<base.len();i++){
-			base.insert(i,inserts.c_str());
-			base.erase(i,inserts.len());
-			if(base.compare(base_c.c_str())){
+		for (u32 i=1;i<base.length();i++){
+			base.insert(i,inserts.cstring());
+			base.erase(i,inserts.length());
+			if(base.compare(base_c.cstring())){
 				max_base_value = j;
 				result = false;
 				break;
@@ -518,13 +522,13 @@ bool StringTest::execute_class_stress_case(){
 		rand_string_value(1,temp_string);
 		t1.append(temp_string.at(0));
 		t2.append(temp_string.at(0));
-		if(strncmp(t1.c_str(),t2.c_str(),t1.length())){
+		if(strncmp(t1.cstring(),t2.cstring(),t1.length())){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			return false;
 		}
 		{
-			String s_sub_1 = t1.substr(t1.len()/2,t1.len()-1);
-			String s_sub_2 = t1.substr(t1.len()/2,t1.len()-1);
+			String s_sub_1 = t1.substr(t1.length()/2,t1.length()-1);
+			String s_sub_2 = t1.substr(t1.length()/2,t1.length()-1);
 			if (s_sub_1.compare(s_sub_2)){
 				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 				return false;
@@ -532,7 +536,7 @@ bool StringTest::execute_class_stress_case(){
 		}
 		t1.toupper();
 		t2.toupper();
-		if(strncmp(t1.c_str(),t2.c_str(),t1.length())){
+		if(strncmp(t1.cstring(),t2.cstring(),t1.length())){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			return false;
 		}
@@ -541,11 +545,11 @@ bool StringTest::execute_class_stress_case(){
 	t2.~String();
 	//append char
 	rand_string_value(1,temp_string);
-	String inserts(temp_string.c_str());
+	String inserts(temp_string.cstring());
 	rand_string_value(1,temp_string);
-	String base(temp_string.c_str());
+	String base(temp_string.cstring());
 	rand_string_value(1,temp_string);
-	String base_c(temp_string.c_str());
+	String base_c(temp_string.cstring());
 	//base value is const
 	u32 max_insert_value = 0;
 	for (u32 i =0;i<100;i++){
@@ -553,17 +557,17 @@ bool StringTest::execute_class_stress_case(){
 	}
 	for(u32 j = 1;j<10;j++){
 		rand_string_value(1,temp_string);
-		inserts = temp_string.c_str();
+		inserts = temp_string.cstring();
 		for (u32 i =0;i<j;i++){
 			rand_string_value(1,temp_string);
-			inserts.append(temp_string.c_str());
+			inserts.append(temp_string.cstring());
 		}
 		base_c = base;
 		//insert and erase
-		for (u32 i=1;i<base.len();i++){
-			base.insert(i,inserts.c_str());
-			base.erase(i,inserts.len());
-			if(base.compare(base_c.c_str())){
+		for (u32 i=1;i<base.length();i++){
+			base.insert(i,inserts.cstring());
+			base.erase(i,inserts.length());
+			if(base.compare(base_c.cstring())){
 				max_insert_value = j;
 				result = false;
 				break;
@@ -588,10 +592,10 @@ bool StringTest::execute_class_stress_case(){
 		}
 		base_c = base;
 		//insert and erase
-		for (u32 i=1;i<base.len();i++){
-			base.insert(i,inserts.c_str());
-			base.erase(i,inserts.len());
-			if(base.compare(base_c.c_str())){
+		for (u32 i=1;i<base.length();i++){
+			base.insert(i,inserts.cstring());
+			base.erase(i,inserts.length());
+			if(base.compare(base_c.cstring())){
 				max_base_value = j;
 				result = false;
 				break;

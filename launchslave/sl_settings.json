@@ -1,0 +1,12 @@
+{
+   "description": "launchslave is a utility that is used with the posix testing program.",
+   "github": "",
+   "name": "launchslave",
+   "permissions": "public",
+   "publisher": "Stratify Labs, Inc",
+   "tags": "utility",
+   "type": "app",
+   "version": "1.0",
+   "hardwareId": "",
+   "ramSize": 8192
+}

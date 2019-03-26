@@ -48,10 +48,10 @@ bool MessengerTest::execute_class_api_case(){
     son_test.write("name", "Stratify"); //create a string
     son_test.close_object(); //close root ""
     son_test.close();
-    char buffer[32];
+	 String buffer;
     son_test.open_read(son_name); //opens read-only
-    son_test.read_str("name", buffer, 32);
-    print_case_message("name %s",buffer);
+	 buffer = son_test.read_string("name");
+	 print_case_message("name %s",buffer.cstring());
     son_test.close();
 
     //buffer holds "Stratify"

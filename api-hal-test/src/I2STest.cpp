@@ -29,7 +29,7 @@ bool I2STest::execute_class_api_case(){
         i2s_pin_assignment->sck = mcu_pin(2,2);    //pc2 i2s2
         i2s_pin_assignment->mck = mcu_pin(2,3);    //pc3 i2s2
         i2s_tx.set_attr(SPI_FLAG_SET_MASTER | SPI_FLAG_IS_FORMAT_SPI | SPI_FLAG_IS_MODE0 | SPI_FLAG_IS_FULL_DUPLEX,1000000,8,i2s_pin_assignment);
-        i2s_tx.init();
+		  i2s_tx.initialize();
             //char text[] = "hello_two";
         char send_buff[] = "i2s_test";
         char recv_buff[sizeof(send_buff)];
@@ -71,7 +71,7 @@ bool I2STest::execute_i2s_api_case(I2S & i2s){
         result = false;
     } else {
 
-        i2s.init();
+		  i2s.initialize();
         if( i2s.close() < 0 ){
             print_case_message("Failed %s %d: port:%d", __FILE__, __LINE__, i2s.port());
             result = false;

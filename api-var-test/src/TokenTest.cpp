@@ -33,7 +33,7 @@ bool TokenTest::execute_class_performance_case(){
 		for (u8 i=0;i<=0x0f;i++){
 			delim[i] = 0x20 | i;
 		}
-		Token two(s_common.c_str(),delim,0);
+		Tokenizer two(s_common.c_str(),delim,0);
 		for(u32 i =0;i<50;i++){
 			if( two.at(i).compare(0, s[i%8].length(), s[i%8]) ){
 				//if (strncmp(two.at(i),s[i%8].c_str(),s[i%8].len())){
@@ -63,7 +63,7 @@ bool TokenTest::execute_class_stress_case(){
 bool TokenTest::execute_class_api_case(){
 	bool result = true;
 	String s1("Uno,dos,tres, quatro or  cinko");
-	Token one(s1.c_str(),",. ",";",0);
+	Tokenizer one(s1.c_str(),",. ",";",0);
 	if(one.size() != 6){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
@@ -90,7 +90,7 @@ bool TokenTest::execute_class_api_case(){
 		}
 	}
 	//parse string for and verify with base
-	Token two(s_common.c_str(),",; ","(",0);
+	Tokenizer two(s_common.c_str(),",; ","(",0);
 	for(u32 i =0;i<48;i++){
 		if (strncmp(two.at(i).str(),s[i%8].str(),s[i%8].len())){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -110,7 +110,7 @@ bool TokenTest::execute_class_api_case(){
 		//parse string and verify
 		char delim[2] = "\0";
 		delim[0] = 0x20 | j;
-		Token two(s_common.c_str(),delim,0);
+		Tokenizer two(s_common.c_str(),delim,0);
 		for(u32 i =0;i<100;i++){
 			if (strncmp(two.at(i).str(),s[i%8].c_str(),s[i%8].len())){
 				print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
@@ -135,7 +135,7 @@ bool TokenTest::execute_recursive(String &token_string,String &delim_string){
 		char delim = 0x20 | (recursive_number&0x0f);
 		delim_string.append(delim);
 		token_string.append(delim);
-		Token new_token(token_string.c_str(),delim_string.c_str());
+		Tokenizer new_token(token_string.c_str(),delim_string.c_str());
 		if(!execute_recursive(token_string, delim_string)){
 			//print_case_message("Failed %s:%d (%d)", __PRETTY_FUNCTION__, __LINE__, token_number);
 			//return false;

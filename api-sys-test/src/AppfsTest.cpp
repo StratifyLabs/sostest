@@ -25,9 +25,10 @@ bool AppfsTest::execute_class_api_case(){
 	String my_user_data_read_back;
 
 	my_user_data_read_back.set_capacity(my_user_data.size());
+	DataFile user_data_file;
+	user_data_file.data().refer_to(my_user_data);
 
-
-	if( (result = Appfs::create(file_name, my_user_data)) < 0 ){
+	if( (result = Appfs::create(file_name, user_data_file)) < 0 ){
 		print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		return case_result();
 	}
@@ -48,12 +49,12 @@ bool AppfsTest::execute_class_api_case(){
 		f.close();  //free resources
 	}
 
-	Appfs::get_info(path,info);
+	info = Appfs::get_info(path).info();
 	if( errno != ENOEXEC ){
 		print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 	}
 
-	Appfs::get_info(file_name,info);
+	info = Appfs::get_info(file_name).info();
 	if( errno != ENOENT ){
 		print_case_failed("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 	}

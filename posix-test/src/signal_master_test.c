@@ -56,7 +56,7 @@ int signal_master_test(){
 	usleep(5000);
 
 	errno = 0;
-	if( (pid = launch(SLAVE_APP, exec_path, 0, 0, 0, 0, 0)) < 0 ){
+	if( (pid = launch(SLAVE_APP, exec_path, 0, 0, 0, 0, 0, 0)) < 0 ){
 		perror("failed to launch sigslave");
 		return -1;
 	}

@@ -15,21 +15,19 @@ set(SOURCES
 	${SOURCES_PREFIX}/TaskTest.hpp
 	${SOURCES_PREFIX}/SysTest.cpp
 	${SOURCES_PREFIX}/SysTest.hpp
-    ${SOURCES_PREFIX}/CliTest.cpp
-    ${SOURCES_PREFIX}/CliTest.hpp
-    ${SOURCES_PREFIX}/MessengerTest.cpp
-    ${SOURCES_PREFIX}/MessengerTest.hpp
-    ${SOURCES_PREFIX}/TraceTest.cpp
-    ${SOURCES_PREFIX}/TraceTest.hpp
-    ${SOURCES_PREFIX}/AppfsTest.cpp
-    ${SOURCES_PREFIX}/AppfsTest.hpp
-    ${SOURCES_PREFIX}/DirTest.cpp
-    ${SOURCES_PREFIX}/DirTest.hpp
-    ${SOURCES_PREFIX}/FileTest.cpp
-    ${SOURCES_PREFIX}/FileTest.hpp
-    ${SOURCES_PREFIX}/FileInfoTest.cpp
-    ${SOURCES_PREFIX}/FileInfoTest.hpp
-    ${SOURCES_PREFIX}/AioTest.cpp
-    ${SOURCES_PREFIX}/AioTest.hpp
+	${SOURCES_PREFIX}/CliTest.cpp
+	${SOURCES_PREFIX}/CliTest.hpp
+	${SOURCES_PREFIX}/TraceTest.cpp
+	${SOURCES_PREFIX}/TraceTest.hpp
+	${SOURCES_PREFIX}/AppfsTest.cpp
+	${SOURCES_PREFIX}/AppfsTest.hpp
+	${SOURCES_PREFIX}/DirTest.cpp
+	${SOURCES_PREFIX}/DirTest.hpp
+	${SOURCES_PREFIX}/FileTest.cpp
+	${SOURCES_PREFIX}/FileTest.hpp
+	${SOURCES_PREFIX}/FileInfoTest.cpp
+	${SOURCES_PREFIX}/FileInfoTest.hpp
+	${SOURCES_PREFIX}/AioTest.cpp
+	${SOURCES_PREFIX}/AioTest.hpp
 
 	PARENT_SCOPE)

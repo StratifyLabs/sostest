@@ -40,7 +40,7 @@ bool MicroTimeTest::execute_class_api_case(){
 		result = false;
 	}
 	check_value += 1;
-	micro_time += 1;
+	micro_time += MicroTime(1);
 	if(micro_time.microseconds()!=check_value||
 			micro_time.milliseconds()!=check_value/1000){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -48,7 +48,7 @@ bool MicroTimeTest::execute_class_api_case(){
 	}
 	value_u = 500;
 	check_value += value_u;
-	micro_time += value_u;
+	micro_time += MicroTime(value_u);
 	if(micro_time.microseconds()!=check_value ||
 			micro_time.milliseconds()!=check_value/1000){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -63,7 +63,7 @@ bool MicroTimeTest::execute_class_api_case(){
 		result = false;
 	}
 	check_value -= 1;
-	micro_time -= 1;
+	micro_time -= MicroTime(1);
 	if(micro_time.microseconds()!=check_value||
 			micro_time.milliseconds()!=check_value/1000){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -71,7 +71,7 @@ bool MicroTimeTest::execute_class_api_case(){
 	}
 	value_u = 500;
 	check_value -= value_u;
-	micro_time -= value_u;
+	micro_time -= MicroTime(value_u);
 	if(micro_time.microseconds()!=check_value ||
 			micro_time.milliseconds()!=check_value/1000){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
