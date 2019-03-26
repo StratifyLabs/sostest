@@ -1,13 +1,5 @@
 cmake_minimum_required (VERSION 3.6)
 
-# This will set the default RAM used by the application
-set(SOS_RAM_SIZE 32768)
-
-#Add sources to the project
-set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/src)
-add_subdirectory(src)
-list(APPEND SOS_SOURCELIST ${SOURCES})
-
 if( ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" )
   set(SOS_TOOLCHAIN_CMAKE_PATH /Applications/StratifyLabs-SDK/Tools/gcc/arm-none-eabi/cmake)
 elseif( ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows" )
@@ -22,6 +14,12 @@ set(CMAKE_TOOLCHAIN_FILE ${SOS_TOOLCHAIN_CMAKE_PATH}/sos-app-toolchain.cmake)
 get_filename_component(SOS_NAME ${CMAKE_SOURCE_DIR} NAME)
 project(${SOS_NAME} CXX C)
 
-message(STATUS "Building App sources: " ${SOS_SOURCELIST})
+# This will set the default RAM used by the application
+set(SOS_RAM_SIZE 32768)
+
+#Add sources to the project
+set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/src)
+add_subdirectory(src)
+list(APPEND SOS_SOURCELIST ${SOURCES} ${CMAKE_SOURCE_DIR}/sl_settings.json)
 
 include(${SOS_TOOLCHAIN_CMAKE_PATH}/sos-app-std.cmake)

@@ -6,5 +6,7 @@
    "apiGitHash": "18f54dc",
    "gitHash": "ecb552b",
    "apiVersion": "3.8.0b",
-   "version": "0.25"
+   "version": "0.25",
+   "lastConnectionSerialNumber": "000000003734313832345109002F0044",
+   "lastConnectionPath": "/dev/tty.usbmodem1412201"
 }
