@@ -1,0 +1,26 @@
+{
+   "description": "Please add a brief description of your application.",
+   "github": "",
+   "name": "dhrystone",
+   "permissions": "public",
+   "publisher": "",
+   "tags": "bench",
+   "type": "app",
+   "uid": "9cQyOTk3fZXOuMtPyf5j9X4H4b83",
+   "version": "0.9",
+   "ramSize": 0,
+   "timestamp": 1558306416,
+   "documentId": "QpXcn3w2P1YUcatvAZZd",
+   "hardwareId": "",
+   "buildList": {
+      "coER0FTYu3hApfUj1Rca": "0.1",
+      "SIrucXH4wCRe1lZgzp6Z": "0.2",
+      "q8Y3cEnk8p9P1FrcN5wv": "0.3",
+      "Az3d15pvKg5iQAqWA0tj": "0.4",
+      "6I1OQaCjTEy02aheVBfg": "0.5",
+      "saGAaV6gHEw7gnWnfOzL": "0.6",
+      "ewwgNdGjCwVVM3W4SSA6": "0.7",
+      "a4TKhrJmI5yS4Cp1z9gP": "0.8",
+      "SVWgI2vKI8D2cr0YoCc5": "0.9"
+   }
+}

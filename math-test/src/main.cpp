@@ -45,7 +45,7 @@ u32 decode_cli(const Cli & cli){
     u32 o_flags = 0;
 
     if(cli.is_option("-all") ){
-        o_flags = 0xffffffff;
+		  o_flags = 0xffffffff & ~DOUBLE_TEST_FLAG;
         return o_flags;
     }
 

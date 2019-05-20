@@ -17,7 +17,7 @@ set(SOS_RAM_SIZE 16384)
 #Add sources to the project
 set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(src)
-list(APPEND SOS_SOURCELIST ${SOURCES})
+list(APPEND SOS_SOURCELIST ${SOURCES} sl_settings.json)
 
 get_filename_component(SOS_NAME ${CMAKE_SOURCE_DIR} NAME)
 project(${SOS_NAME} CXX C)

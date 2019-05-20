@@ -4,9 +4,15 @@
    "name": "math-test",
    "permissions": "public",
    "publisher": "Stratify Labs, Inc",
-   "tags": "test",
+   "tags": "bench",
    "type": "app",
    "version": "0.5",
    "hardwareId": "",
-   "ramSize": 0
+   "ramSize": 0,
+   "uid": "9cQyOTk3fZXOuMtPyf5j9X4H4b83",
+   "timestamp": 1556034332,
+   "documentId": "Z7BW34XiunEAIxZfd0Bh",
+   "buildList": {
+      "qG0FeUfz5nuXnxIXXOTe": "0.5"
+   }
 }

@@ -8,7 +8,7 @@
 
 #define SL_CONFIG_VERSION_STRING "0.1"
 #define SL_CONFIG_VERSION_BCD 0x01
-#define SL_CONFIG_DOCUMENT_ID "<invalid>"
+#define SL_CONFIG_DOCUMENT_ID "JyHFeJuGGCkrmdDIA4Xl"
 #define SL_CONFIG_NAME "api-var-test"
 #define SL_CONFIG_TYPE "app"
 #define SL_CONFIG_PUBLISHER "Stratify Labs, Inc"
