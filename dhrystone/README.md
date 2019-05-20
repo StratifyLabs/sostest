@@ -1,13 +1,10 @@
-# HelloWorld
+# Dhrystone Benchmark
 
-This project shows just how easy it is to write programs for Stratify OS.  Stratity OS takes care of all the hardware initialization (including stdio initialization) so you can just start writing code.
+The dhrystone benchmark is a program designed to benchmark compiler and processor execution in typical programming environments. This version is a Stratify OS application that can run the benchmark inside of Stratify OS. When run using the `sl bench.run` command, the results are automatically reported to the cloud so that they can be compared to other chips.
 
-If you haven't already done so, you need to get set up with some hardware and the software tools using the [Stratify Labs web application](https://app.stratifylabs.co/) which has installation instructions and tutorials.
-
-Once you install the command line tool, you can clone and build HelloWorld using:
+The dhrystone benchmark can be run on Stratify OS using the following commands:
 
 ```
-sl application.create:name=HelloWorld
-sl application.build:path=HelloWorld
-sl application.install:path=HelloWorld,run,terminal # need connected hardware for this one
+sl bench.run:id=QpXcn3w2P1YUcatvAZZd
+sl bench.run:id=QpXcn3w2P1YUcatvAZZd,ram
 ```
