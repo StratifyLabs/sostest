@@ -9,6 +9,7 @@ QSPITest::QSPITest() : Test("hal::QSPI"){
 
 }
 
+
 bool QSPITest::execute_class_api_case(){
     #define TEST_BUFFER_SIZE         256
     bool result = true;
