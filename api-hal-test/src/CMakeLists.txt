@@ -15,5 +15,9 @@ set(SOURCES
 	${SOURCES_PREFIX}/I2CTest.hpp
     ${SOURCES_PREFIX}/I2STest.cpp
     ${SOURCES_PREFIX}/I2STest.hpp
+    ${SOURCES_PREFIX}/QSPITest.cpp
+    ${SOURCES_PREFIX}/QSPITest.hpp
+    ${SOURCES_PREFIX}/EmcTest.cpp
+    ${SOURCES_PREFIX}/EmcTest.hpp
 
 	PARENT_SCOPE)

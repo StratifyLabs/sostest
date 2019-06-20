@@ -10,6 +10,9 @@
 #include "SpiTest.hpp"
 #include "I2cTest.hpp"
 #include "I2sTest.hpp"
+#include "QSPITest.hpp"
+#include "EmcTest.hpp"
+
 void show_usage(const Cli & cli);
 
 //update flags
@@ -37,6 +40,8 @@ enum {
     UART_TEST_FLAG = (1<<24),
     USB_TEST_FLAG = (1<<25),
     I2S_TEST_FLAG = (1<<26),
+    QSPI_TEST_FLAG = (1<<27),
+    EMC_TEST_FLAG = (1<<28),
 };
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags);
@@ -77,6 +82,15 @@ int main(int argc, char * argv[]){
         I2CTest test;
         test.execute(o_execute_flags);
     }
+    if( o_flags & QSPI_TEST_FLAG ){
+        QSPITest test;
+        test.execute(o_execute_flags);
+    }
+    if( o_flags & EMC_TEST_FLAG ){
+        EmcTest test;
+        test.execute(o_execute_flags);
+    }
+
 
     Test::finalize();
     return 0;
@@ -113,6 +127,8 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
     if(cli.is_option("-spi") ){ o_flags |= SPI_TEST_FLAG; }
     if(cli.is_option("-i2c") ){ o_flags |= I2C_TEST_FLAG; }
     if(cli.is_option("-i2s") ){ o_flags |= I2S_TEST_FLAG; }
+    if(cli.is_option("-qspi") ){ o_flags |= QSPI_TEST_FLAG; }
+    if(cli.is_option("-emc") ){ o_flags |= EMC_TEST_FLAG; }
 
     return o_flags;
 }
@@ -134,6 +150,9 @@ void show_usage(const Cli & cli){
     printf("    -core           execute test for hal/core \n");
     printf("    -i2c            execute test for hal/i2c \n");
     printf("    -i2s            execute test for hal/i2s \n");
+    printf("    -qspi           execute test for hal/qspi \n");
+    printf("    -emc            execute test for hal/emc \n");
+
 }
 
 
