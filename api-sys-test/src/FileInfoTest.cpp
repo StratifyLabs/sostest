@@ -91,6 +91,19 @@ bool FileInfoTest::execute_class_api_case(){
    TEST_THIS_EXPECT(bool, file_info.is_socket(), false);
    TEST_THIS_EXPECT(bool, file_info.is_executable(), false);
 
+   file_info = File::get_info("/does_not_exist");
+   TEST_THIS_EXPECT(bool, file_info.is_valid(), false);
+   TEST_THIS_EXPECT_ERROR(-1, ENOENT);
+
+   file_info = File::get_info("/012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
+   TEST_THIS_EXPECT(bool, file_info.is_valid(), false);
+   TEST_THIS_EXPECT_ERROR(-1, ENAMETOOLONG);
+
+
+   file_info = File::get_info("/01234567890/123456789012345678901234567890");
+   TEST_THIS_EXPECT(bool, file_info.is_valid(), false);
+   TEST_THIS_EXPECT_ERROR(-1, ENAMETOOLONG);
+
    return result;
 }
 

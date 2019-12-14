@@ -42,7 +42,7 @@ private:
 };
 enum Sched::policy test_get_policy(int value);
 
-#define CREATE_THREAD(a,b,c,d,e) 	TEST_THIS_EXPECT(bool, \
+#define CREATE_THREAD(a,b,c,d,e) TEST_THIS_ASSERT(bool, \
 a.create( \
 	Thread::Function(b), \
 	Thread::FunctionArgument(c), \
@@ -50,6 +50,15 @@ a.create( \
 	e \
 	) < 0, \
 	false)
+
+#define CREATE_THREAD_ERROR(f,a,b,c,d,e) TEST_THIS_EXPECT_ERROR(\
+a.create( \
+	Thread::Function(b), \
+	Thread::FunctionArgument(c), \
+	Thread::Priority(d), \
+	e \
+	) < 0, \
+	f)
 
 
 #endif // THREADTEST_HPP
