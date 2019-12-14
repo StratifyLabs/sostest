@@ -41,4 +41,15 @@ private:
     void * thread_3(u32);
 };
 enum Sched::policy test_get_policy(int value);
+
+#define CREATE_THREAD(a,b,c,d,e) 	TEST_THIS_EXPECT(bool, \
+a.create( \
+	Thread::Function(b), \
+	Thread::FunctionArgument(c), \
+	Thread::Priority(d), \
+	e \
+	) < 0, \
+	false)
+
+
 #endif // THREADTEST_HPP

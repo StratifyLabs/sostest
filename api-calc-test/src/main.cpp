@@ -1,4 +1,3 @@
-#include <stdio.h>
 
 #include <sapi/sys.hpp>
 #include <sapi/test.hpp>
@@ -31,7 +30,11 @@ int main(int argc, char * argv[]){
 
     o_flags = decode_cli(cli, o_execute_flags);
 
-    Test::initialize(cli.name(), cli.version());
+    Test::initialize(
+             Test::Name(cli.name()),
+             Test::Version(cli.version()),
+             Test::GitHash(SOS_GIT_HASH)
+             );
 
     if( o_flags == 0 ){
        show_usage(cli);

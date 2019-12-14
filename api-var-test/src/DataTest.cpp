@@ -32,17 +32,17 @@ bool DataTest::execute_fill(){
 
 	memset(buffer, 0, 128);
 	data.fill(0);
-	if( memcmp(data.data_const(), buffer, 128) != 0 ){
+	if( memcmp(data.to_const_void(), buffer, 128) != 0 ){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
 	data.fill(2);
-	if( memcmp(data.data_const(), buffer, 128) == 0 ){
+	if( memcmp(data.to_const_void(), buffer, 128) == 0 ){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
 	data.clear();
-	if( memcmp(data.data_const(), buffer, 128) != 0 ){
+	if( memcmp(data.to_const_void(), buffer, 128) != 0 ){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -50,7 +50,7 @@ bool DataTest::execute_fill(){
 	data.fill(0xaa);
 	memset(buffer, 0xaa, 128);
 
-	if( memcmp(data.data_const(), buffer, 128) != 0 ){
+	if( memcmp(data.to_const_void(), buffer, 128) != 0 ){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -61,22 +61,17 @@ bool DataTest::execute_fill(){
 
 bool DataTest::execute_alloc(){
 	bool result = true;
-	char temp_string[] = "temp string";
 	u16 data_size = 512;
 	//test every API to see if it works as expected -- included giving it invalid values
 	Data data;
 	Data dynamic_data(data_size);
-	Data exist_string(temp_string, sizeof(temp_string));
 
 	if(data.data() != 0){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	if(exist_string.data() == 0 || (exist_string.capacity() != sizeof(temp_string))){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if(data.data_const() == 0){
+
+	if(data.to_const_void() == 0){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
@@ -85,49 +80,38 @@ bool DataTest::execute_alloc(){
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	if( dynamic_data.data_const() == 0 || (dynamic_data.capacity() < data_size)){
+	if( dynamic_data.to_const_void() == 0 || (dynamic_data.capacity() < data_size)){
 		//failed to allocate memory
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	data_size-=Data::minimum_size();
-	dynamic_data.alloc(data_size, true);
-	if( dynamic_data.data_const() == 0 ||
+	data_size-=Data::minimum_capacity();
+	dynamic_data.allocate(data_size, Data::IsResize(true) );
+	if( dynamic_data.to_const_void() == 0 ||
 		 dynamic_data.data() == 0 ||
 		 (dynamic_data.capacity() < data_size)){
 		//failed to allocate memory
 		print_case_message("Failed %s:%d %d < %d", __PRETTY_FUNCTION__, __LINE__, dynamic_data.capacity(), data_size);
 		result = false;
 	}
-	data_size-=Data::minimum_size();
-	dynamic_data.alloc(data_size, false);
-	if( dynamic_data.data_const() == 0 ||
+	data_size-=Data::minimum_capacity();
+	dynamic_data.allocate(data_size);
+	if( dynamic_data.to_const_void() == 0 ||
 		 dynamic_data.data() == 0 ||
 		 (dynamic_data.capacity() < data_size)){
 		//failed to allocate memory
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	data_size-=Data::minimum_size();
+	data_size-=Data::minimum_capacity();
 	dynamic_data.resize(data_size);
-	if( dynamic_data.data_const() == 0 ||
+	if( dynamic_data.to_const_void() == 0 ||
 		 dynamic_data.data() == 0 ||
 		 (dynamic_data.capacity() < data_size)){
 		//failed to allocate memory
 		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 		result = false;
 	}
-	if (dynamic_data.set_capacity(data_size-1)!=0){
-		//failed to allocate memory
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if (dynamic_data.set_capacity(data_size+1)!=0){
-		//failed to allocate memory
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-
 
 
 	return result;
@@ -148,7 +132,7 @@ bool DataTest::execute_class_performance_case(){
 		char buffer[data_size];
 		memset(buffer, 0xaa, data_size);
 		data.fill(0xaa);
-		if( memcmp(buffer, data.data_const(), data_size) ){
+		if( memcmp(buffer, data.to_const_void(), data_size) ){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			result = false;
 			break;
@@ -156,17 +140,17 @@ bool DataTest::execute_class_performance_case(){
 		memset(buffer, 0x00, data_size);
 		//add clear test
 		data.clear();
-		if( memcmp(buffer, data.data_const(), data_size) ){
+		if( memcmp(buffer, data.to_const_void(), data_size) ){
 			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 			result = false;
 			break;
 		}
 		if (data_size){
 			char* t;
-			t = data.cdata();
+			t = data.to_char();
 			//change one byte in data
 			t[data_size-1] = 0x0e;
-			if( !memcmp(buffer, data.data_const(), data_size) ){
+			if( !memcmp(buffer, data.to_const_void(), data_size) ){
 				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 				result = false;
 				break;
@@ -206,11 +190,11 @@ bool DataTest::execute_class_stress_case(){
 
 bool DataTest::execute_recursive(Data data){
 	recursive_number++;
-	if (data.capacity() > data.minimum_size()*2){
-		Data data_new(data.capacity()-Data::minimum_size()*2);
+	if (data.capacity() > Data::minimum_capacity()*2){
+		Data data_new(data.capacity()-Data::minimum_capacity()*2);
 		if( data_new.data() == 0 ){
 			//failed to allocate memory
-			print_case_message("Failed %s:%d %d %d", __PRETTY_FUNCTION__, __LINE__, data.capacity()-Data::minimum_size(), recursive_number);
+			print_case_message("Failed %s:%d %d %d", __PRETTY_FUNCTION__, __LINE__, data.capacity()-Data::minimum_capacity(), recursive_number);
 			return false;
 		} else {
 			char fill_temp;
@@ -224,7 +208,7 @@ bool DataTest::execute_recursive(Data data){
 			char buffer[data.capacity()];
 			//recursive value changes after execute_recursive
 			memset(buffer, fill_temp, data_new.capacity());
-			if( memcmp(buffer, data_new.data_const(), data_new.capacity()) ){
+			if( memcmp(buffer, data_new.to_const_void(), data_new.capacity()) ){
 				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
 				return false;
 			}

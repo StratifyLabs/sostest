@@ -1,5 +1,4 @@
 
-#include <cstdlib>
 #include <sapi/sys.hpp>
 
 #include "LookupTest.hpp"

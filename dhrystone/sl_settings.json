@@ -7,9 +7,9 @@
    "tags": "bench",
    "type": "app",
    "uid": "9cQyOTk3fZXOuMtPyf5j9X4H4b83",
-   "version": "0.9",
+   "version": "0.12",
    "ramSize": 0,
-   "timestamp": 1558306416,
+   "timestamp": 1558798141,
    "documentId": "QpXcn3w2P1YUcatvAZZd",
    "hardwareId": "",
    "buildList": {
@@ -21,6 +21,9 @@
       "saGAaV6gHEw7gnWnfOzL": "0.6",
       "ewwgNdGjCwVVM3W4SSA6": "0.7",
       "a4TKhrJmI5yS4Cp1z9gP": "0.8",
-      "SVWgI2vKI8D2cr0YoCc5": "0.9"
+      "SVWgI2vKI8D2cr0YoCc5": "0.9",
+      "0OazwWr8XgszmTd6RqFi": "0.10",
+      "b3iQkDTViZIhnfOzLJ5Y": "0.11",
+      "uYQ7OsvHN52gRqTq5tTA": "0.12"
    }
 }

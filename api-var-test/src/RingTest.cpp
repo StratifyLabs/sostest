@@ -2,7 +2,7 @@
 #include "RingTest.hpp"
 
 RingTest::RingTest(): Test("var::Ring"){
-	Data::reclaim_heap_space();
+   Data::reclaim_heap_space();
 }
 
 /*! \details test "performance" a var::Ring
@@ -10,18 +10,18 @@ RingTest::RingTest(): Test("var::Ring"){
  * @return false if some test failed
  */
 bool RingTest::execute_class_performance_case(){
-	bool result = true;
+   bool result = true;
 
-	return result;
+   return result;
 }
 /*! \details test "stress" a var::Ring
  *
  * @return false if some test failed
  */
 bool RingTest::execute_class_stress_case(){
-	bool result = true;
+   bool result = true;
 
-	return result;
+   return result;
 }
 /*! \details test "api" a var::Ring
  *  constructors,write,read,size,is_overflow_allowed
@@ -35,8 +35,14 @@ bool RingTest::execute_class_api_case(){
 	//overflow allowed
 	const u8 size_packet = 8;
 	u8 buffer[size_packet*8];
-	Ring<u8> ring1(buffer, sizeof(buffer));
-	Ring<u8> ring2(size_packet*16);
+	Ring<u8> ring1 = Ring<u8>(
+				Reference(
+					Reference::ReadWriteBuffer(buffer),
+					Reference::Size(sizeof(size_packet*8))
+					)
+				);
+
+			Ring<u8> ring2(size_packet*16);
 	//fill write buffer for test
 
 	//init control

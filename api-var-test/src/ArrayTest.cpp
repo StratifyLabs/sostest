@@ -19,7 +19,7 @@ bool ArrayTest::execute_class_performance_case(){
 	Array <float,350>double_array;
 	u8 u8_value;
 	u32 u32_value;
-	double double_value;
+	float double_value;
 	for (u16 j = 0;j< 255;j++){
 		u8_value = j;
 		u8_array.fill(u8_value);
@@ -33,20 +33,12 @@ bool ArrayTest::execute_class_performance_case(){
 		u32_value = j*1737;
 		u32_array.fill(u32_value);
 		for (u32 i=0;i<u32_array.count();i++){
-			if(u32_array.at(i)!=u32_value){
-				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-				result = false;
-				break;
-			}
+			TEST_THIS_EXPECT(u32, u32_array.at(i), u32_value);
 		}
 		double_value = j&0x01?3.1456f*(float)j:-3.1456f*(float)j;
 		double_array.fill(double_value);
 		for (u32 i=0;i<double_array.count();i++){
-			if(double_array.at(i)!=double_value){
-				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-				result = false;
-				break;
-			}
+			TEST_THIS_EXPECT(u32, double_array.at(i), double_value);
 		}
 	}
 	return result;
@@ -86,64 +78,70 @@ bool ArrayTest::execute_class_api_case(){
 	String s2,s3;
 	s2 = string_array.at(1);
 	s3 = string_array.at(2);
-	if(s3.compare(s2)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
+
+
+	TEST_THIS_EXPECT(String, s2, s3);
+
 	for (u8 i=0;i<string_array.count();i++){
 		String temp_string;
 		temp_string = string_array.at(i);
-		if(temp_string.compare(s1)){
-			print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-			result = false;
-		}
+		TEST_THIS_EXPECT(String, temp_string, s1);
 	}
+
 	u8 u8_value;
 	u32 u32_value;
 	float double_value;
 	u8_value = 255;
 	u32_value = 0xffffffff;
-	double_value = -3.1e+20f;
+	double_value = -3.1e+12f;
 	u8_array.fill(u8_value);
 	u32_array.fill(u32_value);
 	double_array.fill(double_value);
-	if((u8_array.at(u8_array.count()-1)!=u8_value)||(u8_array.back()!=u8_value)||(
-				u8_array.front()!=u8_value)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if((u32_array.at(u32_array.count()-1)!=
-		 u32_value)||(u32_array.back()!=u32_value)||(
-				u32_array.front()!=u32_value)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if((double_array.at(double_array.count()-1)!=double_value)||(double_array.back()!=double_value)||(
-				double_array.front()!=double_value)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
+
+	TEST_THIS_EXPECT(u8, u8_array.at(u8_array.count()-1), u8_value);
+	TEST_THIS_EXPECT(u8, u8_array.back(), u8_value);
+	TEST_THIS_EXPECT(u8, u8_array.front(), u8_value);
+
+	TEST_THIS_EXPECT(u32, u32_array.at(u32_array.count()-1), u32_value);
+	TEST_THIS_EXPECT(u32, u32_array.back(), u32_value);
+	TEST_THIS_EXPECT(u32, u32_array.front(), u32_value);
+
+	TEST_THIS_EXPECT(u32, double_array.at(double_array.count()-1), double_value);
+	TEST_THIS_EXPECT(u32, double_array.back(), double_value);
+	TEST_THIS_EXPECT(u32, double_array.front(), double_value);
+
 	u8_value = 0;
 	u32_value = 0;
 	double_value = 0.0f;
 	u8_array.fill(u8_value);
 	u32_array.fill(u32_value);
 	double_array.fill(double_value);
-	if((u8_array.at(u8_array.count()-1)!=u8_value)||(u8_array.back()!=u8_value)||(
-				u8_array.front()!=u8_value)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
+
+	for(auto value: u8_array){
+		TEST_THIS_EXPECT(u8, value, u8_value);
 	}
-	if((u32_array.at(u32_array.count()-1)!=u32_value)||(u32_array.back()!=u32_value)||(
-				u32_array.front()!=u32_value)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
+
+	for(auto value: u32_array){
+		TEST_THIS_EXPECT(u8, value, u32_value);
 	}
-	if((double_array.at(double_array.count()-1)!=double_value)||(double_array.back()!=double_value)||(
-				double_array.front()!=double_value)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
+
+	for(auto value: double_array){
+		TEST_THIS_EXPECT(u8, value, double_value);
 	}
+
+	TEST_THIS_EXPECT(u8, u8_array.at(u8_array.count()-1), u8_value);
+	TEST_THIS_EXPECT(u8, u8_array.back(), u8_value);
+	TEST_THIS_EXPECT(u8, u8_array.front(), u8_value);
+
+	TEST_THIS_EXPECT(u32, u32_array.at(u32_array.count()-1), u32_value);
+	TEST_THIS_EXPECT(u32, u32_array.back(), u32_value);
+	TEST_THIS_EXPECT(u32, u32_array.front(), u32_value);
+
+	TEST_THIS_EXPECT(u32, double_array.at(double_array.count()-1), double_value);
+	TEST_THIS_EXPECT(u32, double_array.back(), double_value);
+	TEST_THIS_EXPECT(u32, double_array.front(), double_value);
+
+
 	return result;
 }
 

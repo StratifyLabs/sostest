@@ -25,7 +25,7 @@ Copyright 2016 Tyler Gilbert
 
 #define LAUNCH_SLAVE_PATH "/home/launchslave"
 
-int update_progress(int progress, int max){
+int update_progress(const void * context, int progress, int max){
 	printf(".");
 	return 0;
 }

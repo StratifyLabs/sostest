@@ -22,17 +22,31 @@ int main(int argc, char * argv[]){
        exit(0);
     }
 
-    Test::initialize("math-test", cli.version());
+	 Test::initialize(
+				 Test::Name("math-test"),
+				 Test::VersionEncodedString(cli.version()),
+				 Test::GitHash(SOS_GIT_HASH)
+				 );
 
     for(idx = 0; idx < num_test_count(); idx++){
         const test_t * test = num_test_get(idx);
         if( (test->o_execute_flags & o_execute_flags) == test->o_execute_flags ){
             String name;
-            String case_name;
-            name.sprintf("%d:%s: %s %s %s", idx, test->name, test->a_str, test->op_str, test->b_str);
-            case_name.sprintf("case:%s", name.str(), test->a_str, test->op_str, test->b_str);
-            Function<int, operand_t, operand_t, operand_t> function_test(name.str(), test->operation);
-            function_test.execute_case_with_expected_return(case_name.str(), 1, 0, test->a, test->b, test->result);
+            name.format(
+                     "%d:%s: %s %s %s",
+                     idx,
+                     test->name,
+                     test->a_str,
+                     test->op_str,
+                     test->b_str
+                     );
+
+            Function<int, operand_t, operand_t, operand_t>
+                  function_test(
+                     name,
+							test->operation
+							);
+				function_test.expect_result(1,test->a, test->b, test->result);
         }
     }
 
@@ -75,7 +89,7 @@ u32 decode_cli(const Cli & cli){
 
 void show_usage(const Cli & cli){
     printf("\n");
-    printf("usage: %s\n", cli.name());
+	 printf("usage: %s\n", cli.name().cstring());
     printf("    -all            execute all tests for all data type\n");
 //test type
     printf("    -execute_all    execute test types\n");

@@ -2,6 +2,9 @@
 #include <sapi/var.hpp>
 #include <sapi/chrono.hpp>
 #include "TaskTest.hpp"
+#include "SchedTest.hpp"
+#include "ThreadTest.hpp"
+
 TaskTest::TaskTest() : Test("sys::Task"){
 	Data::reclaim_heap_space();
 }
@@ -27,22 +30,17 @@ bool TaskTest::execute_class_api_case(){
     u32 id_test;
     Sched::policy policy = Sched::RR;
     int prio_test = Sched::get_priority_min(policy);
-    Sched::set_scheduler(Sched::get_pid(),policy,prio_test);
+
+    SET_SCHEDULER(Sched::get_pid(), policy, prio_test);
+
     task_test.set_id((int)Thread::self());
-    if(task_test.id() != (int)Thread::self()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+    TEST_THIS_EXPECT(int, task_test.id(), Thread::self());
     task_info_test = task_test.get_info(task_test.id());
-	 if(task_info_test.id() != Thread::self()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+    TEST_THIS_EXPECT(int, task_test.id(), Thread::self());
+
     id_test = task_info_test.id();
-    if(!task_info_test.is_active()){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+    TEST_THIS_EXPECT(bool, task_info_test.is_active(), true);
+
 
     task_info_test = task_test.get_info(task_test.id());
     if(task_info_test.priority()!=prio_test){
@@ -86,15 +84,12 @@ bool TaskTest::execute_class_api_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    Thread uno_thread(4096);
+    Thread uno_thread(Thread::StackSize(4096));
     int signal_thread_priority = 1;
     enum Sched::policy signal_thread_policy = Sched::RR;
 
-    if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
-                         signal_thread_policy)==-1){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+
+    CREATE_THREAD(uno_thread, handle_thread_1, this, signal_thread_priority, signal_thread_policy);
 
     task_test.get_next(task_info_test);
     task_info_test = task_test.get_info(task_test.id());
@@ -113,14 +108,12 @@ bool TaskTest::execute_class_stress_case(){
     Thread thread_test;
     u32 id_test;
     u16 itterate = 100;
-    Thread uno_thread(4096);
+    Thread uno_thread(Thread::StackSize(4096));
     enum Sched::policy signal_thread_policy = Sched::RR;
     int signal_thread_priority = Sched::get_priority_min(signal_thread_policy);
-    if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
-                         signal_thread_policy)==-1){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+
+    CREATE_THREAD(uno_thread, handle_thread_1, this, signal_thread_priority, signal_thread_policy);
+
     for(u16 i=0;i<itterate;i++) {
         TaskInfo  task_info_test;
 		  TaskManager task_test;
@@ -129,7 +122,9 @@ bool TaskTest::execute_class_stress_case(){
         priority_diff = rand()%priority_diff;
         //int signal_thread_priority = Sched::get_priority_min(signal_thread_policy) + priority_diff;
         int signal_thread_priority = Sched::get_priority_min(signal_thread_policy);
-        Sched::set_scheduler(uno_thread.get_pid(),signal_thread_policy,signal_thread_priority);
+
+        SET_SCHEDULER(uno_thread.get_pid(),signal_thread_policy,signal_thread_priority);
+
         task_test.set_id((int)uno_thread.self());
         if(task_test.id() != (int)uno_thread.self()){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -218,87 +213,38 @@ bool TaskTest::execute_class_performance_case(){
     Thread thread_test;
     u32 id_test;
     u16 itterate = 1000;
-    Thread uno_thread(4096);
+    Thread uno_thread(Thread::StackSize(4096));
     enum Sched::policy signal_thread_policy = Sched::RR;
     int signal_thread_priority = Sched::get_priority_min(signal_thread_policy);
-    if(uno_thread.create(handle_thread_1,this,signal_thread_priority,\
-                         signal_thread_policy)==-1){
-        print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-        result = false;
-    }
+
+    CREATE_THREAD(uno_thread, handle_thread_1, this, signal_thread_priority, signal_thread_policy);
+
     for(u16 i=0;i<itterate;i++) {
         TaskInfo  task_info_test;
 		  TaskManager task_test;
         task_test.set_id((int)uno_thread.self());
-        if(task_test.id() != (int)uno_thread.self()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
+
+        TEST_THIS_EXPECT(int, task_test.id(), uno_thread.self());
+
         task_info_test = task_test.get_info(task_test.id());
-		  if(task_info_test.id() != uno_thread.self()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
+        TEST_THIS_EXPECT(int, task_info_test.id(), uno_thread.self());
+
         id_test = task_info_test.pid();
-        if(!task_info_test.is_active()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if(task_info_test.priority_ceiling()<task_info_test.priority()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if(task_info_test.is_thread()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if(!task_info_test.is_enabled()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if(!task_info_test.is_enabled()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-		  if( task_info_test.name() != "api-sys-test"){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if(!task_info_test.memory_size()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if(!task_info_test.heap_size()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if(!task_info_test.stack_size()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
-        if((task_test.count_total()<task_test.count_free()) || (!task_test.count_total())){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
+        TEST_THIS_EXPECT(bool, task_info_test.is_active(), true);
+        TEST_THIS_EXPECT(bool, task_info_test.priority_ceiling()<task_info_test.priority(), false);
+
+        TEST_THIS_EXPECT(bool, task_info_test.is_thread(), false);
+        TEST_THIS_EXPECT(bool, task_info_test.is_enabled(), true);
+        TEST_THIS_EXPECT(String, task_info_test.name(), "api-sys-test");
+        TEST_THIS_EXPECT(bool, task_info_test.memory_size()>0, true);
+        TEST_THIS_EXPECT(bool, task_info_test.heap_size()>0, true);
+        TEST_THIS_EXPECT(bool, task_info_test.stack_size()>0, true);
+        TEST_THIS_EXPECT(bool, task_test.count_total()<task_test.count_free(), false);
+        TEST_THIS_EXPECT(bool, task_test.count_total() > 0, true);
+
         task_test.get_next(task_info_test);
         task_info_test = task_test.get_info(task_test.id());
-        if(id_test == task_info_test.id()){
-            print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            result = false;
-            break;
-        }
+        TEST_THIS_EXPECT_NOT(int, id_test, task_info_test.id());
     }
     return result;
 }
@@ -307,7 +253,7 @@ void * TaskTest::thread_1(u32 wait_time){
     u16 test_count ;
     while( !stop_threads ){
         counter++;
-        Timer::wait_microseconds(wait_time*1000);
+        wait(Microseconds(wait_time*1000));
         //add vector stress test from api-var-test(make it more difficult)
         Vector<int> vector_test;
         u16 vector_size;
@@ -318,7 +264,10 @@ void * TaskTest::thread_1(u32 wait_time){
         vector_size = test_count + 1;
         for (u16 i =0; i<vector_size; i++){
             vector_test.push_back(i);
-            vector_test.insert(i,vector_size-i);
+            vector_test.insert(
+                     Vector<int>::Position(i),
+                     vector_size-i
+                     );
             if(vector_test.count()!=(u16)(i*2+2)){
                 print_case_message("Failed in cycle %s:%d:%d", __PRETTY_FUNCTION__, __LINE__, i);
                 thread_result = false;

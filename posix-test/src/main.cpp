@@ -58,7 +58,11 @@ int main(int argc, char * argv[]){
         exit(1);
     }
 
-    Test::initialize("posix", cli.version());
+    Test::initialize(
+             Test::Name("posix"),
+             Test::Version(cli.version()),
+             Test::GitHash(SOS_GIT_HASH)
+             );
 
     if( o_execute_flags & SCHED_TEST ){
         SchedTest test;
@@ -217,7 +221,7 @@ u32 decode_cli(const Cli & cli){
 
 void show_usage(const Cli & cli){
     printf("\n");
-    printf("usage: %s\n", cli.name());
+    printf("usage: %s\n", cli.name().cstring());
     printf("    -all            execute all tests and all test types.\n");
 //test type
     printf("    -execute_all    execute API, performance, and stress tests.\n");

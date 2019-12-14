@@ -40,7 +40,11 @@ int main(int argc, char * argv[]){
 
 	srand(Clock::get_time().nanoseconds());
 
-	Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
+	Test::initialize(
+				Test::Name(cli.name()),
+				Test::Version(cli.version()),
+				Test::GitHash(SOS_GIT_HASH)
+				);
 
 	if( o_flags & DATA_TEST_FLAG ){
 		DataTest test;
@@ -88,27 +92,26 @@ u32 decode_cli(const Cli & cli, u32 & execute_flags){
 
 	execute_flags = 0;
 
-	if(cli.is_option("-all") ){
+	if(cli.get_option("all") == "true" ){
 		o_flags = 0xffffffff;
 		execute_flags |= Test::EXECUTE_ALL;
 		return o_flags;
 	}
 
+	if(cli.get_option("execute_all") == "true" ){ execute_flags |= Test::EXECUTE_ALL; }
+	if(cli.get_option("api") == "true" ){ execute_flags |= Test::EXECUTE_API; }
+	if(cli.get_option("stress") == "true" ){ execute_flags |= Test::EXECUTE_STRESS; }
+	if(cli.get_option("performance") == "true" ){ execute_flags |= Test::EXECUTE_PERFORMANCE; }
+	if(cli.get_option("additional") == "true" ){ execute_flags |= Test::EXECUTE_ADDITIONAL; }
 
-	if(cli.is_option("-execute_all") ){ execute_flags |= Test::EXECUTE_ALL; }
-	if(cli.is_option("-api") ){ execute_flags |= Test::EXECUTE_API; }
-	if(cli.is_option("-stress") ){ execute_flags |= Test::EXECUTE_STRESS; }
-	if(cli.is_option("-performance") ){ execute_flags |= Test::EXECUTE_PERFORMANCE; }
-	if(cli.is_option("-additional") ){ execute_flags |= Test::EXECUTE_ADDITIONAL; }
-
-	if(cli.is_option("-test_all") ){ o_flags = 0xffffffff; }
-	if(cli.is_option("-data") ){ o_flags |= DATA_TEST_FLAG; }
-	if(cli.is_option("-queue") ){ o_flags |= QUEUE_TEST_FLAG; }
-	if(cli.is_option("-string") ){ o_flags |= STRING_TEST_FLAG; }
-	if(cli.is_option("-token") ){ o_flags |= TOKEN_TEST_FLAG; }
-	if(cli.is_option("-vector") ){ o_flags |= VECTOR_TEST_FLAG; }
-	if(cli.is_option("-ring") )  { o_flags |= RING_TEST_FLAG; }
-	if(cli.is_option("-array") ) { o_flags |= ARRAY_TEST_FLAG; }
+	if(cli.get_option("test_all") == "true" ){ o_flags = 0xffffffff; }
+	if(cli.get_option("data") == "true" ){ o_flags |= DATA_TEST_FLAG; }
+	if(cli.get_option("queue") == "true" ){ o_flags |= QUEUE_TEST_FLAG; }
+	if(cli.get_option("string") == "true" ){ o_flags |= STRING_TEST_FLAG; }
+	if(cli.get_option("token") == "true" ){ o_flags |= TOKEN_TEST_FLAG; }
+	if(cli.get_option("vector") == "true" ){ o_flags |= VECTOR_TEST_FLAG; }
+	if(cli.get_option("ring") == "true" )  { o_flags |= RING_TEST_FLAG; }
+	if(cli.get_option("array") == "true" ) { o_flags |= ARRAY_TEST_FLAG; }
 
 	return o_flags;
 

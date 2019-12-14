@@ -9,6 +9,7 @@ else()
 endif()
 
 include(${SOS_TOOLCHAIN_CMAKE_PATH}/sos-variables.cmake)
+include(${SOS_TOOLCHAIN_CMAKE_PATH}/sos-sdk.cmake)
 set(CMAKE_TOOLCHAIN_FILE ${SOS_TOOLCHAIN_CMAKE_PATH}/sos-app-toolchain.cmake)
 
 get_filename_component(SOS_NAME ${CMAKE_SOURCE_DIR} NAME)
@@ -18,10 +19,7 @@ project(${SOS_NAME} CXX C)
 set(SOS_RAM_SIZE 65536)
 
 #Add sources to the project
-set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/src)
-add_subdirectory(src)
-list(APPEND SOS_SOURCELIST ${SOURCES} ${CMAKE_SOURCE_DIR}/sl_settings.json)
-
-message(STATUS "Building App sources: " ${SOS_SOURCELIST})
+sos_sdk_add_subdirectory(SOS_SOURCELIST src)
+list(APPEND SOS_SOURCELIST ${CMAKE_SOURCE_DIR}/sl_settings.json)
 
 include(${SOS_TOOLCHAIN_CMAKE_PATH}/sos-app-std.cmake)

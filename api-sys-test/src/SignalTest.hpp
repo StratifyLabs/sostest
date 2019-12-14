@@ -21,6 +21,9 @@ private:
         return object->thread_1(object->wait_time);
     }
     void * thread_1(u32);
+
+    static SignalFlags::number get_signal_number(int value);
+
 };
 
 #endif // SIGNALTEST_HPP

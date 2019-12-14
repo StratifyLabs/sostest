@@ -97,12 +97,12 @@ bool CliTest::execute_class_api_case(){
         result = false;
     }
     temp_string = cli_test.at(2);
-    if(memcmp(temp_string.c_str(),arg_param2,sizeof (arg_param2))){
+    if(memcmp(temp_string.cstring(),arg_param2,sizeof (arg_param2))){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     temp_string = cli_test.at(3);
-    if(memcmp(temp_string.c_str(),arg_param3,sizeof (arg_param3))){
+    if(memcmp(temp_string.cstring(),arg_param3,sizeof (arg_param3))){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -123,12 +123,12 @@ bool CliTest::execute_class_api_case(){
     }
     temp_string = cli_test.at(2);
     temp_string.to_lower();
-    if(!cli_test.is_option(temp_string.c_str())){
+    if(!cli_test.is_option(temp_string.cstring())){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     cli_test.set_case_sensitive(true);
-    if(cli_test.is_option(temp_string.c_str())){
+    if(cli_test.is_option(temp_string.cstring())){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -136,15 +136,15 @@ bool CliTest::execute_class_api_case(){
     int option_value;
     option_value_number = 3;
     temp_string = cli_test.at(option_value_number);
-    option_value = cli_test.get_option_value(temp_string.c_str());
+    option_value = cli_test.get_option_value(temp_string.cstring());
     temp_string = cli_test.at(option_value_number+1);
-    if(option_value != temp_string.atoi()){
+    if(option_value != temp_string.to_integer()){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
     option_value_number = 5;
     temp_string = cli_test.at(option_value_number);
-    option_value = cli_test.get_option_hex_value(temp_string.c_str());
+    option_value = cli_test.get_option_hex_value(temp_string.cstring());
     temp_string = cli_test.at(option_value_number+1);
     if(option_value != 14){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -153,9 +153,9 @@ bool CliTest::execute_class_api_case(){
 
     option_value_number = 7;
     temp_string = cli_test.at(option_value_number);
-    temp_string = cli_test.get_option_argument(temp_string.c_str());
+    temp_string = cli_test.get_option_argument(temp_string.cstring());
 
-    if(memcmp(temp_string.c_str(),arg_str[option_value_number+1],strlen(arg_str[option_value_number+1]))){
+    if(memcmp(temp_string.cstring(),arg_str[option_value_number+1],strlen(arg_str[option_value_number+1]))){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
@@ -206,22 +206,22 @@ bool CliTest::execute_class_stress_case(){
         arg_path_and_name = arg_path;
         arg_path_and_name += '/';
         arg_path_and_name +=  arg_name;
-        arg_str[0] = (char*)arg_path_and_name.c_str();
+        arg_str[0] = (char*)arg_path_and_name.cstring();
         rand_string_value(name_len,arg_param1);
-        arg_param1.insert(0,defis.c_str());
-        arg_str[1] = (char*)arg_param1.c_str();
+        arg_param1.insert(String::Position(0),defis.cstring());
+        arg_str[1] = (char*)arg_param1.cstring();
         rand_string_value(name_len,arg_param2);
-        arg_param2.insert(0,defis.c_str());
-        arg_str[2] = (char*)arg_param2.c_str();
+        arg_param2.insert(String::Position(0),defis.cstring());
+        arg_str[2] = (char*)arg_param2.cstring();
         rand_string_value(name_len,arg_param3);
-        arg_param3.insert(0,defis.c_str());
-        arg_str[3] = (char*)arg_param3.c_str();
-        arg_str[4] = (char*)arg_param4[i%STR_INT_NUMBER].c_str();
-        arg_str[5] = (char*)arg_param5.c_str();
-        arg_str[6] = (char*)arg_param6[i%STR_INT_NUMBER].c_str();
-        arg_str[7] = (char*)arg_param7.c_str();
-        arg_str[8] = (char*)arg_param8.c_str();
-        arg_str[9] = (char*)arg_param9.c_str();
+        arg_param3.insert(String::Position(0),defis.cstring());
+        arg_str[3] = (char*)arg_param3.cstring();
+        arg_str[4] = (char*)arg_param4[i%STR_INT_NUMBER].cstring();
+        arg_str[5] = (char*)arg_param5.cstring();
+        arg_str[6] = (char*)arg_param6[i%STR_INT_NUMBER].cstring();
+        arg_str[7] = (char*)arg_param7.cstring();
+        arg_str[8] = (char*)arg_param8.cstring();
+        arg_str[9] = (char*)arg_param9.cstring();
         u8 arg_number = 10;
         Cli cli_test(arg_number,arg_str);
         if(arg_number != cli_test.size()){
@@ -240,7 +240,7 @@ bool CliTest::execute_class_stress_case(){
         }
 		  if( cli_test.path() != arg_path_and_name ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-            print_case_message("Failed %s:%s", cli_test.path(),arg_path.c_str());
+            print_case_message("Failed %s:%s", cli_test.path(),arg_path.cstring());
             result = false;
         }
 		  if(cli_test.at(0) != arg_path_and_name ){
@@ -259,7 +259,7 @@ bool CliTest::execute_class_stress_case(){
 				print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
-        cli_test.set_publisher(publisher.c_str());
+        cli_test.set_publisher(publisher.cstring());
 		  if( cli_test.publisher() != publisher ){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -276,12 +276,12 @@ bool CliTest::execute_class_stress_case(){
         }
         temp_string = cli_test.at(2);
         temp_string.to_upper();
-        if(!cli_test.is_option(temp_string.c_str())){
+        if(!cli_test.is_option(temp_string.cstring())){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
         cli_test.set_case_sensitive(true);
-        if(cli_test.is_option(temp_string.c_str()) && name_len){
+        if(cli_test.is_option(temp_string.cstring()) && name_len){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
@@ -289,14 +289,14 @@ bool CliTest::execute_class_stress_case(){
         int option_value;
         option_value_number = 3;
         temp_string = cli_test.at(option_value_number);
-        option_value = cli_test.get_option_value(temp_string.c_str());
-        if((option_value != arg_param4[i%STR_INT_NUMBER].atoi()) && name_len){
+        option_value = cli_test.get_option_value(temp_string.cstring());
+        if((option_value != arg_param4[i%STR_INT_NUMBER].to_integer()) && name_len){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
         option_value_number = 5;
         temp_string = cli_test.at(option_value_number);
-        option_value = cli_test.get_option_hex_value(temp_string.c_str());
+        option_value = cli_test.get_option_hex_value(temp_string.cstring());
         if(option_value != hex_value[i%STR_INT_NUMBER]){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
@@ -304,9 +304,9 @@ bool CliTest::execute_class_stress_case(){
 
         option_value_number = 7;
         temp_string = cli_test.at(option_value_number);
-        temp_string = cli_test.get_option_argument(temp_string.c_str());
+        temp_string = cli_test.get_option_argument(temp_string.cstring());
 
-        if(memcmp(temp_string.c_str(),arg_str[option_value_number+1],strlen(arg_str[option_value_number+1]))){
+        if(memcmp(temp_string.cstring(),arg_str[option_value_number+1],strlen(arg_str[option_value_number+1]))){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
@@ -372,17 +372,17 @@ bool CliTest::execute_class_performance_case(){
             result = false;
         }
         temp_string = cli_test.at(1);
-        if(memcmp(temp_string.c_str(),arg_param1,sizeof (arg_param1))){
+        if(memcmp(temp_string.cstring(),arg_param1,sizeof (arg_param1))){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
         temp_string = cli_test.at(2);
-        if(memcmp(temp_string.c_str(),arg_param2,sizeof (arg_param2))){
+        if(memcmp(temp_string.cstring(),arg_param2,sizeof (arg_param2))){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
         temp_string = cli_test.at(3);
-        if(memcmp(temp_string.c_str(),arg_param3,sizeof (arg_param3))){
+        if(memcmp(temp_string.cstring(),arg_param3,sizeof (arg_param3))){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
@@ -408,7 +408,7 @@ bool CliTest::execute_class_performance_case(){
             result = false;
         }
         cli_test.set_case_sensitive(true);
-        if(cli_test.is_option(temp_string.c_str())){
+        if(cli_test.is_option(temp_string.cstring())){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
@@ -416,15 +416,15 @@ bool CliTest::execute_class_performance_case(){
         int option_value;
         option_value_number = 3;
         temp_string = cli_test.at(option_value_number);
-        option_value = cli_test.get_option_value(temp_string.c_str());
+        option_value = cli_test.get_option_value(temp_string.cstring());
         temp_string = cli_test.at(option_value_number+1);
-        if(option_value != temp_string.atoi()){
+        if(option_value != temp_string.to_integer()){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
         option_value_number = 5;
         temp_string = cli_test.at(option_value_number);
-        option_value = cli_test.get_option_hex_value(temp_string.c_str());
+        option_value = cli_test.get_option_hex_value(temp_string.cstring());
         temp_string = cli_test.at(option_value_number+1);
         if(option_value != 14){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
@@ -432,8 +432,8 @@ bool CliTest::execute_class_performance_case(){
         }
         option_value_number = 7;
         temp_string = cli_test.at(option_value_number);
-        temp_string = cli_test.get_option_argument(temp_string.c_str());
-        if(memcmp(temp_string.c_str(),arg_str[option_value_number+1],strlen(arg_str[option_value_number+1]))){
+        temp_string = cli_test.get_option_argument(temp_string.cstring());
+        if(memcmp(temp_string.cstring(),arg_str[option_value_number+1],strlen(arg_str[option_value_number+1]))){
             print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
             result = false;
         }
