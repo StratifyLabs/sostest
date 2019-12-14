@@ -18,14 +18,53 @@ bool SchedTest::execute_class_api_case(){
    int i;
 
 
-   {
-      Function<int, pid_t, struct sched_param*> test("sched_getparam", sched_getparam, this);
-      test.expect_error(ESRCH,-1,&param);
-      test.expect_result(0,getpid(),&param);
+   TEST_THIS_EXPECT(int, sched_getparam(getpid(), &param), 0);
+   TEST_THIS_EXPECT(int, param.sched_priority, 0);
 
-      TEST_EXPECT(test, int, param.sched_priority, 0);
-
+   for(int i = 5000; i < 50000; i++){
+      TEST_THIS_EXPECT_ERROR(ESRCH, sched_getparam(i, &param));
    }
+
+   for(int i = -5000; i < 0; i++){
+      TEST_THIS_EXPECT_ERROR(ESRCH, sched_getparam(i, &param));
+   }
+
+   min_prio = sched_get_priority_min(SCHED_FIFO);
+   max_prio = sched_get_priority_max(SCHED_FIFO);
+   param.sched_priority = min_prio-1;
+   TEST_THIS_EXPECT_ERROR(EINVAL, sched_setscheduler(getpid(), SCHED_FIFO, &param));
+   for(i = min_prio; i <= max_prio; i++){
+      wait(Microseconds(1000));
+      param.sched_priority = i;
+      TEST_THIS_EXPECT(int, sched_setscheduler(getpid(), SCHED_FIFO, &param), 0);
+   }
+   param.sched_priority = max_prio+1;
+   TEST_THIS_EXPECT_ERROR(EINVAL, sched_setscheduler(getpid(), SCHED_FIFO, &param));
+
+   min_prio = sched_get_priority_min(SCHED_RR);
+   max_prio = sched_get_priority_max(SCHED_RR);
+   param.sched_priority = min_prio-1;
+   TEST_THIS_EXPECT_ERROR(EINVAL, sched_setscheduler(getpid(), SCHED_RR, &param));
+   for(i = min_prio; i <= max_prio; i++){
+      wait(Microseconds(1000));
+      param.sched_priority = i;
+      TEST_THIS_EXPECT(int, sched_setscheduler(getpid(), SCHED_RR, &param), 0);
+   }
+   param.sched_priority = max_prio+1;
+   TEST_THIS_EXPECT_ERROR(EINVAL, sched_setscheduler(getpid(), SCHED_RR, &param));
+
+
+   min_prio = sched_get_priority_min(SCHED_OTHER);
+   max_prio = sched_get_priority_max(SCHED_OTHER);
+   param.sched_priority = min_prio-1;
+   TEST_THIS_EXPECT_ERROR(EINVAL, sched_setscheduler(getpid(), SCHED_OTHER, &param));
+   for(i = min_prio; i <= max_prio; i++){
+      wait(Microseconds(1000));
+      param.sched_priority = i;
+      TEST_THIS_EXPECT(int, sched_setscheduler(getpid(), SCHED_OTHER, &param), 0);
+   }
+   param.sched_priority = max_prio+1;
+   TEST_THIS_EXPECT_ERROR(EINVAL, sched_setscheduler(getpid(), SCHED_OTHER, &param));
 
    {
       Function<int, pid_t, const struct sched_param*> test("sched_setparam", sched_setparam, this);

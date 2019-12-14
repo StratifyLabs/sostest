@@ -18,8 +18,6 @@ int main(int argc, char * argv[]){
 
 
 bool handle_tests(const Cli & cli){
-
-
 	if( cli.get_option("test") == "true" ){
 
 		u32 o_execute_flags = 0;
@@ -32,7 +30,11 @@ bool handle_tests(const Cli & cli){
 			o_execute_flags = Test::EXECUTE_ALL;
 		}
 
-		Test::initialize(cli.name(), cli.version(), SOS_GIT_HASH);
+      Test::initialize(
+               Test::Name(cli.name()),
+               Test::Version(cli.version()),
+               Test::GitHash(SOS_GIT_HASH)
+               );
 
 		if( cli.get_option("string") == "true" ){
 			StringTest test;
@@ -53,3 +55,8 @@ bool handle_tests(const Cli & cli){
 	return false;
 
 }
+
+
+
+
+

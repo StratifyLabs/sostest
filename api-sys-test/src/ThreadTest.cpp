@@ -42,7 +42,7 @@ bool ThreadTest::execute_class_api_case(){
 			dos_thread(Thread::StackSize(2048)),
 			tres_thread(Thread::StackSize(2048)),
 			quatro_thread(Thread::StackSize(2048));
-	pid_t uno_id,dos_id,tres_id,quatro_id;
+
 	enum Sched::policy uno_policy,dos_policy,tres_policy,quatro_policy;
 	int uno_priority =1;
 	int dos_priority =2;
@@ -88,22 +88,19 @@ bool ThreadTest::execute_class_api_case(){
 	CREATE_THREAD(dos_thread,handle_thread_2,this,dos_priority,dos_policy);
 	TEST_THIS_EXPECT(bool, dos_thread.is_valid(), true);
 
-	dos_id = dos_thread.get_pid();
-	TEST_THIS_EXPECT(bool, dos_id > 0, true);
+	TEST_THIS_EXPECT(bool, dos_thread.get_pid() > 0, true);
 
 	TEST_THIS_EXPECT(int, dos_thread.get_policy(), dos_policy);
 	CREATE_THREAD(tres_thread, handle_thread_3, this, tres_priority, tres_policy);
 
 	TEST_THIS_EXPECT(bool, dos_thread.is_valid(), true);
-	tres_id = tres_thread.get_pid();
-	TEST_THIS_EXPECT(bool, tres_id > 0, true);
+	TEST_THIS_EXPECT(bool, tres_thread.get_pid() > 0, true);
 	TEST_THIS_EXPECT(int, tres_thread.get_policy(), tres_policy);
 
 	CREATE_THREAD(quatro_thread, thread_4, this, quatro_priority, quatro_policy);
 
 	TEST_THIS_EXPECT(bool, dos_thread.is_valid(), true);
-	quatro_id = quatro_thread.get_pid();
-	TEST_THIS_EXPECT(bool, quatro_id > 0, true);
+	TEST_THIS_EXPECT(bool, quatro_thread.get_pid() > 0, true);
 	TEST_THIS_EXPECT(int, quatro_thread.get_policy(), quatro_policy);
 
 	TEST_THIS_EXPECT(int, uno_thread.get_priority(), uno_priority);
@@ -117,10 +114,10 @@ bool ThreadTest::execute_class_api_case(){
 		dos_priority= (dos_priority>=Sched::get_priority_max(dos_policy))?dos_priority:dos_priority+1;
 		tres_priority= (tres_priority>=Sched::get_priority_max(tres_policy))?Sched::get_priority_max(tres_policy):tres_priority+1;
 		quatro_priority= (quatro_priority>=Sched::get_priority_max(quatro_policy))?Sched::get_priority_max(quatro_policy):quatro_priority+1;
-		uno_thread.set_priority(Thread::Priority(uno_priority));
-		dos_thread.set_priority(Thread::Priority(dos_priority));
-		tres_thread.set_priority(Thread::Priority(tres_priority));
-		quatro_thread.set_priority(Thread::Priority(quatro_priority));
+		TEST_THIS_EXPECT(int, uno_thread.set_priority(uno_priority), 0);
+		TEST_THIS_EXPECT(int, dos_thread.set_priority(dos_priority), 0);
+		TEST_THIS_EXPECT(int, tres_thread.set_priority(tres_priority), 0);
+		TEST_THIS_EXPECT(int, quatro_thread.set_priority(quatro_priority), 0);
 
 		TEST_THIS_EXPECT(int, uno_thread.get_priority(), uno_priority);
 		TEST_THIS_EXPECT(int, dos_thread.get_priority(), dos_priority);
@@ -281,7 +278,6 @@ bool ThreadTest::execute_class_performance_case(){
  */
 bool ThreadTest::execute_class_stress_case(){
 	bool result = true;
-	int operation_result;
 	const int itterate_num = 512;
 	Thread uno_thread(Thread::StackSize(4096)),
 			dos_thread(Thread::StackSize(2048)),
@@ -293,8 +289,8 @@ bool ThreadTest::execute_class_stress_case(){
 	int dos_priority=4;
 	int tres_priority =4;
 	int quatro_priority =4;
-	int max_prior_RR, max_prior_FIFO, max_prior_OTHER;
-	int min_prior_RR, min_prior_FIFO, min_prior_OTHER;
+	int max_prior_RR, max_prior_FIFO;
+	int min_prior_RR, min_prior_FIFO;
 
 	//RR sheduler
 	uno_policy = Sched::RR;
@@ -306,10 +302,8 @@ bool ThreadTest::execute_class_stress_case(){
 	max_prior_RR= 20;
 	max_prior_FIFO= Sched::get_priority_max(Sched::FIFO);
 	max_prior_FIFO= 20;
-	max_prior_OTHER= Sched::get_priority_max(Sched::OTHER);
 	min_prior_RR = Sched::get_priority_min(Sched::RR);
 	min_prior_FIFO = Sched::get_priority_min(Sched::FIFO);
-	min_prior_OTHER = Sched::get_priority_min(Sched::OTHER);
 
 	print_case_message("vary policy and priority");
 

@@ -13,7 +13,7 @@ static int (*dmain)() = 0;
 class Dhrystone : public Test {
 public:
 
-	Dhrystone(const ConstString & name) : Test(name){}
+	Dhrystone(const String & name) : Test(name){}
 
 
 	bool execute_class_performance_case(){
@@ -37,7 +37,11 @@ int main(int argc, char * argv[]){
 
 	dmain = (int (*)())kernel_request_api(0);
 
-	Test::initialize("dhrystone", cli.version(), SOS_GIT_HASH);
+	Test::initialize(
+				Test::Name(cli.name()),
+				Test::Version(cli.version()),
+				Test::GitHash(SOS_GIT_HASH)
+				);
 
 	{ //these braces force the destructor before Test::finalize()
 		Dhrystone dhrystone("dhrystone");

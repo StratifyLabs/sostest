@@ -9,7 +9,7 @@ class ToolkitDatabaseObjectTest : public Test {
 public:
 	ToolkitDatabaseObjectTest();
 
-	void set_project(const ConstString & project){
+	void set_project(const String & project){
 		m_project = project;
 	}
 

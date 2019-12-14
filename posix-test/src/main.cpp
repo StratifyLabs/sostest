@@ -184,64 +184,29 @@ int main(int argc, char * argv[]){
         }
     }
 #endif
-
     return 0;
-
-
 }
 u32 decode_cli(const Cli & cli){
     u32 o_flags = 0;
-
-    if(cli.is_option("-all") ){
-        o_flags = 0xffffffff;
-        return o_flags;
-    }
-
-    o_flags = Test::parse_options(cli);
-
-    if(cli.is_option("-test_all") ){ o_flags |= 0xfffffff0; }
-    if(cli.is_option("-stdio") ){ o_flags |= STDIO_TEST; }
-    if(cli.is_option("-aio") ){ o_flags |= AIO_TEST; }
-    if(cli.is_option("-sem") ){ o_flags |= SEM_TEST; }
-    if(cli.is_option("-listio") ){ o_flags |= LISTIO_TEST; }
-    if(cli.is_option("-dirent") ){ o_flags |= DIRENT_TEST; }
-    if(cli.is_option("-mq") )  { o_flags |= MQ_TEST; }
-    if(cli.is_option("-sched") ){ o_flags |= SCHED_TEST; }
-    if(cli.is_option("-pthread") ){ o_flags |= PTHREAD_TEST; }
-    if(cli.is_option("-directory") ){ o_flags |= DIRECTORY_TEST; }
-    if(cli.is_option("-file") ){ o_flags |= FILE_TEST; }
-    if(cli.is_option("-access") ){ o_flags |= ACCESS_TEST; }
-    if(cli.is_option("-sleep") ){ o_flags |= SLEEP_TEST; }
-    if(cli.is_option("-signal") ){ o_flags |= SIGNAL_MASTER_TEST; }
-    if(cli.is_option("-launch") ){ o_flags |= LAUNCH_TEST; }
-
+    o_flags = Test::parse_execution_flags(cli);
+    o_flags |= Test::parse_test(cli, "stdio", STDIO_TEST);
+    o_flags |= Test::parse_test(cli, "aio", AIO_TEST);
+    o_flags |= Test::parse_test(cli, "sem", SEM_TEST);
+    o_flags |= Test::parse_test(cli, "listio", LISTIO_TEST);
+    o_flags |= Test::parse_test(cli, "dirent", DIRENT_TEST);
+    o_flags |= Test::parse_test(cli, "mq", MQ_TEST);
+    o_flags |= Test::parse_test(cli, "sched", SCHED_TEST);
+    o_flags |= Test::parse_test(cli, "pthread", PTHREAD_TEST);
+    o_flags |= Test::parse_test(cli, "directory", DIRECTORY_TEST);
+    o_flags |= Test::parse_test(cli, "file", FILE_TEST);
+    o_flags |= Test::parse_test(cli, "access", ACCESS_TEST);
+    o_flags |= Test::parse_test(cli, "sleep", SLEEP_TEST);
+    o_flags |= Test::parse_test(cli, "signal", SIGNAL_MASTER_TEST);
+    o_flags |= Test::parse_test(cli, "launch", LAUNCH_TEST);
     return o_flags;
 
 }
 
 void show_usage(const Cli & cli){
-    printf("\n");
-    printf("usage: %s\n", cli.name().cstring());
-    printf("    -all            execute all tests and all test types.\n");
-//test type
-    printf("    -execute_all    execute API, performance, and stress tests.\n");
-    printf("    -api            execute API tests.\n");
-    printf("    -performance    execute performance tests.\n");
-    printf("    -stress         execute stress tests.\n");
-//data type
-    printf("    -test_all       execute all POSIX tests.\n");
-    printf("    -stdio          execute stdio tests (requires user interaction).\n");
-    printf("    -aio            execute aio tests.\n");
-    printf("    -sem            execute semaphore tests.\n");
-    printf("    -listio         execute listio tests.\n");
-    printf("    -dirent         execute dirent tests.\n");
-    printf("    -mq             execute message queue tests.\n");
-    printf("    -sched          execute scheduler tests.\n");
-    printf("    -pthread        execute POSIX threads tests.\n");
-    printf("    -directory      execute directory tests.\n");
-    printf("    -file           execute file tests.\n");
-    printf("    -access         execute access tests.\n");
-    printf("    -sleep          execute sleep and usleep tests.\n");
-    printf("    -signal         execute signal tests.\n");
-    printf("    -launch         execute launch tests (launches other applications - non POSIX).\n");
+   cli.show_options();
 }

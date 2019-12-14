@@ -9,6 +9,7 @@
 #define SL_CONFIG_VERSION_STRING "0.5"
 #define SL_CONFIG_VERSION_BCD 0x05
 #define SL_CONFIG_DOCUMENT_ID "Z7BW34XiunEAIxZfd0Bh"
+#define SL_CONFIG_TEAM_ID ""
 #define SL_CONFIG_NAME "math-test"
 #define SL_CONFIG_TYPE "app"
 #define SL_CONFIG_PUBLISHER "Stratify Labs, Inc"

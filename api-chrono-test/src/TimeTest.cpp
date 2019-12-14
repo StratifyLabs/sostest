@@ -1,5 +1,6 @@
 ﻿#include "TimeTest.hpp"
-#include "sapi/chrono.hpp"
+#include <sapi/chrono.hpp>
+#include <sapi/fs.hpp>
 #include "ctime"
 #include <sapi/hal.hpp>
 TimeTest::TimeTest() : Test("chrono::Time"){
@@ -18,27 +19,26 @@ bool TimeTest::execute_class_api_case(){
 	tm time_tm_uno,time_tm_dos;
 	u8 const time_delay_sec =1;
 	Device rtc;
-    if(rtc.open("/dev/rtc", O_RDWR)!=0){
+	 if(rtc.open("/dev/rtc", OpenFlags::read_write())!=0){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
 	rtc_attr_t attr;
 	attr.o_flags = RTC_FLAG_ENABLE;
-	rtc.ioctl(I_RTC_SETATTR, &attr);
+	rtc.ioctl(
+				Device::IoRequest(I_RTC_SETATTR),
+				Device::IoArgument(&attr)
+				);
 	timer_sh.start();
 	current_time_uno = now.get_time_of_day().time();
 	time_tm_uno = now.get_tm();
-	timer_sh.wait_sec(time_delay_sec);
+	wait(Seconds(time_delay_sec));
 	current_time_dos = now.get_time_of_day().time();
 	time_tm_dos = now.get_tm();
-	if(time_compare(time_tm_uno,time_tm_dos)){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if(current_time_dos <= current_time_uno){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
+
+	TEST_THIS_EXPECT(int, time_compare(time_tm_uno,time_tm_dos), 0);
+	TEST_THIS_EXPECT(bool, current_time_dos <= current_time_uno, false);
+
 	now.set_time(1526990058);
 	struct tm time_struct;
 	time_t m_time = 1526990058;
@@ -46,37 +46,22 @@ bool TimeTest::execute_class_api_case(){
 	now.set_time_of_day();
 	current_time_dos = now.get_time_of_day().time();
 	time_tm_dos = now.get_tm();
-	if(time_tm_dos.tm_year != time_struct.tm_year){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if(time_tm_dos.tm_mon != time_struct.tm_mon ){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if(time_tm_dos.tm_hour != time_struct.tm_hour){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	timer_sh.wait_sec(time_delay_sec);
+
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_year, time_struct.tm_year);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_mon, time_struct.tm_mon);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_hour, time_struct.tm_hour);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_min, time_struct.tm_min);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_sec, time_struct.tm_sec);
+
+	wait(Seconds(time_delay_sec));
 	current_time_dos = now.get_time_of_day().time();
 	time_tm_dos = now.get_tm();
-	if(time_tm_dos.tm_year != time_struct.tm_year){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if(time_tm_dos.tm_mon != time_struct.tm_mon ){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if(time_tm_dos.tm_hour != time_struct.tm_hour ){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if(time_tm_dos.tm_sec == time_struct.tm_sec){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
+
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_year, time_struct.tm_year);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_mon, time_struct.tm_mon);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_hour, time_struct.tm_hour);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_min, time_struct.tm_min);
+	TEST_THIS_EXPECT(int, time_tm_dos.tm_sec, time_struct.tm_sec);
 
 	rtc.close();
 	return result;
