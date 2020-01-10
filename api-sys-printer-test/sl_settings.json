@@ -1,0 +1,18 @@
+{
+   "description": "api-var-test is an application that tests the var namespace classes in the Stratify API.",
+   "github": "",
+   "name": "api-var-test",
+   "permissions": "public",
+   "publisher": "Stratify Labs, Inc",
+   "tags": "bench",
+   "type": "app",
+   "version": "0.1",
+   "hardwareId": "",
+   "ramSize": 0,
+   "uid": "9cQyOTk3fZXOuMtPyf5j9X4H4b83",
+   "timestamp": 1556033725,
+   "documentId": "JyHFeJuGGCkrmdDIA4Xl",
+   "buildList": {
+      "Oa9bxGfOymZ4ddYvx3ew": "0.1"
+   }
+}
