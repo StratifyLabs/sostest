@@ -2,7 +2,7 @@
 
 #include <sapi/var.hpp>
 #include <sapi/chrono.hpp>
-#include <stoolkit/cloud.hpp>
+#include <CloudAPI/cloud.hpp>
 
 ToolkitDatabaseObjectTest::ToolkitDatabaseObjectTest() : Test("ToolkitDatabaseObjectTest"){
 
@@ -29,10 +29,7 @@ bool ToolkitDatabaseObjectTest::execute_class_api_case(){
 	//Sched::set_scheduler(Sched::get_pid(), Sched::FIFO, 16);
 
 	//need to upload data
-	if( database_object.json_object().insert("name", JsonString("Tyler Gilbert")) < 0 ){
-		print_case_failed("failed to insert name");
-		return case_result();
-	}
+	database_object.to_object().insert("name", JsonString("Tyler Gilbert"));
 
 	print_case_message("timestamp is %d", Time::get_time_of_day().time());
 
@@ -58,10 +55,10 @@ bool ToolkitDatabaseObjectTest::execute_class_api_case(){
 		print_case_failed("failed to download document -> %s", database_object.error_message().cstring());
 		return case_result();
 	} else {
-		print_case_message("downloaded %d objects", database_object.json_object().count());
+		print_case_message("downloaded %d objects", database_object.to_object().count());
 	}
 
-	print_case_message("object -> '%s'", JsonDocument().stringify(database_object.json_object()).cstring());
+	print_case_message("object -> '%s'", JsonDocument().stringify(database_object.to_object()).cstring());
 	print_case_message("test was a success!!!");
 
 

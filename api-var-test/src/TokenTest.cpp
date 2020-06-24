@@ -40,10 +40,10 @@ bool TokenTest::execute_class_performance_case(){
 		for(u32 i =0;i<50;i++){
 
 			TEST_THIS_EXPECT(int,
-								  two.at(i).compare(
-									  String::Position(0),
-									  String::Length(s[i%8].length()),
-								  s[i%8]), 0);
+											 two.at(i).compare(
+												 String::Position(0),
+												 String::Length(s[i%8].length()),
+											 s[i%8]), 0);
 
 #if 0
 			if( two.at(i).compare(0, s[i%8].length(), s[i%8]) ){
@@ -74,70 +74,270 @@ bool TokenTest::execute_class_stress_case(){
  */
 bool TokenTest::execute_class_api_case(){
 	bool result = true;
-	String s1("Uno,dos,tres, quatro or  cinko");
-	Tokenizer one(
-				s1.cstring(),
-				Tokenizer::Delimeters(",. "),
-				Tokenizer::IgnoreBetween(";")
-				);
-	if(one.size() != 6){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	String s[8];
-	s[0] = "uno";
-	s[1] = "dos";
-	s[2] = "tres";
-	s[3] = "quatro";
-	s[4] = "cinko";
-	s[5] = "seis";
-	s[6] = "sieta";
-	s[7] = "ocho";
-	String s_common;
-	//generate string for token
-	for (u32 i =0;i<48;i++){
-		s_common.append(s[i%8].cstring());
-		if(i<16){
-			s_common.append(",");
-		}else if(i<32){
-			s_common.append(";");
-		}else if(i<47){
-			s_common.append(" ");
+
+	print_case_message("token API test");
+	{
+		const char * case_string = "test,1,2,3,4\n";
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(",")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 5, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "1", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "2", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "3", true);
+			TEST_THIS_EXPECT(bool, token_case.at(4) == "4\n", true);
+		}
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(",\n")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 6, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "1", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "2", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "3", true);
+			TEST_THIS_EXPECT(bool, token_case.at(4) == "4", true);
+			TEST_THIS_EXPECT(bool, token_case.at(5) == "", true);
+		}
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters("\n")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 2, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test,1,2,3,4", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "", true);
 		}
 	}
-	//parse string for and verify with base
-	Tokenizer two(
-				s_common.cstring(),
-				Tokenizer::Delimeters(",; "),
-				Tokenizer::IgnoreBetween("(")
-				);
 
-	for(u32 i =0;i<48;i++){
-
-		TEST_THIS_EXPECT(String, two.at(i), s[i%8]);
-
-	}
-	for(u8 j=0;j<=0x0f;j++){
-		char char_ascii;
-		s_common.assign(s[0].cstring());
-		//generate string
-		for (u32 i =0;i<100;i++){
-			s_common.append(s[i%8].cstring());
-			//add character from "space" to "/" in ascii table
-			char_ascii = 0x20 | j;
-			s_common.append(char_ascii);
+	{
+		const char * case_string = "test,\"1,2\",3,4\n";
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(","),
+						Tokenizer::IgnoreBetween("\"")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 4, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "\"1,2\"", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "3", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "4\n", true);
 		}
-		//parse string and verify
-		char delim[2] = "\0";
-		delim[0] = 0x20 | j;
-		Tokenizer two(
-					s_common.cstring(),
-					Tokenizer::Delimeters(delim)
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(",")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 5, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "\"1", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "2\"", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "3", true);
+			TEST_THIS_EXPECT(bool, token_case.at(4) == "4\n", true);
+		}
+	}
+
+	{
+		const char * case_string = "test,'1','2','3,4',5\n";
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(","),
+						Tokenizer::IgnoreBetween("'")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 5, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "'1'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "'2'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "'3,4'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(4) == "5\n", true);
+		}
+	}
+
+	{
+		const char * case_string = "test,'1','2','','4','5'\n";
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(",\n"),
+						Tokenizer::IgnoreBetween("'")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 7, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "'1'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "'2'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "''", true);
+			TEST_THIS_EXPECT(bool, token_case.at(4) == "'4'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(5) == "'5'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(6) == "", true);
+		}
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(",\n")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 7, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "'1'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "'2'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "''", true);
+			TEST_THIS_EXPECT(bool, token_case.at(4) == "'4'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(5) == "'5'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(6) == "", true);
+		}
+
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(",")
+						);
+			TEST_THIS_EXPECT(bool, token_case.count() == 6, true);
+			TEST_THIS_EXPECT(bool, token_case.at(0) == "test", true);
+			TEST_THIS_EXPECT(bool, token_case.at(1) == "'1'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(2) == "'2'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(3) == "''", true);
+			TEST_THIS_EXPECT(bool, token_case.at(4) == "'4'", true);
+			TEST_THIS_EXPECT(bool, token_case.at(5) == "'5'\n", true);
+		}
+	}
+
+	{
+		const char * case_string = "app.install:path=HelloWorld,run,terminal,args='--test, --api, --token'";
+		{
+			Tokenizer token_case(
+						case_string,
+						Tokenizer::Delimeters(":"),
+						Tokenizer::IgnoreBetween("'"),
+						Tokenizer::MaximumCount(1)
+						);
+
+			TEST_THIS_ASSERT(bool, token_case.count() == 2, true);
+
+			Tokenizer command(
+						token_case.at(0),
+						Tokenizer::Delimeters(".")
+						);
+
+			TEST_THIS_ASSERT(bool, command.count() == 2, true);
+			TEST_THIS_EXPECT(bool, command.at(0) == "app", true);
+			TEST_THIS_EXPECT(bool, command.at(1) == "install", true);
+
+
+			Tokenizer arguments(
+						token_case.at(1),
+						Tokenizer::Delimeters(","),
+						Tokenizer::IgnoreBetween("'")
+						);
+
+			TEST_THIS_ASSERT(bool, arguments.count() == 4, true);
+			TEST_THIS_EXPECT(bool, arguments.at(0) == "path=HelloWorld", true);
+			TEST_THIS_EXPECT(bool, arguments.at(1) == "run", true);
+			TEST_THIS_EXPECT(bool, arguments.at(2) == "terminal", true);
+			TEST_THIS_EXPECT(bool, arguments.at(3) == "args='--test, --api, --token'", true);
+
+			for(u32 i=0; i < arguments.count(); i++){
+				Tokenizer arg(
+							arguments.at(i),
+							Tokenizer::Delimeters("=")
+							);
+
+				if( i == 0 ){
+					TEST_THIS_ASSERT(bool, arg.count() == 2, true);
+					TEST_THIS_EXPECT(bool, arg.at(0) == "path", true);
+					TEST_THIS_EXPECT(bool, arg.at(1) == "HelloWorld", true);
+				} else if( i == 1 ){
+					TEST_THIS_ASSERT(bool, arg.count() == 1, true);
+					TEST_THIS_EXPECT(bool, arg.at(0) == "run", true);
+				} else if( i == 2 ){
+					TEST_THIS_ASSERT(bool, arg.count() == 1, true);
+					TEST_THIS_EXPECT(bool, arg.at(0) == "terminal", true);
+				} else if( i == 3 ){
+					TEST_THIS_ASSERT(bool, arg.count() == 2, true);
+					TEST_THIS_EXPECT(bool, arg.at(0) == "args", true);
+					TEST_THIS_EXPECT(bool, arg.at(1) == "'--test, --api, --token'", true);
+				}
+			}
+		}
+	}
+
+	{
+
+		const char * command_reference =
+				"copy:description=opt_string|The `filesystem.copy` command is used to copy files to/from the connected device to/from the host computer. Paths prefixed with *host@* are on the host computer while paths prefixed with *device@* are on the connected device.||filesystem.copy:source=host@README.md;dest=device@/app/flash/README.md|"
+				",source_path=req_string|specifies the path to the source file to copy. If the source is a directory, all files in the directory are copied.||fs.copy:source=host@./data.txt,dest=device@/home/data.txt|"
+				",destination_dest=req_string|specifies the destination path. If the source is a directory, the destination should be a directory as well.||fs.copy:source=host@./data.txt,dest=device@/home/data.txt|"
+				",recursive=opt_bool_false|if the source is a directory it will be copied recursively.||fs.copy:source=host@data,dest=device@/home/data,recursive|"
+				",remove=opt_bool_false|, if true, and if the source is on the device, the source will be deleted after it is copied.||fs.copy:source=host@./data.txt,dest=device@/home/data.txt,remove=true|"
+				",hidden=opt_bool_false|specifies whether or not to copy hidden files (files that start with '.').||fs.copy:source=device@/home/directory,dest=soure@./,hidden=true|"
+				",overwrite_o=opt_bool_true|, if true, the destination will be overwritten withouth warning.||fs.copy:source=host@./data.txt,dest=/home/data.txt,overwrite=false|";
+
+		Tokenizer command_name_and_arguments(
+					command_reference,
+					Tokenizer::Delimeters(":"),
+					Tokenizer::IgnoreBetween("|'\""),
+					Tokenizer::MaximumCount(1));
+
+		TEST_THIS_ASSERT(bool, command_name_and_arguments.count() == 2, true);
+		TEST_THIS_EXPECT(bool, command_name_and_arguments.at(0) == "copy", true);
+
+		Tokenizer arguments_tokens(
+					command_name_and_arguments.at(1),
+					Tokenizer::Delimeters(","),
+					Tokenizer::IgnoreBetween("|'\"")
 					);
-		for(u32 i =0;i<100;i++){
-			TEST_THIS_EXPECT(String,two.at(i), s[i%8]);
+
+		TEST_THIS_ASSERT(bool, arguments_tokens.count() == 7, true);
+		TEST_THIS_EXPECT(bool, arguments_tokens.at(0) ==
+										 "description=opt_string|The `filesystem.copy` command is used to copy files to/from the connected device to/from the host computer. Paths prefixed with *host@* are on the host computer while paths prefixed with *device@* are on the connected device.||filesystem.copy:source=host@README.md;dest=device@/app/flash/README.md|"
+										 , true);
+		TEST_THIS_EXPECT(bool, arguments_tokens.at(1) ==
+										 "source_path=req_string|specifies the path to the source file to copy. If the source is a directory, all files in the directory are copied.||fs.copy:source=host@./data.txt,dest=device@/home/data.txt|"
+										 , true);
+		TEST_THIS_EXPECT(bool, arguments_tokens.at(2) ==
+										 "destination_dest=req_string|specifies the destination path. If the source is a directory, the destination should be a directory as well.||fs.copy:source=host@./data.txt,dest=device@/home/data.txt|"
+										 , true);
+		TEST_THIS_EXPECT(bool, arguments_tokens.at(3) ==
+										 "recursive=opt_bool_false|if the source is a directory it will be copied recursively.||fs.copy:source=host@data,dest=device@/home/data,recursive|"
+										 , true);
+		TEST_THIS_EXPECT(bool, arguments_tokens.at(4) ==
+										 "remove=opt_bool_false|, if true, and if the source is on the device, the source will be deleted after it is copied.||fs.copy:source=host@./data.txt,dest=device@/home/data.txt,remove=true|"
+										 , true);
+		TEST_THIS_EXPECT(bool, arguments_tokens.at(5) ==
+										 "hidden=opt_bool_false|specifies whether or not to copy hidden files (files that start with '.').||fs.copy:source=device@/home/directory,dest=soure@./,hidden=true|"
+										 , true);
+		TEST_THIS_EXPECT(bool, arguments_tokens.at(6) ==
+										 "overwrite_o=opt_bool_true|, if true, the destination will be overwritten withouth warning.||fs.copy:source=host@./data.txt,dest=/home/data.txt,overwrite=false|"
+										 , true);
+
+		for(u32 i=0; i < arguments_tokens.count(); i++){
+			Tokenizer arguments_values_and_descriptions(
+						arguments_tokens.at(i),
+						Tokenizer::Delimeters("|")
+						);
+
+			TEST_THIS_ASSERT(bool, arguments_values_and_descriptions.count() == 5, true);
+
+
+			Tokenizer arguments_values(
+						arguments_values_and_descriptions.at(0),
+						Tokenizer::Delimeters("="),
+						Tokenizer::IgnoreBetween("'\""),
+						Tokenizer::MaximumCount(1)
+						);
+
+			TEST_THIS_ASSERT(bool, arguments_values_and_descriptions.count() >= 2, true);
+
+
 		}
+
+
 	}
+
 
 	//add parse with not zero
 	return result;

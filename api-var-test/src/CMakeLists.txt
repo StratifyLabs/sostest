@@ -13,6 +13,8 @@ set(SOURCES
 	TokenTest.hpp
 	ArrayTest.cpp
 	ArrayTest.hpp
+	JsonTest.cpp
+	JsonTest.hpp
 	RingTest.cpp
 	RingTest.hpp
 	PARENT_SCOPE)

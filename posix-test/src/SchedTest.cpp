@@ -93,7 +93,7 @@ bool SchedTest::execute_class_api_case(){
       for(i = min_prio; i <= max_prio; i++){
          wait(Microseconds(1000));
          param.sched_priority = i;
-         name.sprintf("set scheduler SCHED_RR:%d", i);
+				 name.format("set scheduler SCHED_RR:%d", i);
          test.execute_case_with_less_than_zero_on_error(name.cstring(), 0, getpid(), SCHED_RR, &param);
       }
 
@@ -102,7 +102,7 @@ bool SchedTest::execute_class_api_case(){
       for(i = min_prio; i <= max_prio; i++){
          wait(Microseconds(1000));
          param.sched_priority = i;
-         name.sprintf("set scheduler SCHED_OTHER:%d", i);
+				 name.format("set scheduler SCHED_OTHER:%d", i);
          test.execute_case_with_less_than_zero_on_error(name.cstring(), 0, getpid(), SCHED_OTHER, &param);
       }
    }

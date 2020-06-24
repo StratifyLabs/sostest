@@ -31,7 +31,7 @@ message(STATUS "Building App sources: " ${SOS_SOURCELIST})
 
 
 if( ${SOS_BUILD_CONFIG} STREQUAL arm )
-	set(SOS_LIBRARIES toolkit)
+	set(SOS_LIBRARIES CloudAPI)
 	include(${SOS_TOOLCHAIN_CMAKE_PATH}/sos-app-std.cmake)
 elseif( ${SOS_BUILD_CONFIG} STREQUAL link )
 	set(SOS_ARCH link)

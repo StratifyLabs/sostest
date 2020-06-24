@@ -33,20 +33,21 @@ bool SecureSocketTest::execute_class_api_case(){
 		for(u32 i=0; i < 2; i++){
 			fs::DataFile response_file(fs::OpenFlags::append_write_only());
 			if( (result = http_client.get(
-					  "https://stratify-e6020.firebaseio.com/cloud/project/-KYds7ufk3y4jZe2lnKS/changes.json",
-					  Http::ResponseFile(response_file)
-					  )
-				  ) < 0 ){
+						 "https://stratify-e6020.firebaseio.com/cloud/project/-KYds7ufk3y4jZe2lnKS/changes.json",
+						 Http::ResponseFile(response_file)
+						 )
+					 ) < 0 ){
 				print_case_failed("failed to get data (%d, %d)", result, http_client.error_number());
 				print_case_message("header:%s", http_client.header().cstring());
 				return case_result();
 			} else {
 
 				//read the response
-				open_case("response");
-				String s(response_file.data());
-				print_case_message("%s", s.cstring());
-				close_case();
+				{
+					Case cg(this, "response");
+					String s(response_file.data());
+					print_case_message("%s", s.cstring());
+				}
 
 				print_case_message("pairs %ld", http_client.header_response_pairs().count());
 			}

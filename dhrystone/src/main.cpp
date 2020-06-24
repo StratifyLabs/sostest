@@ -45,7 +45,7 @@ int main(int argc, char * argv[]){
 
 	{ //these braces force the destructor before Test::finalize()
 		Dhrystone dhrystone("dhrystone");
-		dhrystone.execute(Test::EXECUTE_PERFORMANCE);
+		dhrystone.execute(Test::execute_performance);
 	}
 
 	Test::finalize();

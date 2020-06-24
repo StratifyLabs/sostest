@@ -26,54 +26,65 @@ ContainerTest::ContainerTest() : Test("ContainerTest"){
 
 bool ContainerTest::execute_class_api_case(){
 
+	{
+		Case cg(this, "array");
+		execute_array_api_case();
+	}
 
-	open_case("array");
-	execute_array_api_case();
-	close_case();
+	{
+		Case cg(this, "bitset");
+		execute_bitset_api_case();
+	}
 
-	open_case("bitset");
-	execute_bitset_api_case();
-	close_case();
+	{
+		Case cg(this, "deque");
+		execute_deque_api_case();
+	}
 
-	open_case("deque");
-	execute_deque_api_case();
-	close_case();
+	{
+		Case cg(this, "forward_list");
+		execute_forward_list_api_case();
+	}
 
-	open_case("forward_list");
-	execute_forward_list_api_case();
-	close_case();
 
-	open_case("list");
-	execute_list_api_case();
-	close_case();
+	{
+		Case cg(this, "list");
+		execute_list_api_case();
+	}
 
-	open_case("map");
-	execute_map_api_case();
-	close_case();
+	{
+		Case cg(this, "map");
+		execute_map_api_case();
+	}
 
-	open_case("queue");
-	execute_queue_api_case();
-	close_case();
+	{
+		Case cg(this, "queue");
+		execute_queue_api_case();
+	}
 
-	open_case("set");
-	execute_set_api_case();
-	close_case();
+	{
+		Case cg(this, "set");
+		execute_queue_api_case();
+	}
 
-	open_case("stack");
-	execute_stack_api_case();
-	close_case();
+	{
+		Case cg(this, "stack");
+		execute_stack_api_case();
+	}
 
-	open_case("unordered_map");
-	execute_unordered_map_api_case();
-	close_case();
+	{
+		Case cg(this, "unordered_map");
+		execute_unordered_map_api_case();
+	}
 
-	open_case("unordered_set");
-	execute_unordered_set_api_case();
-	close_case();
-
-	open_case("vector");
-	execute_vector_api_case();
-	close_case();
+	{
+		Case cg(this, "unordered_set");
+		execute_unordered_set_api_case();
+	}
+	{
+		Case cg(this, "vector");
+		execute_vector_api_case();
+	}
 
 	return case_result();
 }

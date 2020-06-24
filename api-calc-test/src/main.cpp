@@ -78,33 +78,15 @@ int main(int argc, char * argv[]){
 }
 
 u32 decode_cli(const Cli & cli, u32 & execute_flags){
-    u32 o_flags = 0;
-
-    execute_flags = 0;
-
-    if(cli.is_option("-all") ){
-        o_flags = 0xffffffff;
-        execute_flags |= Test::EXECUTE_ALL;
-        return o_flags;
-    }
-
-
-    if(cli.is_option("-execute_all") ){ execute_flags |= Test::EXECUTE_ALL; }
-    if(cli.is_option("-api") ){ execute_flags |= Test::EXECUTE_API; }
-    if(cli.is_option("-stress") ){ execute_flags |= Test::EXECUTE_STRESS; }
-    if(cli.is_option("-performance") ){ execute_flags |= Test::EXECUTE_PERFORMANCE; }
-    if(cli.is_option("-additional") ){ execute_flags |= Test::EXECUTE_ADDITIONAL; }
-
-    if(cli.is_option("-test_all") ){ o_flags = 0xffffffff; }
-    if(cli.is_option("-base64") ){ o_flags |= BASE64_TEST_FLAG; }
-    if(cli.is_option("-checksum") ){ o_flags |= CHECKSUM_TEST_FLAG; }
-    if(cli.is_option("-ema") ){ o_flags |= EMA_TEST_FLAG; }
-    if(cli.is_option("-lookup") ){ o_flags |= LOOKUP_TEST_FLAG; }
-    if(cli.is_option("-pid") ){ o_flags |= PID_TEST_FLAG; }
-    if(cli.is_option("-rle") ){ o_flags |= RLE_TEST_FLAG; }
-
-    return o_flags;
-
+		u32 o_flags = 0;
+		o_flags = Test::parse_execution_flags(cli);
+		o_flags |= Test::parse_test(cli, "base64", BASE64_TEST_FLAG);
+		o_flags |= Test::parse_test(cli, "checksum", CHECKSUM_TEST_FLAG);
+		o_flags |= Test::parse_test(cli, "ema", EMA_TEST_FLAG);
+		o_flags |= Test::parse_test(cli, "lookup", LOOKUP_TEST_FLAG);
+		o_flags |= Test::parse_test(cli, "pid", PID_TEST_FLAG);
+		o_flags |= Test::parse_test(cli, "rle", RLE_TEST_FLAG);
+		return o_flags;
 }
 
 void show_usage(const Cli & cli){

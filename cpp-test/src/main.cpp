@@ -22,12 +22,12 @@ bool handle_tests(const Cli & cli){
 
 		u32 o_execute_flags = 0;
 
-		if( cli.get_option("api") == "true" ){ o_execute_flags |= Test::EXECUTE_API; }
-		if( cli.get_option("stress") == "true" ){ o_execute_flags |= Test::EXECUTE_STRESS; }
-		if( cli.get_option("performance") == "true" ){ o_execute_flags |= Test::EXECUTE_PERFORMANCE; }
+		if( cli.get_option("api") == "true" ){ o_execute_flags |= Test::execute_api; }
+		if( cli.get_option("stress") == "true" ){ o_execute_flags |= Test::execute_stress; }
+		if( cli.get_option("performance") == "true" ){ o_execute_flags |= Test::execute_performance; }
 
 		if( o_execute_flags == 0 ){
-			o_execute_flags = Test::EXECUTE_ALL;
+			o_execute_flags = Test::execute_all;
 		}
 
       Test::initialize(

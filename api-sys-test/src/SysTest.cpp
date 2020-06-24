@@ -38,7 +38,7 @@ bool SysTest::execute_class_api_case(){
                        "/app/flash/fake",
                        Sys::Arguments("orphan"),
                        Sys::DestinationPath(exec_destination),
-                       Appfs::is_default,
+											 Appfs::flag_is_default,
                        0,
                        nullptr,
                        Sys::Environment("")
@@ -50,7 +50,7 @@ bool SysTest::execute_class_api_case(){
                        "/app/flash/launchslave",
                        Sys::Arguments("task_id"),
                        Sys::DestinationPath(exec_destination),
-                       Appfs::is_default,
+											 Appfs::flag_is_default,
                        0,
                        nullptr,
                        Sys::Environment("")

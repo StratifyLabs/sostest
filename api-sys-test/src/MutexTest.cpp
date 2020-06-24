@@ -83,7 +83,7 @@ bool MutexTest::execute_api_mutex_attr_case(MutexAttr * mutex_attr){
     MutexAttributes::protocol attr_protocol;
     pshared_test = false;
     prio_ceiling_test=0;
-    attr_type = MutexAttributes::RECURSIVE;
+		attr_type = MutexAttributes::recursive;
 
     MutexAttributes mutex_attr_test;
     mutex_attr_test.set_type(attr_type)
@@ -107,13 +107,13 @@ bool MutexTest::execute_api_mutex_attr_case(MutexAttr * mutex_attr){
     TEST_THIS_EXPECT(int, mutex_attr_test.get_prio_ceiling(), prio_ceiling_test);
     TEST_THIS_EXPECT(int, mutex_attr_test.get_pshared(), pshared_test);
 
-    attr_protocol = MutexAttr::PRIO_NONE_PROTOCOL;
+		attr_protocol = MutexAttr::prio_none_protocol;
     mutex_attr_test.set_protocol(attr_protocol);
     TEST_THIS_EXPECT(int, mutex_attr_test.get_protocol(), attr_protocol);
-    attr_protocol = MutexAttr::PRIO_PROTECT_PROTOCOL;
+		attr_protocol = MutexAttr::prio_protect_protocol;
     TEST_THIS_EXPECT(int, mutex_attr_test.get_protocol(), attr_protocol);
 
-    attr_protocol = MutexAttr::PRIO_INHERIT_PROTOCOL;
+		attr_protocol = MutexAttr::prio_inherit_protocol;
     mutex_attr_test.set_protocol(attr_protocol);
     TEST_THIS_EXPECT(int, mutex_attr_test.get_protocol(), attr_protocol);
 
@@ -149,8 +149,8 @@ bool MutexTest::execute_class_stress_case(){
         result = false;
     }
 
-    mutex_attr.set_type(MutexAttr::RECURSIVE);
-    mutex_attr.set_protocol(MutexAttr::PRIO_INHERIT_PROTOCOL);
+		mutex_attr.set_type(MutexAttr::recursive);
+		mutex_attr.set_protocol(MutexAttr::prio_inherit_protocol);
     mutex_attr.set_pshared(false);
     mutex_attr.set_prio_ceiling(dos_priority > uno_priority ? dos_priority : uno_priority);
     mutex_test.set_attributes(mutex_attr);
@@ -216,8 +216,8 @@ bool MutexTest::execute_class_performance_case(){
         print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
         result = false;
     }
-    mutex_attr.set_type(MutexAttr::RECURSIVE);
-    mutex_attr.set_protocol(MutexAttr::PRIO_INHERIT_PROTOCOL);
+		mutex_attr.set_type(MutexAttr::recursive);
+		mutex_attr.set_protocol(MutexAttr::prio_inherit_protocol);
     mutex_attr.set_pshared(false);
     mutex_attr.set_prio_ceiling(dos_priority > uno_priority ? dos_priority : uno_priority);
     mutex_test.set_attributes(mutex_attr);

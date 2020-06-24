@@ -43,7 +43,7 @@ bool UnistdTest::execute_api_access_case(){
 }
 
 bool UnistdTest::execute_api_sleep_case(){
-
+	return case_result();
 }
 
 bool UnistdTest::execute_api_directory_case(){
