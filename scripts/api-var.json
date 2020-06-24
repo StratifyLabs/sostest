@@ -1,0 +1,68 @@
+{
+    "api-var-test": [
+        {
+            "case": "install",
+            "command": "app.install:path=api-var-test"
+        },
+        {
+            "case": "data",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --data'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "queue",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --queue'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "string",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --string'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "token",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --token'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "vector",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --vector'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "ring",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --ring'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "array",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --array'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "json",
+            "command": "application.run:path=api-var-test",
+            "arguments": "'--api --json'",
+            "terminal": true,
+            "while": "api-var-test"
+        },
+        {
+            "case": "remove",
+            "command": "app.clean"
+        }
+    ]
+}

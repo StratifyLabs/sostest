@@ -1,0 +1,39 @@
+{
+    "api-chrono-test": [
+        {
+            "case": "configure",
+            "command": "os.configure:time",
+            "assert": false,
+            "fatal": false
+        },
+        {
+            "case": "install",
+            "command": "app.install:path=api-chrono-test"
+        },
+        {
+            "case": "microTime",
+            "command": "application.run:path=api-chrono-test",
+            "arguments": "'--api --microTime'",
+            "terminal": true,
+            "while": "api-chrono-test"
+        },
+        {
+            "case": "timer",
+            "command": "application.run:path=api-chrono-test",
+            "arguments": "'--api --timer'",
+            "terminal": true,
+            "while": "api-chrono-test"
+        },
+        {
+            "case": "time",
+            "command": "application.run:path=api-chrono-test",
+            "arguments": "'--api --time'",
+            "terminal": true,
+            "while": "api-chrono-test"
+        },
+        {
+            "case": "remove",
+            "command": "app.clean"
+        }
+    ]
+}

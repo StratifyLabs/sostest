@@ -148,7 +148,7 @@ bool StringTest::api_case_find(){
 	char s1_char[] = "ASD";
 	char s2_char[] = "QWE";
 	char s3_char[] = "BNM";
-	char* s4 = nullptr ;
+	char* s4 = nullptr;
 	bool result = true;
 
 	TEST_THIS_EXPECT(size_t, s.find(s1), 10);
@@ -157,42 +157,6 @@ bool StringTest::api_case_find(){
 	TEST_THIS_EXPECT(size_t, s.find(s1_char), 10);
 	TEST_THIS_EXPECT(size_t, s.find(s2_char), 0);
 	TEST_THIS_EXPECT(size_t, s.find(s3_char), 24);
-
-#if 0
-	if ( s.find(s1,0) == s.npos || s.find(s2,0) == s.npos || s.find(s3,0) == s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if ( s.find(s1_char,0) == s.npos || s.find(s2_char,0) == s.npos || s.find(s3_char,0) == s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if ( s.find("Q",0) == s.npos || s.find("M",s.length()-2) == s.npos || s.find("A",1) == s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if (s.find(s4,0)!=s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-
-	if ( s.rfind(s1,0) == s.npos || s.rfind(s2,0) == s.npos || s.rfind(s3,0) == s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if ( s.rfind(s1_char,0) == s.npos || s.rfind(s2_char,0) == s.npos || s.rfind(s3_char,0) == s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if ( s.rfind("Q",0) == s.npos || s.rfind("M",s.length()-2) == s.npos || s.rfind("A",1) == s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-	if (s.rfind(s4,0)!=s.npos){
-		print_case_message("Failed %s:%d", __PRETTY_FUNCTION__, __LINE__);
-		result = false;
-	}
-#endif
 	return result;
 }
 /*! \details test "special" a var::String

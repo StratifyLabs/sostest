@@ -1,0 +1,128 @@
+{
+    "posix-test": [
+        {
+            "case": "configure",
+            "command": "os.configure:time",
+            "assert": false,
+            "fatal": false
+        },
+        {
+            "case": "build",
+            "command": "app.build:path=posix-test,clean"
+        },
+        {
+            "case": "build-slave",
+            "command": "app.build:path=launchslave,clean"
+        },
+        {
+            "case": "install",
+            "command": "app.install:path=posix-test"
+        },
+        {
+            "case": "install-slave",
+            "command": "app.install:path=launchslave"
+        },
+        {
+            "case": "stdio",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --stdio'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "aio",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --aio'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "sem",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --sem'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "listio",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --listio'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "dirent",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --dirent'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "mq",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --mq'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "sched",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --sched'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "pthread",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --pthread'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "directory",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --directory'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "file",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --file'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "access",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --access'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "sleep",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --sleep'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "signal",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --signal'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "launch",
+            "command": "application.run:path=posix-test",
+            "arguments": "'--api --launch'",
+            "terminal": true,
+            "while": "posix-test"
+        },
+        {
+            "case": "remove",
+            "command": "app.clean"
+        }
+    ]
+}

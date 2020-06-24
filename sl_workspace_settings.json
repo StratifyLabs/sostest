@@ -1,8 +1,44 @@
 {
-   "creationDate": 1553618420,
+   "creationDate": 1557841621,
+   "verbose": "0.29",
    "interactive": "false",
    "silent": "false",
    "json": "false",
-   "version": "0.46",
-   "sdkDirectory": "StratifySDK"
+   "version": "0.50",
+   "script": {
+      "unit": [
+         {
+            "case": "sys",
+            "command": "script.run:path=scripts/api-sys.json"
+         },
+         {
+            "case": "var",
+            "command": "script.run:path=scripts/api-var.json"
+         },
+         {
+            "case": "chrono",
+            "command": "script.run:path=scripts/api-chrono.json"
+         },
+         {
+            "case": "posix",
+            "command": "script.run:path=scripts/posix.json"
+         }
+      ],
+      "api-sys-test": [
+         {
+            "case": "install",
+            "command": "app.install:path=api-sys-test"
+         },
+         {
+            "case": "run",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --all'",
+            "clean": "app.clean",
+            "terminal": true,
+            "while": "api-sys-test"
+         }
+      ]
+   },
+   "sdkDirectory": "StratifySDK",
+   "skipUpdate": "0.50"
 }

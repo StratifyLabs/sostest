@@ -16,41 +16,41 @@ TraceTest::TraceTest() : Test("sys::Trace"){
  *	trace_fatal()
  */
 bool TraceTest::execute_class_api_case(){
-    bool result = true;
-    Trace trace_test;
-    String message("String");
-    trace_test = message;
-    trace_test.trace_message();
-    trace_test.trace_warning();
-    trace_test.trace_error();
-    trace_test.trace_critical();
-    trace_test.trace_fatal();
-    trace_test = "Native";
-    trace_test.trace_message();
-    trace_test.trace_warning();
-    trace_test.trace_error();
-    trace_test.trace_critical();
-    trace_test.trace_fatal();
-    trace_test = "";
-    trace_test.trace_message();
-    trace_test.trace_warning();
-    trace_test.trace_error();
-    trace_test.trace_critical();
-    trace_test.trace_fatal();
-    return result;
+	bool result = true;
+	Trace trace_test;
+	String message("String");
+	trace_test = message;
+	trace_test.trace_message();
+	trace_test.trace_warning();
+	trace_test.trace_error();
+	trace_test.trace_critical();
+	trace_test.trace_fatal();
+	trace_test = "Native";
+	trace_test.trace_message();
+	trace_test.trace_warning();
+	trace_test.trace_error();
+	trace_test.trace_critical();
+	trace_test.trace_fatal();
+	trace_test = "";
+	trace_test.trace_message();
+	trace_test.trace_warning();
+	trace_test.trace_error();
+	trace_test.trace_critical();
+	trace_test.trace_fatal();
+	return result;
 }
 
 /*@brief stress test for sys/trace use "api-sys-test -trace -stress"
  */
 bool TraceTest::execute_class_stress_case(){
-    bool result = true;
-    return result;
+	bool result = true;
+	return result;
 }
 
 /*@brief performance test for sys/trace use "api-sys-test -trace -performance"
  */
 bool TraceTest::execute_class_performance_case(){
-    bool result = true;
-    return result;
+	bool result = true;
+	return result;
 }
 

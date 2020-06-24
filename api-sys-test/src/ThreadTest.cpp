@@ -129,9 +129,9 @@ bool ThreadTest::execute_class_api_case(){
 
 	print_case_message("Yield to threads");
 	if(uno_thread.is_running()||
-			dos_thread.is_running()||
-			tres_thread.is_running()||
-			quatro_thread.is_running()){
+		 dos_thread.is_running()||
+		 tres_thread.is_running()||
+		 quatro_thread.is_running()){
 		Thread::yield();//self proccess
 	}
 
@@ -156,9 +156,9 @@ bool ThreadTest::execute_class_api_case(){
 	//    print_case_message("timer after join %lu",timer_count.microseconds());
 	//while before all thread is stoped
 	while(uno_thread.is_running()||
-			dos_thread.is_running()||
-			tres_thread.is_running()||
-			quatro_thread.is_running()){
+				dos_thread.is_running()||
+				tres_thread.is_running()||
+				quatro_thread.is_running()){
 		Thread::yield();
 	}
 	//    print_case_message("timer after join %lu",timer_count.microseconds());
@@ -248,7 +248,7 @@ bool ThreadTest::execute_class_performance_case(){
 		CREATE_THREAD(quatro_thread,thread_4,nullptr,priority,policy);
 
 		while( uno_thread.is_running()||dos_thread.is_running()||
-				 tres_thread.is_running()||quatro_thread.is_running() ){
+					 tres_thread.is_running()||quatro_thread.is_running() ){
 			Thread::yield();
 		}
 		if((count_1 != 2)||(count_2!=2)||(count_3!=2)||(count_4!=2)){
@@ -349,11 +349,11 @@ bool ThreadTest::execute_class_stress_case(){
 
 
 		while(
-				uno_thread.is_running()||
-				dos_thread.is_running()||
-				tres_thread.is_running()||
-				quatro_thread.is_running()
-				){
+					uno_thread.is_running()||
+					dos_thread.is_running()||
+					tres_thread.is_running()||
+					quatro_thread.is_running()
+					){
 			Thread::yield();
 		}
 
@@ -414,9 +414,9 @@ bool ThreadTest::execute_class_stress_case(){
 
 
 		while(uno_thread.is_running()||
-				dos_thread.is_running()||
-				tres_thread.is_running()||
-				quatro_thread.is_running()){
+					dos_thread.is_running()||
+					tres_thread.is_running()||
+					quatro_thread.is_running()){
 			Thread::yield();
 		}
 		if((count_1 != 2)||(count_2!=2)||(count_3!=2)||(count_4!=2)){
@@ -474,9 +474,9 @@ bool ThreadTest::execute_class_stress_case(){
 		TEST_THIS_EXPECT(int, dos_thread.get_priority(), dos_priority);
 
 		while(uno_thread.is_running()||
-				dos_thread.is_running()||
-				tres_thread.is_running()||
-				quatro_thread.is_running()){
+					dos_thread.is_running()||
+					tres_thread.is_running()||
+					quatro_thread.is_running()){
 			Thread::yield();
 		}
 		if((count_1 != 2)||(count_2!=2)||(count_3!=2)||(count_4!=2)){
@@ -533,9 +533,9 @@ bool ThreadTest::execute_class_stress_case(){
 		}
 
 		while(uno_thread.is_running()||
-				dos_thread.is_running()||
-				tres_thread.is_running()||
-				quatro_thread.is_running()){
+					dos_thread.is_running()||
+					tres_thread.is_running()||
+					quatro_thread.is_running()){
 			Thread::yield();
 		}
 

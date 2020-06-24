@@ -99,7 +99,6 @@ u32 decode_cli(const Cli & cli){
 	o_flags |= Test::parse_test(cli, "data", DATA_TEST_FLAG);
 	o_flags |= Test::parse_test(cli, "queue", QUEUE_TEST_FLAG);
 	o_flags |= Test::parse_test(cli, "string", STRING_TEST_FLAG);
-	o_flags |= Test::parse_test(cli, "string", STRING_TEST_FLAG);
 	o_flags |= Test::parse_test(cli, "token", TOKEN_TEST_FLAG);
 	o_flags |= Test::parse_test(cli, "vector", VECTOR_TEST_FLAG);
 	o_flags |= Test::parse_test(cli, "ring", RING_TEST_FLAG);

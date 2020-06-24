@@ -5,14 +5,14 @@
 
 class SysTest : public Test {
 public:
-    SysTest();
+	SysTest();
 private:
-    //api
-    bool execute_class_api_case();
-    //stress
-    bool execute_class_stress_case();
-    //performance
-    bool execute_class_performance_case();
+	//api
+	bool execute_class_api_case();
+	//stress
+	bool execute_class_stress_case();
+	//performance
+	bool execute_class_performance_case();
 
 };
 

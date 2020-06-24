@@ -1,0 +1,110 @@
+{
+    "api-sys-test": [
+        {
+            "case": "install",
+            "command": "app.install:path=api-sys-test"
+        },
+        {
+            "case": "aio",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --aio'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "appfs",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --appfs'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "cli",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --cli'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "dir",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --dir'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "file",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --file'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "fileInfo",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --fileInfo'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "mq",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --mq'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "mutex",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --mutex'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "sched",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --sched'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "sem",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --sem'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "signal",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --signal'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "thread",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --thread'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "trace",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --trace'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "task",
+            "command": "application.run:path=api-sys-test",
+            "arguments": "'--api --task'",
+            "terminal": true,
+            "while": "api-sys-test"
+        },
+        {
+            "case": "remove",
+            "command": "app.clean"
+        }
+    ]
+}

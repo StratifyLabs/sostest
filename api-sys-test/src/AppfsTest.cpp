@@ -24,31 +24,32 @@ bool AppfsTest::execute_class_api_case(){
 	DataFile user_data_file;
 	//user_data_file.data().refer_to(my_user_data);
 
-	TEST_THIS_EXPECT(bool, Appfs::create(
-							  Appfs::Name(file_name),
-							  user_data_file
-							  ) < 0,
-						  false);
+	TEST_THIS_EXPECT(
+				bool, Appfs::create(
+					Appfs::Name(file_name),
+					user_data_file
+					) < 0,
+				false);
 
 
 	//read back the file that was created
 	File f;
 	String path = String("/app/flash/") + file_name;
 	TEST_THIS_ASSERT(bool, f.open(
-							  path,
-							  OpenFlags::read_only()
-							  ) < 0,
-						  false);
+										 path,
+										 OpenFlags::read_only()
+										 ) < 0,
+									 false);
 
 #if 1
 	TEST_THIS_EXPECT(bool,
-						  f.read(my_user_data_read_back) == (int)my_user_data_read_back.size(),
-						  true);
+									 f.read(my_user_data_read_back) == (int)my_user_data_read_back.size(),
+									 true);
 #endif
 
 	TEST_THIS_EXPECT(int,
-						  f.close(),
-						  0);
+									 f.close(),
+									 0);
 
 	TEST_THIS_EXPECT(String, String(my_user_data_read_back), my_user_data);
 

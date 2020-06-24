@@ -10,6 +10,11 @@ JsonTest::JsonTest() : Test("JsonTest"){
 
 bool JsonTest::execute_class_api_case(){
 
+	if( JsonValue::api().is_valid() == false ){
+		print_case_message("JSON API does not exist on this device...abort test");
+		return case_result();
+	}
+
 
 	JsonObject object;
 	object

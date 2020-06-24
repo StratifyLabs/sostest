@@ -5,18 +5,18 @@
 
 class MqTest : public Test {
 public:
-    MqTest();
-    //api
-    bool execute_class_api_case();
-    //stress
-    bool execute_class_stress_case();
-    //performance
-    bool execute_class_performance_case();
+	MqTest();
+	//api
+	bool execute_class_api_case();
+	//stress
+	bool execute_class_stress_case();
+	//performance
+	bool execute_class_performance_case();
 private:
-    //mq attr
-    bool execute_api_mq_attr_case(MqAttributes * mq_attr);
-    bool execute_api_simply_case();
-    bool execute_api_thread_case();
+	//mq attr
+	bool execute_api_mq_attr_case(MqAttributes * mq_attr);
+	bool execute_api_simply_case();
+	bool execute_api_thread_case();
 
 };
 
