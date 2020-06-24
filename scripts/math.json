@@ -1,0 +1,51 @@
+{
+    "math-test": [
+        {
+            "case": "build",
+            "command": "app.build:path=math-test,clean"
+        },
+        {
+            "case": "install",
+            "command": "app.install:path=math-test"
+        },
+        {
+            "case": "comparison",
+            "command": "application.run:path=math-test",
+            "arguments": "'--api --comparison --allTypes'",
+            "terminal": true,
+            "while": "math-test"
+        },
+        {
+            "case": "arithmetic",
+            "command": "application.run:path=math-test",
+            "arguments": "'--api --arithmetic --allTypes'",
+            "terminal": true,
+            "while": "math-test"
+        },
+        {
+            "case": "logic",
+            "command": "application.run:path=math-test",
+            "arguments": "'--api --logic --allTypes'",
+            "terminal": true,
+            "while": "math-test"
+        },
+        {
+            "case": "shift",
+            "command": "application.run:path=math-test",
+            "arguments": "'--api --shift --allTypes'",
+            "terminal": true,
+            "while": "math-test"
+        },
+        {
+            "case": "typecast",
+            "command": "application.run:path=math-test",
+            "arguments": "'--api --typecast --allTypes'",
+            "terminal": true,
+            "while": "math-test"
+        },
+        {
+            "case": "remove",
+            "command": "app.clean"
+        }
+    ]
+}

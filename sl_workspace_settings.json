@@ -22,6 +22,10 @@
          {
             "case": "posix",
             "command": "script.run:path=scripts/posix.json"
+         },
+         {
+            "case": "math",
+            "command": "script.run:path=scripts/math.json"
          }
       ],
       "api-sys-test": [
